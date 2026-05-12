@@ -1,5 +1,6 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { applyArmor } from './reducer/armor';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { resolveCombatPhase } from './reducer/combatPhase';
 import { applyDeathrattle } from './reducer/deathrattle';
@@ -39,6 +40,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'HEALTH') {
         return applyHeroHealth(state, event);
+      }
+      if (event.tag === 'ARMOR') {
+        return applyArmor(state, event);
       }
       if (event.tag === 'RESOURCES') {
         return applyGold(state, event);
