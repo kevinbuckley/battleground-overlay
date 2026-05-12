@@ -7,3 +7,5 @@ export { enumerateBuyCandidates } from './candidates';
 export type { BuyCandidate } from './candidates';
 export { scoreCandidate } from './simScorer';
 export type { ScoreResult } from './simScorer';
+export { hillClimbPosition } from './positionHillClimb';
+export type { PositionResult } from './positionHillClimb';
