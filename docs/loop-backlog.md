@@ -133,6 +133,8 @@ to `loop-ledger.md`.
 - [ ] [S] Session list: add `listSessions(logsDir?: string): string[]` to `packages/shared/src/sessionLog.ts` — returns sorted paths of all `session-*.jsonl` files in `logsDir` (default `logs/`); test with temp dir containing 3 fixture filenames — `packages/shared/src/sessionLog.ts` update + test
 - [ ] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test
 
+- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
