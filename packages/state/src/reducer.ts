@@ -12,6 +12,7 @@ import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyShopBuy } from './reducer/shopBuy';
+import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopSell } from './reducer/shopSell';
 import { applyTierUp } from './reducer/tierUp';
@@ -92,6 +93,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'DAMAGE') {
         return applyCombatDamage(state, event);
+      }
+      if (event.tag === 'FROZEN') {
+        return applyShopFreeze(state, event);
       }
       return applyMinionPlaced(state, event);
 
