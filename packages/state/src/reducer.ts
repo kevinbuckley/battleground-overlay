@@ -3,6 +3,7 @@ import type { GameState } from '@overlay/shared';
 import { applyGold } from './reducer/gold';
 import { applyHeroHealth } from './reducer/health';
 import { applyMinionPlaced } from './reducer/minionPlaced';
+import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyTier } from './reducer/tier';
 
@@ -26,6 +27,12 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'PLAYER_TECH_LEVEL') {
         return applyTier(state, event);
+      }
+      if (
+        event.tag === 'ZONE' &&
+        (event.value === 'GRAVEYARD' || event.value === 'REMOVEDFROMGAME')
+      ) {
+        return applyMinionRemoved(state, event);
       }
       return applyMinionPlaced(state, event);
 
