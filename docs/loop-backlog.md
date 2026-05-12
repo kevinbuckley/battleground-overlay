@@ -228,7 +228,7 @@ to `loop-ledger.md`.
 
 ## M1 — Log parser (continued)
 
-- [ ] [S] Fixture integration test harness: `packages/log-parser/src/fixtureTest.ts` — `runFixtureTest(fixturePath: string, expectedEvents: HsEvent[]): void` reads a fixture file, parses all lines, asserts event count and types match expected; 3 tests: exact match passes, wrong count fails, wrong type fails — `packages/log-parser/src/fixtureTest.ts` + test
+- [x] [S] Fixture integration test harness: `packages/log-parser/src/fixtureTest.ts` — `runFixtureTest(fixturePath: string, expectedEvents: HsEvent[]): void` reads a fixture file, parses all lines, asserts event count and types match expected; 3 tests: exact match passes, wrong count fails, wrong type fails — `packages/log-parser/src/fixtureTest.ts` + test (commit b03401a)
 
 ## M21 — Reducer completeness + state utilities
 
