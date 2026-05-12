@@ -5,6 +5,7 @@ import { applyHeroHealth } from './reducer/health';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
+import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyTier } from './reducer/tier';
 
@@ -33,6 +34,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       {
         const entityId = Number.parseInt(event.entity, 10);
         if (!isNaN(entityId) && state.opponents.some((o) => o.entityId === entityId)) {
+          if (event.tag === 'PLAYER_TECH_LEVEL') {
+            return applyOpponentTier(state, event);
+          }
           return applyOpponentHealth(state, event);
         }
       }
