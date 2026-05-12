@@ -78,4 +78,6 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 07:30  [DONE]  M7: Hotkey config — `hotkeys.ts` with HotkeyConfig type, defaultHotkeyConfig, registerHotkeys(mockable interface), 7 tests (commit 294245c)
 
+2026-05-12 08:15  [DONE]  M8: Fixture loader — `loadFixture` reads text file line-by-line, calls `parseLine`, filters nulls, 3 tests; also implemented real `parseLine` dispatcher in log-parser (commit a1a887e)
+
 2026-05-12 08:00  [DONE]  M7: Settings persistence — `settings.ts` with OverlaySettings type, defaultSettings, loadSettings (JSON fallback), saveSettings, 7 tests (commit e1df2ad)
