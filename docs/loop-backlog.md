@@ -183,7 +183,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Budget-aware buy scorer: `packages/advisor/src/budgetScorer.ts` — `scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[]` — for each shop minion, projects `enumerateBuyCandidates`, calls `scoreCandidate` via `withBudget`, returns top 3 sorted by winPct; test with n=0 returns recs with score 0 — `packages/advisor/src/budgetScorer.ts` + test (commit ae8c1cb)
 - [x] [S] Weighted win scorer: `packages/advisor/src/weightedScore.ts` — `weightedWinScore(scoreResult: ScoreResult, weights: number[]): number` multiplies per-opponent winPct by lobby weights and sums; test: all weights equal → average winPct — `packages/advisor/src/weightedScore.ts` + test (commit 372472a)
-- [ ] [S] Upgrade `recommend()` to use sim: update `packages/advisor/src/recommend.ts` to call `scoreBuysWithSim(state, 50, 2000)` and merge with heuristic scores; heuristics remain as fallback if sim returns empty; test: with 0 sims still returns ≥1 recommendation — `packages/advisor/src/recommend.ts` update + test
+- [x] [S] Upgrade `recommend()` to use sim: update `packages/advisor/src/recommend.ts` to call `scoreBuysWithSim(state, 50, 2000)` and merge with heuristic scores; heuristics remain as fallback if sim returns empty; test: with 0 sims still returns ≥1 recommendation — `packages/advisor/src/recommend.ts` update + test (commit ac4b7d5)
 
 ## M16 — Session review tooling
 
