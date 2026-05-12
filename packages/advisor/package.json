@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@overlay/shared": "workspace:*",
-    "@overlay/state": "workspace:*"
+    "@overlay/state": "workspace:*",
+    "@overlay/sim": "workspace:*"
   }
 }

@@ -5,3 +5,5 @@ export { tribeSynergyScore } from './heuristics/tribeSynergy';
 export { predictOpponentBoard } from './opponentPredictor';
 export { enumerateBuyCandidates } from './candidates';
 export type { BuyCandidate } from './candidates';
+export { scoreCandidate } from './simScorer';
+export type { ScoreResult } from './simScorer';
