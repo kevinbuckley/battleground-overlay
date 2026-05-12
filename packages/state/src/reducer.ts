@@ -7,6 +7,7 @@ import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
+import { applyHeroIdentify } from './reducer/heroIdentify';
 import { applyHeroPower } from './reducer/heroPower';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
@@ -33,6 +34,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
 
     case 'FULL_ENTITY':
       return applyMinionPlaced(state, event);
+
+    case 'SHOW_ENTITY':
+      return applyHeroIdentify(state, event);
 
     case 'ZONE_CHANGE_LIST':
       return applyShopRefresh(state, event);
