@@ -9,6 +9,7 @@ import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopRefresh } from './reducer/shopRefresh';
+import { applyShopSell } from './reducer/shopSell';
 import { applyTier } from './reducer/tier';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -53,6 +54,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'ZONE' && event.value === 'PLAY') {
         return applyShopBuy(state, event);
+      }
+      if (event.tag === 'ZONE' && event.value === 'HAND') {
+        return applyShopSell(state, event);
       }
       return applyMinionPlaced(state, event);
 
