@@ -94,4 +94,6 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 11:00  [DONE]  M2: Shop refresh handler — `applyShopRefresh` handles `ZONE_CHANGE_LIST` events, rebuilds shop.minions from entity registry entries in SHOP zone, wired into reducer, 4 tests (commit febb1fe)
 
+2026-05-12 12:00  [DONE]  M2: Shop buy handler — `applyShopBuy` handles `TAG_CHANGE tag=ZONE` from SHOP to PLAY, moves minion from shop to board, wired into reducer, 7 tests (commit cc8436a)
+
 2026-05-12 10:30  [DONE]  M2: Opponent tier tracker — `applyOpponentTier` finds opponent by entity ID, updates tier from TAG_CHANGE, 5 tests, wired into reducer (commit a81c4bb)
