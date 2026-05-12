@@ -145,6 +145,7 @@ function createDeathrattleMinion(
     poisonous: false,
     reborn: false,
     frozen: false,
+    golden: false,
     tribes: [],
   };
 }

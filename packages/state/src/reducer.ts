@@ -8,6 +8,7 @@ import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHeroPower } from './reducer/heroPower';
+import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
@@ -100,6 +101,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_TIMES_HERO_POWER_USED_THIS_GAME') {
         return applyHeroPower(state, event);
+      }
+      if (event.tag === 'NUM_MINIONS_IN_LOBBY') {
+        return applyLobbySize(state, event);
       }
       if (event.tag === 'CONTROLLER') {
         return applyMinionPlaced(state, event);

@@ -57,6 +57,7 @@ export interface OpponentState {
 export interface GameState {
   turn: number;
   phase: 'lobby' | 'shopping' | 'combat' | 'end';
+  lobbySize: number;
   player: PlayerState;
   opponents: OpponentState[];
 }

@@ -4,6 +4,7 @@ export function initialState(): GameState {
   return {
     turn: 0,
     phase: 'lobby',
+    lobbySize: 8,
     player: {
       entityId: 0,
       playerId: 0,
