@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { appendSessionEvent, listSessions, resetSession } from './sessionLog';
+import { appendSessionEvent, listSessions, pruneOldSessions, resetSession } from './sessionLog';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
 
@@ -71,5 +71,52 @@ describe('listSessions', () => {
 
   it('returns empty array when directory does not exist', () => {
     expect(listSessions('/nonexistent/path/that/does/not/exist')).toEqual([]);
+  });
+});
+
+describe('pruneOldSessions', () => {
+  it('deletes all but the most recent keepLast session files', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__prunetest__');
+    if (existsSync(tmpDir)) {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+    mkdirSync(tmpDir, { recursive: true });
+    writeFileSync(join(tmpDir, 'session-2026-01-01T00:00:00.000Z-1.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-02T00:00:00.000Z-2.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-03T00:00:00.000Z-3.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-04T00:00:00.000Z-4.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-05T00:00:00.000Z-5.jsonl'), '');
+
+    pruneOldSessions(3, tmpDir);
+
+    const remaining = readdirSync(tmpDir).filter((n: string) => n.startsWith('session-'));
+    expect(remaining).toHaveLength(3);
+
+    const names = remaining.map((n: string) => n.replace(/.*session-/, '').replace(/\.jsonl$/, ''));
+    expect(names.some((n: string) => n.includes('2026-01-01'))).toBe(false);
+    expect(names.some((n: string) => n.includes('2026-01-02'))).toBe(false);
+    expect(names.some((n: string) => n.includes('2026-01-03'))).toBe(true);
+    expect(names.some((n: string) => n.includes('2026-01-04'))).toBe(true);
+    expect(names.some((n: string) => n.includes('2026-01-05'))).toBe(true);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('does nothing when file count <= keepLast', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__prunetest2__');
+    mkdirSync(tmpDir, { recursive: true });
+    writeFileSync(join(tmpDir, 'session-2026-01-01T00:00:00.000Z-1.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-02T00:00:00.000Z-2.jsonl'), '');
+
+    pruneOldSessions(3, tmpDir);
+
+    const remaining = readdirSync(tmpDir).filter((n: string) => n.startsWith('session-'));
+    expect(remaining).toHaveLength(2);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('returns early when directory does not exist', () => {
+    pruneOldSessions(5, '/nonexistent/path/that/does/not/exist');
   });
 });

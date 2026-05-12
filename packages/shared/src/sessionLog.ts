@@ -1,4 +1,4 @@
-import { appendFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
@@ -31,4 +31,17 @@ export function listSessions(logsDir?: string): string[] {
     .filter((n: string) => n.startsWith('session-') && n.endsWith('.jsonl'))
     .sort()
     .map((n: string) => join(dir, n));
+}
+
+export function pruneOldSessions(keepLast: number, logsDir?: string): void {
+  const dir = logsDir ?? LOGS_DIR;
+  if (!existsSync(dir)) return;
+  const files = readdirSync(dir)
+    .filter((n: string) => n.startsWith('session-') && n.endsWith('.jsonl'))
+    .sort();
+  if (files.length <= keepLast) return;
+  const toRemove = files.slice(0, files.length - keepLast);
+  for (const f of toRemove) {
+    rmSync(join(dir, f), { force: true });
+  }
 }
