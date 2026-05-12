@@ -133,3 +133,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 19:00  [DONE]  M19: Pipeline factory — `createPipeline()` returns `{onEvent, getState, reset}` wiring reducer into event loop, 6 tests (commit a702034)
 
 2026-05-12 19:30  [DONE]  M19: Overlay coordinator — `startCoordinator(win)` creates pipeline, wires `onEvent` → `recommend` → `setAdvice`, starts IPC bridge, returns stop fn; 4 tests (commit 48ef248)
+
+2026-05-12 20:00  [DONE]  M19: Replay CLI wiring — `run(path)` loads fixture, creates Scrubber, replays to end, prints formatState + exportReport; 3 tests (commit 543ba0e)
