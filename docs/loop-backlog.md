@@ -218,7 +218,7 @@ to `loop-ledger.md`.
 
 ## M2 — State model (continued)
 
-- [ ] [S] Replay fixture helper: `packages/state/src/replayFixture.ts` — `replayFixture(filePath: string): GameState` reads a raw Power.log text file line-by-line, calls `parseLine` on each line, filters nulls, and replays through `reducer` returning the final `GameState`; 4 tests: empty file returns initialState, single TAG_CHANGE event updates state, multi-line file with garbage lines returns correct final state, non-existent file throws — `packages/state/src/replayFixture.ts` + test
+- [x] [S] Replay fixture helper: `packages/state/src/replayFixture.ts` — `replayFixture(filePath: string): GameState` reads a raw Power.log text file line-by-line, calls `parseLine` on each line, filters nulls, and replays through `reducer` returning the final `GameState`; 4 tests: empty file returns initialState, single TAG_CHANGE event updates state, multi-line file with garbage lines returns correct final state, non-existent file throws — `packages/state/src/replayFixture.ts` + test (commit 00ff5df)
 
 ## M5 — Advisor: simulation search (continued)
 
