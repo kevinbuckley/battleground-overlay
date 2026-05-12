@@ -107,3 +107,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M14: Turn phase tracker — `applyTurnPhase` maps TAG_CHANGE tag=STEP values (MAIN_READY→shopping, BEGIN_SHOOTING_ATTACK→combat, MAIN_CLEANUP→end), wired into reducer, 5 tests (commit b90ab1d)
 
 2026-05-12 13:00  [DONE]  M15: Budget-aware buy scorer — `scoreBuysWithSim` enumerates buy candidates, scores via `scoreCandidate` wrapped in `withBudget`, returns top 3 sorted by winPct; 4 tests (commit ae8c1cb)
+
+2026-05-12 13:30  [DONE]  M15: Weighted win scorer — `weightedWinScore(scoreResult, weights)` multiplies winPct by sum of lobby weights, 7 tests (commit 372472a)
