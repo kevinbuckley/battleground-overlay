@@ -146,18 +146,18 @@ to `loop-ledger.md`.
 - [x] [S] Advice panel (current top recommendation) — `advicePanel.ts` + test, wired into `main.ts` (commit 3292eeb)
 - [x] [S] "Why?" expand → LLM explanation — `explanationPanel.ts` with setExplanation/getExplanation/clearExplanation + IPC handler in `main.ts`, 4 tests (commit 74c3243)
 - [x] [S] Board panel (recommended positioning) — `packages/shared/src/boardPanel.ts` + `apps/overlay/src/boardPanel.test.ts` + IPC handler in `main.ts`, 3 tests (commit 3187f23)
-- [ ] [S] Opponent panel (projected scaling per opponent)
-- [ ] [S] Damage forecast widget
-- [ ] [S] Hotkeys: toggle, reload, hide
-- [ ] [S] Settings: opacity, position, hotkey rebinding
+- [ ] [S] Opponent panel (projected scaling per opponent): `apps/overlay/src/opponentPanel.ts` — exports `setOpponentPanel(opponents: OpponentState[]): void`, `getOpponentPanel(): OpponentState[]`, `clearOpponentPanel(): void`; wire IPC handler `overlay:set-opponents` in `apps/overlay/src/main.ts`; 3 tests — `apps/overlay/src/opponentPanel.ts` + `apps/overlay/src/opponentPanel.test.ts`
+- [ ] [S] Damage forecast widget: `apps/overlay/src/damageWidget.ts` — exports `DamageForecast` type `{minDmg: number, maxDmg: number, winPct: number}` + `computeDamageForecast(scoreResult: ScoreResult, playerTier: number): DamageForecast`; 3 tests (full-win, full-loss, 50/50) — `apps/overlay/src/damageWidget.ts` + `apps/overlay/src/damageWidget.test.ts`
+- [ ] [S] Hotkey config: `apps/overlay/src/hotkeys.ts` — exports `HotkeyConfig` type `{toggle: string, reload: string, hide: string}` + `defaultHotkeyConfig(): HotkeyConfig` returning `{toggle:'Alt+B',reload:'Alt+R',hide:'Alt+H'}` + `registerHotkeys(win: BrowserWindow, cfg: HotkeyConfig): void` (calls globalShortcut.register); test `defaultHotkeyConfig` returns correct defaults — `apps/overlay/src/hotkeys.ts` + `apps/overlay/src/hotkeys.test.ts`
+- [ ] [S] Settings persistence: `apps/overlay/src/settings.ts` — exports `OverlaySettings` type `{opacity: number, x: number, y: number, hotkeys: HotkeyConfig}` + `defaultSettings(): OverlaySettings` + `loadSettings(path: string): OverlaySettings` (reads JSON, falls back to defaults if missing) + `saveSettings(path: string, s: OverlaySettings): void`; test round-trip with a temp file — `apps/overlay/src/settings.ts` + `apps/overlay/src/settings.test.ts`
 
 ## M8 — Replay app
 
-- [ ] [M] Load a fixture `.log`
-- [ ] [M] Scrub through events
-- [ ] [M] State viewer at current tick
-- [ ] [M] "What advisor would have said" diff vs. what user did
-- [ ] [M] Export reviewable report as Markdown for post-game analysis
+- [ ] [S] Fixture loader: `apps/replay/src/loadFixture.ts` — `loadFixture(path: string): HsEvent[]` reads a text file line-by-line, calls `parseLine` on each, filters nulls; test with a 3-line fixture string written to a temp file, assert 2 events returned (1 garbage line) — `apps/replay/src/loadFixture.ts` + `apps/replay/src/loadFixture.test.ts`
+- [ ] [S] Scrubber: `apps/replay/src/scrubber.ts` — `Scrubber` class constructor takes `HsEvent[]`; `.seek(n): GameState` applies first n events; `.length: number` property; test: seek(0)=initialState, seek(1)=state after first event — `apps/replay/src/scrubber.ts` + `apps/replay/src/scrubber.test.ts`
+- [ ] [S] State viewer: `apps/replay/src/stateViewer.ts` — `formatState(state: GameState): string` returns multi-line text: turn, phase, player hp/tier/gold, board minion count, opponent count; test with `initialState()` output contains "turn: 0" — `apps/replay/src/stateViewer.ts` + `apps/replay/src/stateViewer.test.ts`
+- [ ] [S] Advisor diff: `apps/replay/src/advisorDiff.ts` — `advisorDiff(actual: Recommendation[], predicted: Recommendation[]): string` returns human-readable diff lines like "+ Buy X (score 0.8)" / "- TierUp (score 0.6)"; test empty arrays returns empty string — `apps/replay/src/advisorDiff.ts` + `apps/replay/src/advisorDiff.test.ts`
+- [ ] [S] Report exporter: `apps/replay/src/exportReport.ts` — `exportReport(turns: {state: GameState, recs: Recommendation[]}[]): string` returns Markdown with a `## Turn N` heading per turn + top 3 recommendations; test with 1-turn input contains "## Turn" — `apps/replay/src/exportReport.ts` + `apps/replay/src/exportReport.test.ts`
 
 ## Quarantined
 
