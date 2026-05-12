@@ -257,12 +257,12 @@ to `loop-ledger.md`.
 
 ## M1 — Log parser (continued)
 
-- [ ] [S] ZoneChangeList parser: `packages/log-parser/src/parseZoneChangeList.ts` —
+- [x] [S] ZoneChangeList parser: `packages/log-parser/src/parseZoneChangeList.ts` —
   `parseZoneChangeList(line: string): ZoneChangeList | null` that matches
   `ZONE_CHANGE_LIST ID=(\d+)` and returns `{ kind: 'ZONE_CHANGE_LIST', id }`;
   export from index.ts; 3 tests (valid line returns ZoneChangeList, garbage
   returns null, empty string returns null) —
-  `packages/log-parser/src/parseZoneChangeList.ts` + test
+  `packages/log-parser/src/parseZoneChangeList.ts` + test (commit 7e49dd5)
 
 ## M2 — State reducer (continued)
 

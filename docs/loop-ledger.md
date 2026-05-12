@@ -170,4 +170,6 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 05:50  [DONE]  M2: Replay fixture helper — `replayFixture(filePath)` reads raw Power.log, parses via `parseLine`, replays through reducer, returns final GameState, 4 tests (commit 00ff5df)
 
+2026-05-12 00:00  [DONE]  M1: ZoneChangeList parser — `parseZoneChangeList()` extracted from `parseLine`, exported from index, 3 tests (commit 7e49dd5)
+
 2026-05-12 00:00  [DONE]  M23: Lobby size tracker — `applyLobbySize` handles `TAG_CHANGE tag=NUM_MINIONS_IN_LOBBY`, adds `lobbySize` to GameState, wired into reducer, 4 tests (commit 45d5f5f)
