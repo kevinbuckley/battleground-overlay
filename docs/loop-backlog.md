@@ -137,6 +137,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add `isShoppingPhase(state: GameState): boolean` to `packages/shared/src/utils.ts` returning state.phase==='shopping'; test two cases — packages/shared/src/utils.ts update + test
 
+- [ ] [S] RECOVERY: Add `hpBucket(hp: number): 'critical'|'low'|'safe'` to `packages/shared/src/utils.ts` (critical<6, low<15, safe otherwise); 3 tests — packages/shared/src/utils.ts update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
