@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:30  [DONE]  M28: Pipeline integration test — `createPipeline()` fed synthetic BLOCK_START + TAG_CHANGE events, asserts turn=1 and gold=3, 1 test (commit 8969a68)
+
 2026-05-12 22:00  [DONE]  M27: Log pruning on startup — `pruneOldSessions(50)` called at top of `createOverlayWindow` in `createOverlayWindow.ts`, exported from shared index, 1 test verifying function is callable and import exists (commit 8dbfcbf)
 
 2026-05-12 22:00  [DONE]  M27: Renderer script — `initRenderer` bridges recs/explanation to DOM elements, `getActionText` formats all action types, 10 tests (commit 027ac81)

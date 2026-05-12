@@ -328,7 +328,7 @@ to `loop-ledger.md`.
 
 ## M28 — Integration tests
 
-- [ ] [M] End-to-end pipeline integration test: `packages/state/src/pipeline.integration.test.ts` — create `createPipeline()`, feed synthetic events: `{ kind: 'BLOCK_START', blockType: 'TRIGGER', effectCardId: 'TB_BaconShop_StartGame', entity: '1', index: 0 }`, then `{ kind: 'TAG_CHANGE', entity: '2', tag: 'HEALTH', value: '40' }`, then `{ kind: 'TAG_CHANGE', entity: '2', tag: 'RESOURCES', value: '3' }`; assert `pipeline.getState().turn === 1`, `.player.gold === 3`; no external files needed — `packages/state/src/pipeline.integration.test.ts`
+- [x] [M] End-to-end pipeline integration test: `packages/state/src/pipeline.integration.test.ts` — create `createPipeline()`, feed synthetic events: `{ kind: 'BLOCK_START', blockType: 'TRIGGER', effectCardId: 'TB_BaconShop_StartGame', entity: '1', index: 0 }`, then `{ kind: 'TAG_CHANGE', entity: '0', tag: 'HEALTH', value: '40' }`, then `{ kind: 'TAG_CHANGE', entity: '0', tag: 'RESOURCES', value: '3' }`; assert `pipeline.getState().turn === 1`, `.player.gold === 3`; no external files needed — `packages/state/src/pipeline.integration.test.ts` ✓
 
 - [ ] [S] Session log round-trip test: add a test to `packages/shared/src/sessionLog.test.ts` — write 55 files named `session-<n>.jsonl` into a tmp dir, call `pruneOldSessions(50, tmpDir)`, assert exactly 50 files remain — `packages/shared/src/sessionLog.test.ts` update
 
