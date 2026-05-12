@@ -3,6 +3,7 @@ import type { GameState } from '@overlay/shared';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyBuffs } from './reducer/buffs';
+import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
@@ -142,6 +143,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'WINDFURY') {
         return applyWindfury(state, event);
+      }
+      if (event.tag === 'CLEAVE') {
+        return applyCleave(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);

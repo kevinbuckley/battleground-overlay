@@ -10,6 +10,7 @@ export interface Minion {
   frozen: boolean;
   golden: boolean;
   windfury: boolean;
+  cleave: boolean;
   tribes: string[];
 }
 

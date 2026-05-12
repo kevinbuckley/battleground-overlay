@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { TagChange } from '@overlay/log-parser';
 import { initialState } from '../initialState';
-import { applyWindfury } from './windfury';
+import { applyCleave } from './cleave';
 
 function makeTagChange(entity: string, tag: string, value: string): TagChange {
   return { kind: 'TAG_CHANGE', entity, tag, value };
@@ -12,7 +12,7 @@ function makePlayerMinion(
   cardId: string,
   attack: number,
   health: number,
-  windfury = false,
+  cleave = false,
 ) {
   return {
     entityId,
@@ -25,8 +25,8 @@ function makePlayerMinion(
     reborn: false,
     frozen: false,
     golden: false,
-    windfury,
-    cleave: false,
+    windfury: false,
+    cleave,
     tribes: [],
   };
 }
@@ -35,7 +35,7 @@ function makeStateWithPlayerMinion(
   entityId: number,
   attack: number,
   health: number,
-  windfury = false,
+  cleave = false,
 ) {
   const base = initialState();
   return {
@@ -44,7 +44,7 @@ function makeStateWithPlayerMinion(
       ...base.player,
       board: {
         ...base.player.board,
-        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, windfury)],
+        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, cleave)],
       },
     },
   };
@@ -55,14 +55,14 @@ function makeStateWithOpponentMinion(
   entityId: number,
   attack: number,
   health: number,
-  windfury = false,
+  cleave = false,
 ) {
   const base = initialState();
   const opp = {
     entityId: 100 + oppIndex,
     playerId: oppIndex + 1,
     hero: { entityId: 100 + oppIndex, cardId: 'TestHero', hp: 40, armor: 0 },
-    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, windfury)] },
+    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, cleave)] },
     tier: 3,
     eliminated: false,
   };
@@ -72,46 +72,32 @@ function makeStateWithOpponentMinion(
   };
 }
 
-describe('applyWindfury', () => {
-  it('sets windfury on player minion when value=1', () => {
+describe('applyCleave', () => {
+  it('sets cleave on player minion when value=1', () => {
     const state = makeStateWithPlayerMinion(1, 2, 3, false);
-    const event = makeTagChange('1', 'WINDFURY', '1');
-    const result = applyWindfury(state, event);
-    expect(result.player.board.minions[0].windfury).toBe(true);
-  });
-
-  it('clears windfury on player minion when value=0', () => {
-    const state = makeStateWithPlayerMinion(1, 2, 3, true);
-    const event = makeTagChange('1', 'WINDFURY', '0');
-    const result = applyWindfury(state, event);
-    expect(result.player.board.minions[0].windfury).toBe(false);
+    const event = makeTagChange('1', 'CLEAVE', '1');
+    const result = applyCleave(state, event);
+    expect(result.player.board.minions[0].cleave).toBe(true);
   });
 
   it('no-op on hero (entity not on any board)', () => {
     const state = initialState();
-    const event = makeTagChange(String(state.player.hero.entityId), 'WINDFURY', '1');
-    const result = applyWindfury(state, event);
+    const event = makeTagChange(String(state.player.hero.entityId), 'CLEAVE', '1');
+    const result = applyCleave(state, event);
     expect(result).toBe(state);
   });
 
   it('no-op on non-play entity (entity not found on any board)', () => {
     const state = initialState();
-    const event = makeTagChange('999', 'WINDFURY', '1');
-    const result = applyWindfury(state, event);
+    const event = makeTagChange('999', 'CLEAVE', '1');
+    const result = applyCleave(state, event);
     expect(result).toBe(state);
   });
 
-  it('sets windfury on opponent minion when value=1', () => {
+  it('sets cleave on opponent minion when value=1', () => {
     const state = makeStateWithOpponentMinion(0, 10, 2, 3, false);
-    const event = makeTagChange('10', 'WINDFURY', '1');
-    const result = applyWindfury(state, event);
-    expect(result.opponents[0].board.minions[0].windfury).toBe(true);
-  });
-
-  it('clears windfury on opponent minion when value=0', () => {
-    const state = makeStateWithOpponentMinion(0, 10, 2, 3, true);
-    const event = makeTagChange('10', 'WINDFURY', '0');
-    const result = applyWindfury(state, event);
-    expect(result.opponents[0].board.minions[0].windfury).toBe(false);
+    const event = makeTagChange('10', 'CLEAVE', '1');
+    const result = applyCleave(state, event);
+    expect(result.opponents[0].board.minions[0].cleave).toBe(true);
   });
 });
