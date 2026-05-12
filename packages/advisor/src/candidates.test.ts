@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import type { GameState } from '@overlay/shared';
-import { enumerateBuyCandidates } from './candidates';
+import { enumerateBuyCandidates, enumerateSellCandidates } from './candidates';
 
 function makeState(
   shopMinions: GameState['player']['shop']['minions'],
@@ -143,6 +143,137 @@ describe('enumerateBuyCandidates', () => {
   it('returns empty array when shop is empty', () => {
     const state = makeState([], []);
     const candidates = enumerateBuyCandidates(state);
+    expect(candidates).toHaveLength(0);
+  });
+
+  it('returns one candidate per board minion', () => {
+    const boardMinions: GameState['player']['board']['minions'] = [
+      {
+        entityId: 100,
+        cardId: 'Minion_1',
+        attack: 1,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+      {
+        entityId: 101,
+        cardId: 'Minion_2',
+        attack: 3,
+        health: 3,
+        taunt: true,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Murloc'],
+      },
+    ];
+    const state = makeState([], boardMinions);
+    const candidates = enumerateSellCandidates(state);
+    expect(candidates).toHaveLength(2);
+  });
+
+  it('each candidate has correct action with boardIndex', () => {
+    const boardMinions: GameState['player']['board']['minions'] = [
+      {
+        entityId: 200,
+        cardId: 'Minion_A',
+        attack: 1,
+        health: 1,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: [],
+      },
+      {
+        entityId: 201,
+        cardId: 'Minion_B',
+        attack: 2,
+        health: 3,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: [],
+      },
+    ];
+    const state = makeState([], boardMinions);
+    const candidates = enumerateSellCandidates(state);
+    expect((candidates[0].action as { type: string; boardIndex: number }).type).toBe('Sell');
+    expect((candidates[0].action as { boardIndex: number }).boardIndex).toBe(0);
+    expect((candidates[1].action as { boardIndex: number }).boardIndex).toBe(1);
+  });
+
+  it('projectedBoard contains all minions except the one being sold', () => {
+    const boardMinions: GameState['player']['board']['minions'] = [
+      {
+        entityId: 50,
+        cardId: 'Minion_A',
+        attack: 2,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+      {
+        entityId: 51,
+        cardId: 'Minion_B',
+        attack: 3,
+        health: 3,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Murloc'],
+      },
+      {
+        entityId: 52,
+        cardId: 'Minion_C',
+        attack: 4,
+        health: 4,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Dragon'],
+      },
+    ];
+    const state = makeState([], boardMinions);
+    const candidates = enumerateSellCandidates(state);
+    expect(candidates).toHaveLength(3);
+    // Selling index 0: projected should have entities 51, 52
+    const proj0 = candidates[0].projectedBoard.minions;
+    expect(proj0).toHaveLength(2);
+    expect(proj0[0].entityId).toBe(51);
+    expect(proj0[1].entityId).toBe(52);
+    // Selling index 1: projected should have entities 50, 52
+    const proj1 = candidates[1].projectedBoard.minions;
+    expect(proj1).toHaveLength(2);
+    expect(proj1[0].entityId).toBe(50);
+    expect(proj1[1].entityId).toBe(52);
+    // Selling index 2: projected should have entities 50, 51
+    const proj2 = candidates[2].projectedBoard.minions;
+    expect(proj2).toHaveLength(2);
+    expect(proj2[0].entityId).toBe(50);
+    expect(proj2[1].entityId).toBe(51);
+  });
+
+  it('returns empty array when board is empty', () => {
+    const state = makeState([], []);
+    const candidates = enumerateSellCandidates(state);
     expect(candidates).toHaveLength(0);
   });
 });
