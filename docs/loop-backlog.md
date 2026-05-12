@@ -340,7 +340,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Board panel IPC push: in `apps/overlay/src/ipcBridge.ts`, after pushing `overlay:state-update`, call `win.webContents.send('overlay:board-update', { minions: state.player.board.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health, taunt: m.taunt, divineShield: m.divineShield })) })`; add 1 test to `ipcBridge.test.ts` asserting `overlay:board-update` is sent with the board minions shape — `apps/overlay/src/ipcBridge.ts` update + test (commit aa4be38)
 
-- [ ] [S] Opponent panel IPC push: in `apps/overlay/src/ipcBridge.ts`, push `overlay:opponents-update` with `state.opponents.map(o => ({ entityId: o.entityId, hp: o.hero.hp, tier: o.tier, eliminated: o.eliminated }))`; add 1 test asserting the channel is sent with that shape — `apps/overlay/src/ipcBridge.ts` update + test
+- [x] [S] Opponent panel IPC push: in `apps/overlay/src/ipcBridge.ts`, push `overlay:opponents-update` with `state.opponents.map(o => ({ entityId: o.entityId, hp: o.hero.hp, tier: o.tier, eliminated: o.eliminated }))`; add 1 test asserting the channel is sent with that shape — `apps/overlay/src/ipcBridge.ts` update + test (commit 0889157)
 
 - [ ] [S] Damage forecast IPC push: in `apps/overlay/src/ipcBridge.ts`, compute `computeForecast(scoreResult)` from `apps/overlay/src/damageWidget.ts` using the top sim result and push `overlay:damage-update` with the forecast; for the test, mock `computeForecast` and assert `overlay:damage-update` is sent — `apps/overlay/src/ipcBridge.ts` update + test
 

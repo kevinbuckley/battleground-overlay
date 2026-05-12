@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:30  [DONE]  M29: Opponent panel IPC push — `overlay:opponents-update` sent with opponent shape (entityId, hp, tier, eliminated), 1 test (commit 0889157)
+
 2026-05-12 22:30  [DONE]  M29: Board panel IPC push — `overlay:board-update` sent with minion shape (cardId, attack, health, taunt, divineShield), 1 test (commit aa4be38)
 
 2026-05-12 22:00  [DONE]  M28: Session log round-trip test — 55 files → prune(50) → 50 remain (commit ab7409d)
