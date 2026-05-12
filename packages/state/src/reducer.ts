@@ -14,7 +14,7 @@ import { applyPlayerLost } from './reducer/playerLost';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopSell } from './reducer/shopSell';
-import { applyTier } from './reducer/tier';
+import { applyTierUp } from './reducer/tierUp';
 import { applyTurnPhase } from './reducer/turnPhase';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -39,7 +39,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyGold(state, event);
       }
       if (event.tag === 'PLAYER_TECH_LEVEL') {
-        return applyTier(state, event);
+        return applyTierUp(state, event);
       }
       // Check if this is an opponent health change
       {
