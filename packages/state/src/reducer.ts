@@ -1,5 +1,6 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { applyCombatDamage } from './reducer/combatDamage';
 import { applyGold } from './reducer/gold';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
@@ -86,6 +87,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'STEP') {
         return applyTurnPhase(state, event);
+      }
+      if (event.tag === 'DAMAGE') {
+        return applyCombatDamage(state, event);
       }
       return applyMinionPlaced(state, event);
 
