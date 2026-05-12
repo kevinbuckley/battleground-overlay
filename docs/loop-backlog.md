@@ -282,11 +282,34 @@ to `loop-ledger.md`.
   hero, no-op on non-play entity) —
   `packages/state/src/reducer/silence.ts` + test, wired into reducer
 - [ ] [S] Hand size tracker: `packages/state/src/reducer/handSize.ts` —
-  `applyHandSize(state, event)` handles `TAG_CHANGE tag=HANDBY_CARDS` on
+  `applyHandSize(state, event)` handles `TAG_CHANGE tag=NUM_CARDS_IN_HAND` on
   player controller → updates `state.player.handSize: number` (add field
-  to PlayerState); 4 tests (initial=0, increments on card drawn,
-  decrements on card played, reflected in state) —
+  to PlayerState); 4 tests (initial=0, increments to 3, decrements to 2, no-op on wrong entity) —
   `packages/state/src/reducer/handSize.ts` + test, wired into reducer
+
+## M24 — Minion keyword handlers
+
+- [ ] [S] Taunt tag handler: `packages/state/src/reducer/taunt.ts` — `applyTaunt(state, event)` handles `TAG_CHANGE tag=TAUNT value=1` and `value=0` on entities in PLAY zone → sets `minion.taunt = true/false` (`taunt` already on Minion type); wire into reducer; 4 tests (set taunt, clear taunt, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/taunt.ts` + test
+
+- [ ] [S] Poisonous tag handler: `packages/state/src/reducer/poisonous.ts` — `applyPoisonous(state, event)` handles `TAG_CHANGE tag=POISONOUS value=1` and `value=0` on entities in PLAY zone → sets `minion.poisonous = true/false` (`poisonous` already on Minion type); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/poisonous.ts` + test
+
+- [ ] [S] Windfury tag handler: `packages/state/src/reducer/windfury.ts` — `applyWindfury(state, event)` handles `TAG_CHANGE tag=WINDFURY value=1` and `value=0`; add `windfury: boolean` to `Minion` interface in `packages/shared/src/state.ts`; wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/windfury.ts` + test
+
+- [ ] [S] Cleave tag handler: `packages/state/src/reducer/cleave.ts` — `applyCleave(state, event)` handles `TAG_CHANGE tag=CLEAVE value=1`; add `cleave: boolean` to `Minion` in `packages/shared/src/state.ts`; wire into reducer; 3 tests (cleave set on player minion, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/cleave.ts` + test
+
+## M25 — Overlay renderer
+
+- [ ] [S] Renderer HTML: `apps/overlay/src/renderer.html` — minimal HTML page with `<div id="advice-action">`, `<div id="advice-reason">`, `<div id="explanation">`, and a `<script src="./renderer-bundle.js"></script>` stub; test: `readFileSync('apps/overlay/src/renderer.html', 'utf8')` and assert it contains `id="advice-action"`, `id="advice-reason"`, `id="explanation"` — `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] Preload script: `apps/overlay/src/preload.ts` — exports `setupPreload(contextBridge, ipcRenderer)` that calls `contextBridge.exposeInMainWorld('overlayBridge', { onRecs(cb: (r: unknown[]) => void): void, onExplanation(cb: (t: string) => void): void })` wiring `ipcRenderer.on('overlay:recs-update', ...)` and `ipcRenderer.on('overlay:explanation-update', ...)`; test: mock both, call `setupPreload`, assert `exposeInMainWorld` called with `'overlayBridge'` and object containing `onRecs` and `onExplanation` — `apps/overlay/src/preload.ts` + test
+
+- [ ] [S] Wire renderer into main window: in `apps/overlay/src/main.ts`, replace `win.loadURL('about:blank')` with `win.loadFile(new URL('./renderer.html', import.meta.url).pathname)`; update the existing `main.test.ts` spy to assert `loadFile` is called instead of `loadURL` — `apps/overlay/src/main.ts` update
+
+## M26 — LLM + session integration
+
+- [ ] [S] LLM explain in coordinator: in `apps/overlay/src/coordinator.ts`, after `setAdvice(top)`, if `top.needsExplanation === true`, call `explain(top, state)` from `@overlay/llm` (fire-and-forget, `.then(text => setExplanation(text)).catch(() => {})`) ; update `coordinator.test.ts` to mock `explain` and assert it is called when `needsExplanation=true` and NOT called when false — `apps/overlay/src/coordinator.ts` update + test
+
+- [ ] [S] Session log calls in coordinator: in `apps/overlay/src/coordinator.ts` inside the `pipeline.onEvent` wrapper, after computing `recs`, call `appendSessionEvent('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })` from `@overlay/shared`; update `coordinator.test.ts` to mock `appendSessionEvent` and assert it is called once per event fed — `apps/overlay/src/coordinator.ts` update + test
 
 ## Quarantined
 
