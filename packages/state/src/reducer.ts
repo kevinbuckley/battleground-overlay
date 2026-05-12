@@ -30,6 +30,7 @@ import { applyTaunt } from './reducer/taunt';
 import { applyTierUp } from './reducer/tierUp';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
+import { applyWindfury } from './reducer/windfury';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
   switch (event.kind) {
@@ -138,6 +139,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'POISONOUS') {
         return applyPoisonous(state, event);
+      }
+      if (event.tag === 'WINDFURY') {
+        return applyWindfury(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
