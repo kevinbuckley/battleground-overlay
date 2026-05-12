@@ -23,6 +23,7 @@ import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
+import { applySilence } from './reducer/silence';
 import { applyTierUp } from './reducer/tierUp';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
@@ -125,6 +126,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'ATK' || event.tag === 'DIVINE_SHIELD') {
         return applyBuffs(state, event);
+      }
+      if (event.tag === 'SILENCED') {
+        return applySilence(state, event);
       }
       return applyTripleBonus(state, event);
 
