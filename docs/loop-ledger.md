@@ -91,3 +91,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 09:15  [DONE]  M8: Report exporter — `exportReport` generates Markdown with `## Turn N` headings, player stats, board, opponents, top 3 recs, 7 tests (commit ff42219)
 
 2026-05-12 10:00  [DONE]  M2: Opponent health tracker — `applyOpponentHealth` finds opponent by entity ID, updates hero HP from TAG_CHANGE, 4 tests (commit d765f21)
+
+2026-05-12 10:30  [DONE]  M2: Opponent tier tracker — `applyOpponentTier` finds opponent by entity ID, updates tier from TAG_CHANGE, 5 tests, wired into reducer (commit a81c4bb)
