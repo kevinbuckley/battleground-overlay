@@ -126,4 +126,6 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 17:30  [DONE]  M18: Freeze handler — `applyShopFreeze` handles `TAG_CHANGE tag=FROZEN` value 1/0 on player controller, sets `state.player.shop.frozen`, 3 tests, wired into reducer (commit a625a16)
 
+2026-05-12 18:30  [DONE]  M18: Triple bonus handler — `applyTripleBonus` detects 3+ identical cardIds across board+hand+shop, sets `pendingTriple`, 8 tests (commit cb5a284)
+
 2026-05-12 18:00  [DONE]  M18: Reroll handler — `applyShopReroll` handles `TAG_CHANGE tag=RESOURCES_USED`, decrements gold, clears shop.frozen, 3 tests, wired into reducer (commit ccd431e)
