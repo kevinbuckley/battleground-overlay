@@ -300,7 +300,7 @@ to `loop-ledger.md`.
 
 ## M25 — Overlay renderer
 
-- [ ] [S] Renderer HTML: `apps/overlay/src/renderer.html` — minimal HTML page with `<div id="advice-action">`, `<div id="advice-reason">`, `<div id="explanation">`, and a `<script src="./renderer-bundle.js"></script>` stub; test: `readFileSync('apps/overlay/src/renderer.html', 'utf8')` and assert it contains `id="advice-action"`, `id="advice-reason"`, `id="explanation"` — `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+- [x] [S] Renderer HTML: `apps/overlay/src/renderer.html` — minimal HTML page with `<div id="advice-action">`, `<div id="advice-reason">`, `<div id="explanation">`, and a `<script src="./renderer-bundle.js"></script>` stub; test: `readFileSync('apps/overlay/src/renderer.html', 'utf8')` and assert it contains `id="advice-action"`, `id="advice-reason"`, `id="explanation"` — `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts` (commit c288179)
 
 - [ ] [S] Preload script: `apps/overlay/src/preload.ts` — exports `setupPreload(contextBridge, ipcRenderer)` that calls `contextBridge.exposeInMainWorld('overlayBridge', { onRecs(cb: (r: unknown[]) => void): void, onExplanation(cb: (t: string) => void): void })` wiring `ipcRenderer.on('overlay:recs-update', ...)` and `ipcRenderer.on('overlay:explanation-update', ...)`; test: mock both, call `setupPreload`, assert `exposeInMainWorld` called with `'overlayBridge'` and object containing `onRecs` and `onExplanation` — `apps/overlay/src/preload.ts` + test
 
