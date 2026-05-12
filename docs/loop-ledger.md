@@ -39,3 +39,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-11 06:00  [DONE]  M9: freeze execution — freezeMinion selects best shop minion to freeze based on triple+synergy scoring, wired into recommend(), 6 tests (commit 6850627)
 
 2026-05-11 03:30  [DONE]  Freeze heuristic — freezeScore(state) returns [0,1] based on triple/synergy/hp safety, 6 tests (commit 8b84ec3)
+
+2026-05-11 06:15  [DONE]  M9: rerollScore heuristic — returns [0,1] based on triple/synergy/hp/gold checks, 6 tests (commit 0942e5c)
