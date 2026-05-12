@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'bun:test';
+import type { GameState } from '@overlay/shared';
 import { initialState } from '../initialState';
 import { applyTurnPhase } from './turnPhase';
 
@@ -43,5 +44,28 @@ describe('applyTurnPhase', () => {
     const event = tagChange('HEALTH', '30');
     const result = applyTurnPhase(state, event);
     expect(result.phase).toBe('lobby');
+  });
+
+  it('increments turn on MAIN_READY', () => {
+    const state = { ...initialState(), turn: 1 };
+    const event = tagChange('STEP', 'MAIN_READY');
+    const result = applyTurnPhase(state, event);
+    expect(result.turn).toBe(2);
+  });
+
+  it('turn starts at 1 after StartGame (set by reducer, not this function)', () => {
+    const state = { ...initialState(), turn: 1, phase: 'shopping' as GameState['phase'] };
+    const event = tagChange('STEP', 'MAIN_READY');
+    const result = applyTurnPhase(state, event);
+    expect(result.turn).toBe(2);
+    expect(result.phase).toBe('shopping');
+  });
+
+  it('does not increment turn on non-MAIN_READY phases', () => {
+    const state = { ...initialState(), turn: 3, phase: 'combat' as GameState['phase'] };
+    const event = tagChange('STEP', 'BEGIN_SHOOTING_ATTACK');
+    const result = applyTurnPhase(state, event);
+    expect(result.turn).toBe(3);
+    expect(result.phase).toBe('combat');
   });
 });

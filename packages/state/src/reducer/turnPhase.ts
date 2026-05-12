@@ -13,5 +13,7 @@ export function applyTurnPhase(state: GameState, event: TagChange): GameState {
   const newPhase = phaseMap[event.value];
   if (!newPhase) return state;
 
-  return { ...state, phase: newPhase };
+  const newTurn = event.value === 'MAIN_READY' ? state.turn + 1 : state.turn;
+
+  return { ...state, phase: newPhase, turn: newTurn };
 }
