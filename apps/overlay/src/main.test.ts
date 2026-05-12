@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import { pruneOldSessions } from '@overlay/shared';
-import { getRendererPath, getWindowOptions } from './createOverlayWindow';
+import { createOverlayWindow, getRendererPath, getWindowOptions } from './createOverlayWindow';
 
 describe('getWindowOptions', () => {
   it('returns correct window options', () => {
@@ -59,5 +59,20 @@ describe('pruneOldSessions on startup', () => {
     // Verify it accepts the expected parameters by calling with a non-existent dir
     pruneOldSessions(50, '/tmp/non-existent-dir-for-testing');
     // If we got here without throwing, the function signature is correct
+  });
+});
+
+describe('settings apply on load', () => {
+  it('default settings have opacity 0.85', () => {
+    const { defaultSettings } = require('./settings') as typeof import('./settings');
+    const s = defaultSettings();
+    expect(s.opacity).toBe(0.85);
+  });
+
+  it('loadSettings returns default x/y 0/0 when no settings file exists', () => {
+    const { loadSettings } = require('./settings') as typeof import('./settings');
+    const s = loadSettings('/tmp/nonexistent-settings-dir-zzz');
+    expect(s.x).toBe(0);
+    expect(s.y).toBe(0);
   });
 });
