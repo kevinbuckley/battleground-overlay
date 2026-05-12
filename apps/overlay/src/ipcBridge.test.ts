@@ -18,6 +18,8 @@ function makeMockState(): GameState {
   return {
     turn: 3,
     phase: 'shopping',
+    lobbySize: 8,
+    anomaly: null,
     player: {
       entityId: 1,
       playerId: 1,
@@ -29,6 +31,9 @@ function makeMockState(): GameState {
       tier: 3,
       tierUpCost: 4,
       eliminated: false,
+      pendingTriple: null,
+      heroPowerUsedThisTurn: false,
+      handSize: 0,
       entityRegistry: new Map(),
     },
     opponents: [],
@@ -165,6 +170,56 @@ describe('ipcBridge', () => {
     expect(boardPayload.minions[0].divineShield).toBe(false);
     expect(boardPayload.minions[1].cardId).toBe('NEW1_030');
     expect(boardPayload.minions[1].divineShield).toBe(true);
+  });
+
+  it('startBridge pushes overlay:opponents-update with opponent shape', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    state.opponents = [
+      {
+        entityId: 2,
+        playerId: 2,
+        hero: { entityId: 2, cardId: 'HERO_2', hp: 30, armor: 0 },
+        board: { minions: [] },
+        tier: 3,
+        eliminated: false,
+      },
+      {
+        entityId: 3,
+        playerId: 3,
+        hero: { entityId: 3, cardId: 'HERO_3', hp: 15, armor: 5 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: true,
+      },
+    ];
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const oppChannels = sends.filter((s) => s.channel === 'overlay:opponents-update');
+    expect(oppChannels.length).toBeGreaterThanOrEqual(1);
+    const oppPayload = oppChannels[0].args[0] as {
+      entityId: number;
+      hp: number;
+      tier: number;
+      eliminated: boolean;
+    }[];
+    expect(oppPayload).toHaveLength(2);
+    expect(oppPayload[0].entityId).toBe(2);
+    expect(oppPayload[0].hp).toBe(30);
+    expect(oppPayload[0].tier).toBe(3);
+    expect(oppPayload[0].eliminated).toBe(false);
+    expect(oppPayload[1].entityId).toBe(3);
+    expect(oppPayload[1].hp).toBe(15);
+    expect(oppPayload[1].tier).toBe(5);
+    expect(oppPayload[1].eliminated).toBe(true);
   });
 
   it('stopBridge clears the interval', async () => {

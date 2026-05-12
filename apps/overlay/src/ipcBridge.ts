@@ -25,6 +25,19 @@ export function startBridge(
       } catch {
         // swallow
       }
+      try {
+        win.webContents.send(
+          'overlay:opponents-update',
+          state.opponents.map((o) => ({
+            entityId: o.entityId,
+            hp: o.hero.hp,
+            tier: o.tier,
+            eliminated: o.eliminated,
+          })),
+        );
+      } catch {
+        // swallow
+      }
     } catch {
       // swallow — renderer may not be ready yet
     }
