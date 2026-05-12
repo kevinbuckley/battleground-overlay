@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M23: Silence handler — `applySilence` handles `TAG_CHANGE tag=SILENCED value=1` on entities in PLAY zone, resets taunt/divineShield/poisonous/reborn to false, 4 tests, wired into reducer (commit 9400df9)
+
 2026-05-12 21:30  [DONE]  M23: Reborn handler — `applyReborn` handles BLOCK_START with "Reborn" keyword, sets reborn=true on board minion; 4 tests, wired into reducer (commit 020dafb)
 
 2026-05-12 00:00  [DONE]  M23: Buff tracker — `applyBuffs` handles `TAG_CHANGE tag=ATK` and `DIVINE_SHIELD` on entities in PLAY zone, updates minion attack/divineShield, 7 tests, wired into reducer (commit 12ce530)

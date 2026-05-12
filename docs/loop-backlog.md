@@ -274,13 +274,14 @@ to `loop-ledger.md`.
   update on opponent minion, divine shield on/off, no-op on non-play
   entity, no-op on hero, no-op on unknown tag) —
   `packages/state/src/reducer/buffs.ts` + test, wired into reducer
-- [ ] [S] Silence handler: `packages/state/src/reducer/silence.ts` —
+- [x] [S] Silence handler: `packages/state/src/reducer/silence.ts` —
   `applySilence(state, event)` handles `TAG_CHANGE tag=SILENCED value=1`
   on an entity in PLAY zone → resets that minion's `taunt`,
   `divineShield`, `poisonous`, `reborn` to false (clears all mechanics);
   4 tests (silence clears all mechanics, no-op on non-silenced, no-op on
   hero, no-op on non-play entity) —
   `packages/state/src/reducer/silence.ts` + test, wired into reducer
+  (commit 9400df9)
 - [ ] [S] Hand size tracker: `packages/state/src/reducer/handSize.ts` —
   `applyHandSize(state, event)` handles `TAG_CHANGE tag=NUM_CARDS_IN_HAND` on
   player controller → updates `state.player.handSize: number` (add field
