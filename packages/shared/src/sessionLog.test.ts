@@ -119,4 +119,25 @@ describe('pruneOldSessions', () => {
   it('returns early when directory does not exist', () => {
     pruneOldSessions(5, '/nonexistent/path/that/does/not/exist');
   });
+
+  it('round-trip: 55 files → prune(50) → exactly 50 remain', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__roundtrip__');
+    if (existsSync(tmpDir)) {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+    mkdirSync(tmpDir, { recursive: true });
+    for (let i = 0; i < 55; i++) {
+      writeFileSync(
+        join(tmpDir, `session-2026-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z-${i}.jsonl`),
+        '',
+      );
+    }
+
+    pruneOldSessions(50, tmpDir);
+
+    const remaining = readdirSync(tmpDir).filter((n: string) => n.startsWith('session-'));
+    expect(remaining).toHaveLength(50);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+  });
 });
