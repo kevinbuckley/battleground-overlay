@@ -1,8 +1,9 @@
 import { setBoardPanel, setOpponentPanel } from '@overlay/shared';
-import { BrowserWindow, app, ipcMain } from 'electron';
+import { BrowserWindow, app } from 'electron';
 import { setAdvice } from './advicePanel';
 import { anchorToHearthstone } from './anchor';
 import { setExplanation } from './explanationPanel';
+import { defaultHotkeyConfig, registerHotkeys } from './hotkeys';
 import { setInteractive, setOverlayWin } from './overlayState';
 
 function createWindow(): void {
@@ -22,6 +23,8 @@ function createWindow(): void {
   setOverlayWin(win);
   win.setIgnoreMouseEvents(true);
   anchorToHearthstone(win, { x: 10, y: 10 });
+  const cfg = defaultHotkeyConfig();
+  registerHotkeys(win, cfg, app);
   win.loadURL('about:blank');
 }
 
