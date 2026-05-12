@@ -125,3 +125,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 17:00  [DONE]  M14: Tier-up handler — `applyTierUp` handles PLAYER_TECH_LEVEL increment, updates tier + tierUpCost (1→6, 2→5, 3→4, 4→5, 5-7→6), 8 tests, wired into reducer (commit 225fc9c)
 
 2026-05-12 17:30  [DONE]  M18: Freeze handler — `applyShopFreeze` handles `TAG_CHANGE tag=FROZEN` value 1/0 on player controller, sets `state.player.shop.frozen`, 3 tests, wired into reducer (commit a625a16)
+
+2026-05-12 18:00  [DONE]  M18: Reroll handler — `applyShopReroll` handles `TAG_CHANGE tag=RESOURCES_USED`, decrements gold, clears shop.frozen, 3 tests, wired into reducer (commit ccd431e)
