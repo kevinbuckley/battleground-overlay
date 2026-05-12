@@ -95,6 +95,7 @@ to `loop-ledger.md`.
 - [x] [M] Simulation scorer: `packages/advisor/src/simScorer.ts` — `scoreCandidate(playerBoard, playerState, opponents, n)` calls `simulateBatch` for each opponent board and returns `{winPct, avgHpDelta}` — packages/advisor/src/simScorer.ts + test (commit 3673a6f)
 - [x] [S] Position hill-climber stub: `packages/advisor/src/positionHillClimb.ts` — `hillClimbPosition(board, scorer, maxSwaps)` returns best permutation found in ≤20 swaps; with n=0 sims it's a no-op — packages/advisor/src/positionHillClimb.ts + test (commit add7043)
 - [x] [S] Time-budget guard: `packages/advisor/src/withBudget.ts` — `withBudget<T>(fn: () => T, ms: number, fallback: T): T` runs fn and returns fallback if wall-clock exceeds ms — packages/advisor/src/withBudget.ts + test (commit b50b73b)
+- [x] [S] Position scorer: `packages/advisor/src/positionHillClimb.ts` — full hill-climb with real simulation (scoreCandidate per swap, skip eliminated opponents, multi-opponent support), 9 tests — packages/advisor/src/positionHillClimb.ts + test (commit 2851bef)
 
 ## M8 — LLM layer
 

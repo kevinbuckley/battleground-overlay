@@ -61,3 +61,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M13: Session replay — parseSession reads session JSONL, replays events through state reducer, returns GameState[] snapshots, 4 tests (commit 164f934)
 
 2026-05-12 00:00  [DONE]  M7: Click-through toggle — overlayState module with setInteractive(bool) + IPC handler, headless test (commit d08ded7)
+
+2026-05-12 00:00  [DONE]  M7: Position scorer — hillClimbPosition with full simulation (scoreCandidate per swap, skip eliminated opponents, multi-opponent support), 9 tests (commit 2851bef)
