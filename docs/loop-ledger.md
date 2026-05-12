@@ -150,6 +150,8 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 14:30  [DONE]  M16: Session pretty-printer — `formatEntry` parses JSONL entries, formats as `[kind] summary` with truncation/error handling, `reviewSession` CLI; 7 tests (commit 7c80ede)
 
+2026-05-12 21:30  [DONE]  M25: Preload script — `setupPreload` exposes `overlayBridge` with `onRecs`/`onExplanation` wiring IPC channels, 3 tests (commit 26a857d)
+
 2026-05-12 15:00  [DONE]  M16: IPC bridge — `startBridge(win, getState, getRecs)` polls every 500ms, pushes `overlay:state-update` and `overlay:recs-update` to renderer, 4 tests (commit e04b402)
 
 2026-05-12 15:30  [DONE]  M17: Combat damage tracker — `applyCombatDamage` handles `TAG_CHANGE tag=DAMAGE`, updates minion/hero HP, removes dead entities, wired into reducer, 13 tests (commit dd39ed9)
