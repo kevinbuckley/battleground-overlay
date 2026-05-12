@@ -8,6 +8,7 @@
     "dev": "bun run src/main.ts"
   },
   "dependencies": {
+    "@overlay/log-parser": "workspace:*",
     "@overlay/shared": "workspace:*"
   }
 }
