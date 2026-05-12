@@ -1,4 +1,5 @@
 import { BrowserWindow, app, ipcMain } from 'electron';
+import { setAdvice } from './advicePanel';
 import { anchorToHearthstone } from './anchor';
 import { setInteractive, setOverlayWin } from './overlayState';
 
@@ -24,6 +25,11 @@ function createWindow(): void {
 
 ipcMain.handle('set-interactive', (_event, interactive: boolean) => {
   setInteractive(interactive);
+  return true;
+});
+
+ipcMain.handle('set-advice', (_event, advice) => {
+  setAdvice(advice);
   return true;
 });
 
