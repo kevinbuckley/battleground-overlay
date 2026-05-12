@@ -120,7 +120,7 @@ to `loop-ledger.md`.
 - [x] [S] HP delta in simScorer: update `scoreCandidate` in `packages/advisor/src/simScorer.ts` to compute `avgHpDelta` as weighted sum (win→+opponentTier, loss→-playerTier, tie→0) averaged across all opponents; update existing test to assert `avgHpDelta !== 0` for a non-trivial matchup — `packages/advisor/src/simScorer.ts` update + test (commit d97a287)
 - [x] [S] Lobby weight helper: `packages/advisor/src/lobbyWeight.ts` — done (commit 9fb819b) ✓
 - [x] [S] Sell candidate enumerator: add `enumerateSellCandidates(state: GameState): {action: SellAction, projectedBoard: Board}[]` to `packages/advisor/src/candidates.ts` — one entry per board minion, projectedBoard is board minus that minion; test with 2-minion board returns 2 candidates — `packages/advisor/src/candidates.ts` update + test (commit 77bdc40)
-- [ ] [S] Sim benchmark: `packages/sim/src/bench.test.ts` — run `simulateBatch` 5 times with n=20 and assert total wall-clock < 3000ms; use `performance.now()`; fails fast if sim regresses — `packages/sim/src/bench.test.ts`
+- [x] [S] Sim benchmark: `packages/sim/src/bench.test.ts` — run `simulateBatch` 5 times with n=20 and assert total wall-clock < 3000ms; use `performance.now()`; fails fast if sim regresses — `packages/sim/src/bench.test.ts` (commit 3e36ac7)
 
 ## M11 — Card data indexes
 
