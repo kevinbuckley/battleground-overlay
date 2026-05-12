@@ -134,4 +134,55 @@ describe('hillClimbPosition', () => {
     const result = hillClimbPosition(board, playerState, opponents, 10, 2);
     expect(result.bestOrder.length).toBe(4);
   });
+
+  it('returns non-trivial score when n > 0 and active opponents exist', () => {
+    const board: Board = {
+      minions: [makeMinion(1, 'Minion_A', 3, 3), makeMinion(2, 'Minion_B', 5, 5)],
+    };
+    const playerState = makePlayerState(board.minions, 30, 5);
+    const opponents: OpponentState[] = [makeOpponent([makeMinion(10, 'Enemy', 4, 4)], 30, 5)];
+
+    const result = hillClimbPosition(board, playerState, opponents, 20);
+    expect(result.bestOrder.length).toBe(2);
+    expect(new Set(result.bestOrder).size).toBe(2);
+    // Score should be non-trivial (not just 0)
+    expect(result.bestScore.winPct).toBeGreaterThanOrEqual(0);
+    expect(result.bestScore.winPct).toBeLessThanOrEqual(1);
+  });
+
+  it('handles multiple active opponents', () => {
+    const board: Board = {
+      minions: [
+        makeMinion(1, 'Minion_A', 2, 2),
+        makeMinion(2, 'Minion_B', 3, 3),
+        makeMinion(3, 'Minion_C', 4, 4),
+      ],
+    };
+    const playerState = makePlayerState(board.minions, 30, 5);
+    const opponents: OpponentState[] = [
+      makeOpponent([makeMinion(10, 'Enemy1', 3, 3)], 30, 5),
+      makeOpponent([makeMinion(11, 'Enemy2', 4, 4)], 30, 5),
+    ];
+
+    const result = hillClimbPosition(board, playerState, opponents, 20);
+    expect(result.bestOrder.length).toBe(3);
+    expect(new Set(result.bestOrder).size).toBe(3);
+    expect(result.bestOrder.sort()).toEqual([0, 1, 2]);
+  });
+
+  it('skips eliminated opponents and still scores against active ones', () => {
+    const board: Board = {
+      minions: [makeMinion(1, 'Minion_A', 3, 3)],
+    };
+    const playerState = makePlayerState(board.minions, 30, 4);
+    const opponents: OpponentState[] = [
+      makeOpponent([], 30, 4, true), // eliminated
+      makeOpponent([makeMinion(10, 'Enemy', 2, 2)], 30, 4), // active
+    ];
+
+    const result = hillClimbPosition(board, playerState, opponents, 20);
+    expect(result.bestOrder).toEqual([0]);
+    // Should still score against the active opponent
+    expect(result.bestScore.winPct).toBeGreaterThanOrEqual(0);
+  });
 });

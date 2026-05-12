@@ -11,11 +11,12 @@ export interface PositionResult {
  * Hill-climb the best minion ordering on the board.
  *
  * Starts with the current ordering, then tries all single swaps.
- * If a swap improves the score, it's accepted. Repeats until no
- * single swap improves the score or `maxSwaps` iterations are done.
+ * If a swap improves the score (winPct), it's accepted. Repeats
+ * until no single swap improves the score or `maxSwaps` iterations
+ * are done.
  *
- * With `n=0` in the scorer (no opponents to simulate against), this
- * is a no-op that returns the current ordering.
+ * Uses `scoreCandidate` with real simulation when `n > 0`.
+ * With `n=0` or no active opponents, returns the current ordering.
  */
 export function hillClimbPosition(
   board: Board,
@@ -34,8 +35,9 @@ export function hillClimbPosition(
     };
   }
 
-  // With n=0, no simulations run — return current order as-is
-  if (n === 0) {
+  // No active opponents and no sims — return current order as-is
+  const activeOpponents = opponents.filter((o) => !o.eliminated);
+  if (n === 0 || activeOpponents.length === 0) {
     return {
       bestOrder: [...board.minions.map((_, i) => i)],
       bestScore: { winPct: 0, avgHpDelta: 0 },
@@ -57,7 +59,7 @@ export function hillClimbPosition(
   for (let i = 0; i < minionCount; i++) {
     bestOrder.push(i);
   }
-  let bestScore = scoreCandidate(reorderBoard(bestOrder), playerState, opponents, n);
+  let bestScore = scoreCandidate(reorderBoard(bestOrder), playerState, activeOpponents, n);
 
   let improved = true;
   let iterations = 0;
@@ -80,7 +82,7 @@ export function hillClimbPosition(
         const candidateScore = scoreCandidate(
           reorderBoard(candidateOrder),
           playerState,
-          opponents,
+          activeOpponents,
           n,
         );
 
