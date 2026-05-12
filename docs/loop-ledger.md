@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M27: Renderer script — `initRenderer` bridges recs/explanation to DOM elements, `getActionText` formats all action types, 10 tests (commit 027ac81)
+
 2026-05-12 22:00  [DONE]  M27: Reposition recommendation — `hillClimbPosition` called in `recommend()`, pushes `Reposition` action when `scoreDelta > 0.05`, 3 tests (commit b6aeab6)
 
 2026-05-12 22:00  [DONE]  M27: Triple discover advice in recommend — early-return with score 1.0 when `pendingTriple` is set, 3 tests (commit 87a6ba1)
