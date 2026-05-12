@@ -12,6 +12,19 @@ export function startBridge(
     try {
       const state = getState();
       win.webContents.send('overlay:state-update', state);
+      try {
+        win.webContents.send('overlay:board-update', {
+          minions: state.player.board.minions.map((m) => ({
+            cardId: m.cardId,
+            attack: m.attack,
+            health: m.health,
+            taunt: m.taunt,
+            divineShield: m.divineShield,
+          })),
+        });
+      } catch {
+        // swallow
+      }
     } catch {
       // swallow — renderer may not be ready yet
     }

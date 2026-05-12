@@ -101,6 +101,72 @@ describe('ipcBridge', () => {
     expect(recsChannels.length).toBe(0);
   });
 
+  it('startBridge pushes overlay:board-update with board minion shape', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    state.player.board.minions = [
+      {
+        entityId: 10,
+        cardId: 'CS1_129',
+        attack: 3,
+        health: 2,
+        taunt: true,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        tribes: ['Murloc'],
+      },
+      {
+        entityId: 11,
+        cardId: 'NEW1_030',
+        attack: 6,
+        health: 5,
+        taunt: false,
+        divineShield: true,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: true,
+        windfury: false,
+        cleave: false,
+        tribes: ['Dragon'],
+      },
+    ];
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const boardChannels = sends.filter((s) => s.channel === 'overlay:board-update');
+    expect(boardChannels.length).toBeGreaterThanOrEqual(1);
+    const boardPayload = boardChannels[0].args[0] as {
+      minions: {
+        cardId: string;
+        attack: number;
+        health: number;
+        taunt: boolean;
+        divineShield: boolean;
+      }[];
+    };
+    expect(boardPayload.minions).toHaveLength(2);
+    expect(boardPayload.minions[0].cardId).toBe('CS1_129');
+    expect(boardPayload.minions[0].attack).toBe(3);
+    expect(boardPayload.minions[0].health).toBe(2);
+    expect(boardPayload.minions[0].taunt).toBe(true);
+    expect(boardPayload.minions[0].divineShield).toBe(false);
+    expect(boardPayload.minions[1].cardId).toBe('NEW1_030');
+    expect(boardPayload.minions[1].divineShield).toBe(true);
+  });
+
   it('stopBridge clears the interval', async () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
