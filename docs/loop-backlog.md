@@ -133,22 +133,6 @@ to `loop-ledger.md`.
 - [ ] [S] Session list: add `listSessions(logsDir?: string): string[]` to `packages/shared/src/sessionLog.ts` — returns sorted paths of all `session-*.jsonl` files in `logsDir` (default `logs/`); test with temp dir containing 3 fixture filenames — `packages/shared/src/sessionLog.ts` update + test
 - [ ] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test
 
-- [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts
-
-- [ ] [S] RECOVERY: Add a one-line description to README explaining how to invoke scripts/loop.sh — README.md
-
-- [ ] [S] RECOVERY: Ensure .gitignore includes a logs/ entry; add if missing — .gitignore
-
-- [ ] [S] RECOVERY: Add LICENSE file (MIT, kevinbuckley) at repo root — LICENSE
-
-- [ ] [S] RECOVERY: Add a CONTRIBUTING.md stub pointing builders at docs/loop-backlog.md — CONTRIBUTING.md
-
-- [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts
-
-- [ ] [S] RECOVERY: Add a one-line description to README explaining how to invoke scripts/loop.sh — README.md
-
-- [ ] [S] RECOVERY: Ensure .gitignore includes a logs/ entry; add if missing — .gitignore
-
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)

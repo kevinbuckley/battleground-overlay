@@ -89,11 +89,11 @@ inject_recovery_task() {
   local count="$1"
   log "  ⚠ STUCK: $count consecutive fails — injecting a recovery task"
   local fallbacks=(
-    "- [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts"
-    "- [ ] [S] RECOVERY: Add a one-line description to README explaining how to invoke scripts/loop.sh — README.md"
-    "- [ ] [S] RECOVERY: Ensure .gitignore includes a logs/ entry; add if missing — .gitignore"
-    "- [ ] [S] RECOVERY: Add LICENSE file (MIT, kevinbuckley) at repo root — LICENSE"
-    "- [ ] [S] RECOVERY: Add a CONTRIBUTING.md stub pointing builders at docs/loop-backlog.md — CONTRIBUTING.md"
+    "- [ ] [S] RECOVERY: Add \`clamp(n: number, min: number, max: number): number\` to \`packages/shared/src/utils.ts\` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test"
+    "- [ ] [S] RECOVERY: Add \`isShoppingPhase(state: GameState): boolean\` to \`packages/shared/src/utils.ts\` returning state.phase==='shopping'; test two cases — packages/shared/src/utils.ts update + test"
+    "- [ ] [S] RECOVERY: Add \`hpBucket(hp: number): 'critical'|'low'|'safe'\` to \`packages/shared/src/utils.ts\` (critical<6, low<15, safe otherwise); 3 tests — packages/shared/src/utils.ts update + test"
+    "- [ ] [S] RECOVERY: Add \`parseLine(line: string): HsEvent | null\` to \`packages/log-parser/src/parseLine.ts\` that tries each parser in order and returns the first non-null; test with a TAG_CHANGE line and a garbage line — packages/log-parser/src/parseLine.ts + test"
+    "- [ ] [S] RECOVERY: Add \`formatRecommendation(rec: Recommendation): string\` to \`packages/shared/src/utils.ts\` returning a short human-readable string like 'Buy Murloc Tidecaller (score: 0.8)'; test one Buy and one TierUp — packages/shared/src/utils.ts update + test"
   )
   local idx=$(( CONSECUTIVE_FAILS_TOTAL % ${#fallbacks[@]} ))
   local next_task="${fallbacks[$idx]}"
