@@ -121,3 +121,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 16:00  [DONE]  M17: Deathrattle handler — `applyDeathrattle` processes BLOCK_START TRIGGER with deathrattle keywords, adds minions to hand/board, 6 tests, wired into reducer (commit 9e0a66d)
 
 2026-05-12 16:30  [DONE]  M17: Combat phase resolver — `resolveCombatPhase(state, events)` batches TAG_CHANGE damage + BLOCK_START deathrattle events, processes in order, 7 tests (commit eb8185e)
+
+2026-05-12 17:00  [DONE]  M14: Tier-up handler — `applyTierUp` handles PLAYER_TECH_LEVEL increment, updates tier + tierUpCost (1→6, 2→5, 3→4, 4→5, 5-7→6), 8 tests, wired into reducer (commit 225fc9c)
