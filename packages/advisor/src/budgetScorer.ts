@@ -1,5 +1,6 @@
 import type { GameState, Recommendation } from '@overlay/shared';
 import { enumerateBuyCandidates } from './candidates';
+import { predictOpponentBoard } from './opponentPredictor';
 import { scoreCandidate } from './simScorer';
 import { withBudget } from './withBudget';
 
@@ -17,11 +18,16 @@ const TOP_N = 3;
  */
 export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[] {
   const candidates = enumerateBuyCandidates(state);
-  const { player, opponents } = state;
+  const { player, opponents, turn } = state;
+
+  const projectedOpponents = opponents.map((o) => ({
+    ...o,
+    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+  }));
 
   const scored: Recommendation[] = candidates.map((c) => {
     const result = withBudget(
-      () => scoreCandidate(c.projectedBoard, player, opponents, n),
+      () => scoreCandidate(c.projectedBoard, player, projectedOpponents, n),
       budgetMs,
       { winPct: 0, avgHpDelta: 0 },
     );

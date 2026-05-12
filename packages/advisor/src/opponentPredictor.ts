@@ -7,7 +7,10 @@ import type { OpponentState } from '@overlay/shared';
  * Future versions will infer likely board state from tier,
  * eliminations, and entity registry data.
  */
-export function predictOpponentBoard(opp: OpponentState): {
+export function predictOpponentBoard(
+  opp: OpponentState,
+  _turn: number,
+): {
   minions: import('@overlay/shared').Minion[];
 } {
   return { minions: [...opp.board.minions] };
