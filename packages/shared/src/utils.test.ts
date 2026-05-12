@@ -1,4 +1,5 @@
-import { clamp, lerp, round2 } from './utils';
+import { initialState } from '@overlay/state';
+import { clamp, isShoppingPhase, lerp, round2 } from './utils';
 
 describe('clamp', () => {
   test('returns lo when below range', () => {
@@ -35,5 +36,17 @@ describe('round2', () => {
 
   test('rounds 2.005 to 2.01 (IEEE 754)', () => {
     expect(round2(2.005)).toBe(2.01);
+  });
+});
+
+describe('isShoppingPhase', () => {
+  test('returns true when phase is shopping', () => {
+    const state = initialState();
+    expect(isShoppingPhase({ ...state, phase: 'shopping' })).toBe(true);
+  });
+
+  test('returns false when phase is combat', () => {
+    const state = initialState();
+    expect(isShoppingPhase({ ...state, phase: 'combat' })).toBe(false);
   });
 });

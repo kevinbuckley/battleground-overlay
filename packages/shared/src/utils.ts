@@ -9,3 +9,9 @@ export function lerp(a: number, b: number, t: number): number {
 export function round2(n: number): number {
   return Math.round(n * 100) / 100;
 }
+
+import type { GameState } from './state';
+
+export function isShoppingPhase(state: GameState): boolean {
+  return state.phase === 'shopping';
+}
