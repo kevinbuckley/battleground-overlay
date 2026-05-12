@@ -16,6 +16,7 @@ import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
+import { applyReborn } from './reducer/reborn';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
@@ -27,11 +28,16 @@ import { applyTurnPhase } from './reducer/turnPhase';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
   switch (event.kind) {
-    case 'BLOCK_START':
+    case 'BLOCK_START': {
       if (event.blockType === 'TRIGGER' && event.effectCardId === 'TB_BaconShop_StartGame') {
         return { ...state, turn: 1, phase: 'shopping' };
       }
-      return applyDeathrattle(state, event);
+      const afterDeathrattle = applyDeathrattle(state, event);
+      if (afterDeathrattle !== state) {
+        return applyReborn(afterDeathrattle, event);
+      }
+      return afterDeathrattle;
+    }
 
     case 'FULL_ENTITY':
       return applyMinionPlaced(state, event);
