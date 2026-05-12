@@ -111,3 +111,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 13:30  [DONE]  M15: Weighted win scorer — `weightedWinScore(scoreResult, weights)` multiplies winPct by sum of lobby weights, 7 tests (commit 372472a)
 
 2026-05-12 14:00  [DONE]  M15: Upgrade recommend() to use sim — calls `scoreBuysWithSim(state, 50, 2000)`, falls back to heuristic buys when sim score is 0, 2 new tests (commit ac4b7d5)
+
+2026-05-12 14:30  [DONE]  M16: Session pretty-printer — `formatEntry` parses JSONL entries, formats as `[kind] summary` with truncation/error handling, `reviewSession` CLI; 7 tests (commit 7c80ede)
