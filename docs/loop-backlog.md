@@ -118,7 +118,7 @@ to `loop-ledger.md`.
 ## M10 — Sim scoring + advisor depth
 
 - [x] [S] HP delta in simScorer: update `scoreCandidate` in `packages/advisor/src/simScorer.ts` to compute `avgHpDelta` as weighted sum (win→+opponentTier, loss→-playerTier, tie→0) averaged across all opponents; update existing test to assert `avgHpDelta !== 0` for a non-trivial matchup — `packages/advisor/src/simScorer.ts` update + test (commit d97a287)
-- [ ] [S] Lobby weight helper: `packages/advisor/src/lobbyWeight.ts` — `lobbyWeights(opponents: OpponentState[]): number[]` returns per-opponent weight = opponent.hp / totalAliveHp (0 for eliminated); test with 3 opponents one eliminated summing to 1.0 — `packages/advisor/src/lobbyWeight.ts` + test
+- [x] [S] Lobby weight helper: `packages/advisor/src/lobbyWeight.ts` — done (commit 9fb819b) ✓
 - [ ] [S] Sell candidate enumerator: add `enumerateSellCandidates(state: GameState): {action: SellAction, projectedBoard: Board}[]` to `packages/advisor/src/candidates.ts` — one entry per board minion, projectedBoard is board minus that minion; test with 2-minion board returns 2 candidates — `packages/advisor/src/candidates.ts` update + test
 - [ ] [S] Sim benchmark: `packages/sim/src/bench.test.ts` — run `simulateBatch` 5 times with n=20 and assert total wall-clock < 3000ms; use `performance.now()`; fails fast if sim regresses — `packages/sim/src/bench.test.ts`
 
