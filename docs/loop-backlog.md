@@ -312,6 +312,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] Session log calls in coordinator: in `apps/overlay/src/coordinator.ts` inside the `pipeline.onEvent` wrapper, after computing `recs`, call `appendSessionEvent('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })` from `@overlay/shared`; update `coordinator.test.ts` to mock `appendSessionEvent` and assert it is called once per event fed — `apps/overlay/src/coordinator.ts` update + test
 
+- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
