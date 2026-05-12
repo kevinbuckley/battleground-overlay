@@ -1,3 +1,4 @@
+import { setBoardPanel } from '@overlay/shared';
 import { BrowserWindow, app, ipcMain } from 'electron';
 import { setAdvice } from './advicePanel';
 import { anchorToHearthstone } from './anchor';
@@ -36,6 +37,11 @@ ipcMain.handle('set-advice', (_event, advice) => {
 
 ipcMain.handle('set-explanation', (_event, explanation: string) => {
   setExplanation(explanation);
+  return true;
+});
+
+ipcMain.handle('set-board-panel', (_event, panelState) => {
+  setBoardPanel(panelState);
   return true;
 });
 
