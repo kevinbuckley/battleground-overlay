@@ -131,7 +131,7 @@ to `loop-ledger.md`.
 ## M12 — Session log improvements
 
 - [x] [S] Session list: add `listSessions(logsDir?: string): string[]` to `packages/shared/src/sessionLog.ts` — returns sorted paths of all `session-*.jsonl` files in `logsDir` (default `logs/`); test with temp dir containing 3 fixture filenames — `packages/shared/src/sessionLog.ts` update + test (commit 4421ab3)
-- [ ] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test
+- [x] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test (commit b4720ea)
 
 ## Quarantined
 
