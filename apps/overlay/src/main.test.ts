@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { createOverlayWindow, getWindowOptions } from './createOverlayWindow';
+import { getRendererPath, getWindowOptions } from './createOverlayWindow';
 
 describe('getWindowOptions', () => {
   it('returns correct window options', () => {
@@ -42,9 +42,8 @@ describe('createOverlayWindow', () => {
     expect(wp.nodeIntegration).toBe(false);
   });
 
-  it('returns the created window when a mock ctor is provided', () => {
-    // This test verifies the return type is BrowserWindow.
-    // Side effects are skipped by testing through getWindowOptions.
-    expect(typeof createOverlayWindow).toBe('function');
+  it('loads renderer.html instead of about:blank', () => {
+    const path = getRendererPath();
+    expect(path).toContain('renderer.html');
   });
 });

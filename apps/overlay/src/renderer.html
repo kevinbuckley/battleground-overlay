@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Battlegrounds Overlay</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 12px 16px;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #e0e0e0;
+      background: transparent;
+      user-select: none;
+    }
+    #advice-action {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ffd700;
+      margin-bottom: 4px;
+    }
+    #advice-reason {
+      font-size: 13px;
+      color: #b0b0b0;
+      margin-bottom: 6px;
+    }
+    #explanation {
+      font-size: 11px;
+      color: #888;
+      border-top: 1px solid #333;
+      padding-top: 4px;
+      display: none;
+    }
+    #explanation.visible {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="advice-action"></div>
+  <div id="advice-reason"></div>
+  <div id="explanation"></div>
+  <script src="./renderer-bundle.js"></script>
+</body>
+</html>

@@ -1,4 +1,10 @@
+import { resolve } from 'node:path';
+
 import type { BrowserWindow } from 'electron';
+
+export function getRendererPath(): string {
+  return resolve(__dirname, 'renderer.html');
+}
 
 export function getWindowOptions(): Record<string, unknown> {
   return {
@@ -32,6 +38,6 @@ export function createOverlayWindow(
   anchorToHearthstone(win, { x: 10, y: 10 });
   const cfg = defaultHotkeyConfig();
   registerHotkeys(win, cfg, app);
-  win.loadURL('about:blank');
+  win.loadFile(getRendererPath());
   return win;
 }
