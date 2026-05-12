@@ -1,4 +1,5 @@
 import { BrowserWindow, app, ipcMain } from 'electron';
+import { anchorToHearthstone } from './anchor';
 import { setInteractive, setOverlayWin } from './overlayState';
 
 function createWindow(): void {
@@ -17,6 +18,7 @@ function createWindow(): void {
 
   setOverlayWin(win);
   win.setIgnoreMouseEvents(true);
+  anchorToHearthstone(win, { x: 10, y: 10 });
   win.loadURL('about:blank');
 }
 
