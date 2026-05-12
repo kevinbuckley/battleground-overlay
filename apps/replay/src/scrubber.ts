@@ -20,6 +20,16 @@ export class Scrubber {
     return this._currentIndex;
   }
 
+  getState(): GameState {
+    let state = initialState();
+    for (let i = 0; i < this._currentIndex; i++) {
+      const event = this.events[i];
+      if (event === undefined) throw new Error(`missing event at index ${i}`);
+      state = reducer(state, event);
+    }
+    return state;
+  }
+
   seek(n: number): GameState {
     if (n < 0 || n > this.events.length) {
       throw new Error(`seek(${n}) out of bounds [0, ${this.events.length}]`);

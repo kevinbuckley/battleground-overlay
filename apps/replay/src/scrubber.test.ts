@@ -96,6 +96,43 @@ describe('Scrubber', () => {
     }
   });
 
+  it('seek(2) sets currentIndex and getState() reflects 2 events', () => {
+    const path = makeFixture([
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30',
+      'TAG_CHANGE Entity=0 tag=RESOURCES value=3',
+      'TAG_CHANGE Entity=0 tag=PLAYER_TECH_LEVEL value=3',
+      'TAG_CHANGE Entity=0 tag=NUM_CARDS_IN_HAND value=2',
+      'TAG_CHANGE Entity=1 tag=PLAYSTATE value=FINISHED',
+    ]);
+    try {
+      const events = loadFixture(path);
+      const s = new Scrubber(events);
+      const state = s.seek(2);
+      expect(s.currentIndex).toBe(2);
+      const gs = s.getState();
+      expect(gs.player.hero.hp).toBe(30);
+      expect(gs.player.gold).toBe(3);
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it('seek(0) returns initialState', () => {
+    const path = makeFixture([
+      'TAG_CHANGE Entity=1 tag=PLAYSTATE value=FINISHED',
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30',
+    ]);
+    try {
+      const events = loadFixture(path);
+      const s = new Scrubber(events);
+      s.seek(1);
+      const state = s.seek(0);
+      expect(state).toEqual(initialState());
+    } finally {
+      cleanup(path);
+    }
+  });
+
   it('replay() seeks to the end', () => {
     const path = makeFixture([
       'BLOCK_START BlockType=TRIGGER Entity=1 EffectCardId=TB_BaconShop_StartGame EffectIndex=0 Target=1 SubOption=None',
