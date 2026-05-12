@@ -266,11 +266,11 @@ to `loop-ledger.md`.
 
 ## M2 — State reducer (continued)
 
-- [ ] [S] Buff tracker: `packages/state/src/reducer/buffs.ts` —
+- [x] [S] Buff tracker: `packages/state/src/reducer/buffs.ts` —
   `applyBuffs(state, event)` handles `TAG_CHANGE tag=ATK` on entities in
   PLAY zone — updates minion `attack` field; also handles
   `TAG_CHANGE tag=DIVINE_SHIELD value=1` and `value=0` to toggle
-  `divineShield` on minions; 6 tests (ATK update on player minion, ATK
+  `divineShield` on minions; 7 tests (ATK update on player minion, ATK
   update on opponent minion, divine shield on/off, no-op on non-play
   entity, no-op on hero, no-op on unknown tag) —
   `packages/state/src/reducer/buffs.ts` + test, wired into reducer

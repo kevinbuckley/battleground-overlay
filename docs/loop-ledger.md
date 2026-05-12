@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 21:30  [DONE]  M23: Reborn handler — `applyReborn` handles BLOCK_START with "Reborn" keyword, sets reborn=true on board minion; 4 tests, wired into reducer (commit 020dafb)
 
+2026-05-12 00:00  [DONE]  M23: Buff tracker — `applyBuffs` handles `TAG_CHANGE tag=ATK` and `DIVINE_SHIELD` on entities in PLAY zone, updates minion attack/divineShield, 7 tests, wired into reducer (commit 12ce530)
+
 2026-05-12 21:30  [DONE]  M23: Anomaly handler — `applyAnomaly` handles `TAG_CHANGE tag=ANOMALY` on player, sets `state.anomaly: string | null`, clears on value=0, 4 tests, wired into reducer (commit 978e4f5)
 
 2026-05-12 21:30  [DONE]  M23: Hero identification — `applyHeroIdentify` handles `SHOW_ENTITY` where `cardId` starts with "Hero_", identifies player vs opponent by matching entity to registry controller, sets `state.player.hero.cardId` and `state.opponents[i].hero.cardId`; 4 tests, wired into reducer (commit f365a66)
