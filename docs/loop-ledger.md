@@ -119,3 +119,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 15:30  [DONE]  M17: Combat damage tracker — `applyCombatDamage` handles `TAG_CHANGE tag=DAMAGE`, updates minion/hero HP, removes dead entities, wired into reducer, 13 tests (commit dd39ed9)
 
 2026-05-12 16:00  [DONE]  M17: Deathrattle handler — `applyDeathrattle` processes BLOCK_START TRIGGER with deathrattle keywords, adds minions to hand/board, 6 tests, wired into reducer (commit 9e0a66d)
+
+2026-05-12 16:30  [DONE]  M17: Combat phase resolver — `resolveCombatPhase(state, events)` batches TAG_CHANGE damage + BLOCK_START deathrattle events, processes in order, 7 tests (commit eb8185e)
