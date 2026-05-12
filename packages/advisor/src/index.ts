@@ -16,3 +16,4 @@ export { withBudget } from './withBudget';
 export { rerollScore } from './heuristics/rerollScore';
 export { lobbyWeights } from './lobbyWeight';
 export { scoreBuysWithSim } from './budgetScorer';
+export { weightedWinScore } from './weightedScore';
