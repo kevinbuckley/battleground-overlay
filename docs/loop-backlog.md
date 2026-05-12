@@ -143,7 +143,7 @@ to `loop-ledger.md`.
 - [x] [S] Transparent always-on-top window — scaffolded in `apps/overlay/src/main.ts` (transparent, frameless, alwaysOnTop)
 - [x] [S] Click-through toggle: add `setIgnoreMouseEvents(true)` on window ready, expose `setInteractive(bool)` IPC handler to toggle click-through; test by verifying the Electron API is called in a headless test — `apps/overlay/src/main.ts` update + test (commit d08ded7)
 - [x] [S] Anchor to Hearthstone window (macOS Accessibility API) — `apps/overlay/src/anchor.ts` + test, wired into `main.ts` (commit 9635ff8)
-- [ ] [S] Advice panel (current top recommendation)
+- [x] [S] Advice panel (current top recommendation) — `advicePanel.ts` + test, wired into `main.ts` (commit 3292eeb)
 - [ ] [S] "Why?" expand → LLM explanation
 - [ ] [S] Board panel (recommended positioning)
 - [ ] [S] Opponent panel (projected scaling per opponent)
