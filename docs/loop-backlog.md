@@ -236,7 +236,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Wire `applyMinionPlaced` into reducer: import `applyMinionPlaced` from `./reducer/minionPlaced` in `packages/state/src/reducer.ts`; add `case 'FULL_ENTITY':` branch that calls `applyMinionPlaced(state, event)`; 3 tests: FULL_ENTITY event with ZONE=PLAY updates board size — `packages/state/src/reducer.ts` update + test (commit a1e5c96)
 
-- [ ] [S] Increment turn counter on MAIN_READY: in `packages/state/src/reducer/turnPhase.ts`, when `event.value === 'MAIN_READY'` increment `state.turn` AND set phase to 'shopping'; 3 tests: turn starts at 1, increments to 2 on second MAIN_READY, phase set to shopping — `packages/state/src/reducer/turnPhase.ts` update + test
+- [x] [S] Increment turn counter on MAIN_READY: in `packages/state/src/reducer/turnPhase.ts`, when `event.value === 'MAIN_READY'` increment `state.turn` AND set phase to 'shopping'; 3 tests: turn starts at 1, increments to 2 on second MAIN_READY, phase set to shopping — `packages/state/src/reducer/turnPhase.ts` update + test (commit 3941ab3)
 
 - [ ] [S] State serializer: `packages/state/src/serialize.ts` — `serializeGameState(state: GameState): string` (JSON.stringify), `deserializeGameState(json: string): GameState` (JSON.parse with cast); round-trip test with 4 assertions (turn preserved, phase preserved, board length preserved, shop length preserved); export both from `packages/state/src/index.ts` — `packages/state/src/serialize.ts` + test
 

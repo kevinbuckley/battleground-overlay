@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 23:30  [DONE]  M21: Wire applyMinionPlaced into reducer — added FULL_ENTITY case, CONTROLLER tag handler, fallback from applyShopBuy to applyMinionPlaced for non-shop minions, 3 integration tests (commit a1e5c96)
 
+2026-05-12 23:45  [DONE]  M21: Increment turn counter on MAIN_READY — `applyTurnPhase` now increments `state.turn` when `event.value === 'MAIN_READY'`, 3 new tests (commit 3941ab3)
+
 2026-05-12 23:00  [DONE]  M21: Fix duplicate TAG_CHANGE branches — removed dead ZONE=PLAY and ZONE=GRAVEYARD/REMOVEDFROMGAME duplicate branches from reducer, added 2 regression tests (commit 92b52ec)
 
 2026-05-12 22:30  [DONE]  M1: Fixture integration test harness — `runFixtureTest` reads fixture file, parses via `parseLine`, asserts event count and type match expected; 3 tests (commit b03401a)
