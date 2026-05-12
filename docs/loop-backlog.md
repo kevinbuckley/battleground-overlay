@@ -166,6 +166,31 @@ to `loop-ledger.md`.
 - [x] [S] Shop refresh handler: add `TAG_CHANGE tag=ZONE_CHANGE_LIST` case to reducer → update `state.player.shop.minions` from entity registry; test: shop refresh event replaces shop minions — `packages/state/src/reducer/shopRefresh.ts` + test (commit febb1fe)
 - [x] [S] Shop buy handler: `TAG_CHANGE tag=ZONE` from SHOP to PLAY on player controller → add minion to player board, remove from shop; test: buy shop minion appears on board — `packages/state/src/reducer/shopBuy.ts` + test (commit cc8436a)
 
+## M10 — Patch update pipeline
+
+- [x] [S] Patch version reader: `packages/card-data/src/patchVersion.ts` — `patchVersion(): string` reads `PATCH.txt` synchronously and returns the trimmed string; test: returns "30.4.3" from existing file — `packages/card-data/src/patchVersion.ts` + test
+- [x] [S] Patch version setter: `packages/card-data/src/setPatchVersion.ts` — `setPatchVersion(version: string): void` writes to `PATCH.txt`; test: write "31.0.0", read back confirms — `packages/card-data/src/setPatchVersion.ts` + test
+- [x] [S] Patch diff checker: `packages/card-data/src/patchDiff.ts` — `patchDiff(oldCards: Card[], newCards: Card[]): {added: Card[], removed: Card[], statChanges: {id: string, oldStat: string, newStat: string}[]}` compares two card arrays, returns added/removed by dbfId and stat changes (cost/attack/health) for shared cards; 5 tests — `packages/card-data/src/patchDiff.ts` + test
+- [x] [S] Bump script: `scripts/bump-patch.ts` — CLI that reads current patch, fetches new cards from HearthstoneJSON, runs `patchDiff` against old cards.json, writes new `cards.json` and `PATCH.txt`, prints diff summary to stdout; test: stub fetch, assert diff output format — `scripts/bump-patch.ts` + test
+
+## M14 — State reducer completions
+
+- [ ] [S] Shop sell handler: `packages/state/src/reducer/shopSell.ts` — reducer case: `TAG_CHANGE tag=ZONE value=HAND` on an entity that is currently on `state.player.board` → remove that entityId from board + update entityRegistry zone; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopSell.ts` + test
+- [ ] [S] Turn phase tracker: `packages/state/src/reducer/turnPhase.ts` — reducer case: `TAG_CHANGE tag=STEP` — `MAIN_READY`→`'shopping'`, `BEGIN_SHOOTING_ATTACK`→`'combat'`, `MAIN_CLEANUP`→`'end'`; wire into reducer.ts; 3 tests — `packages/state/src/reducer/turnPhase.ts` + test
+- [ ] [S] Hand tracker: add `hand: number[]` field to `PlayerState` in `packages/shared/src/state.ts` (entityIds); add reducer cases to `packages/state/src/reducer/handTracker.ts`: ZONE=HAND adds, ZONE=PLAY/GRAVEYARD removes from hand; update `initialState()`; 4 tests — `packages/state/src/reducer/handTracker.ts` + test
+
+## M15 — Advisor sim integration
+
+- [ ] [S] Budget-aware buy scorer: `packages/advisor/src/budgetScorer.ts` — `scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[]` — for each shop minion, projects `enumerateBuyCandidates`, calls `scoreCandidate` via `withBudget`, returns top 3 sorted by winPct; test with n=0 returns recs with score 0 — `packages/advisor/src/budgetScorer.ts` + test
+- [ ] [S] Weighted win scorer: `packages/advisor/src/weightedScore.ts` — `weightedWinScore(scoreResult: ScoreResult, weights: number[]): number` multiplies per-opponent winPct by lobby weights and sums; test: all weights equal → average winPct — `packages/advisor/src/weightedScore.ts` + test
+- [ ] [S] Upgrade `recommend()` to use sim: update `packages/advisor/src/recommend.ts` to call `scoreBuysWithSim(state, 50, 2000)` and merge with heuristic scores; heuristics remain as fallback if sim returns empty; test: with 0 sims still returns ≥1 recommendation — `packages/advisor/src/recommend.ts` update + test
+
+## M16 — Session review tooling
+
+- [ ] [S] Session pretty-printer: `scripts/review-session.ts` — Bun CLI: reads a `logs/session-*.jsonl` file, prints each entry as `[kind] payload-summary` to stdout; export `formatEntry(line: string): string`; test `formatEntry` with a hand-crafted JSONL line returns a non-empty string — `scripts/review-session.ts` + test
+- [ ] [S] IPC bridge module: `apps/overlay/src/ipcBridge.ts` — `startBridge(win: BrowserWindow, getState: () => GameState, getRecs: () => Recommendation[]): void` sets up a 500ms poll that pushes `overlay:state-update` and `overlay:recs-update` events to the renderer; test: mock win.webContents.send called with correct channel names — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+- [ ] [S] Overlay state snapshot: `apps/overlay/src/overlayState.ts` (if not already there) — exports `OverlaySnapshot` type `{state: GameState, recs: Recommendation[], ts: number}` + `makeSnapshot(state, recs): OverlaySnapshot`; test: ts is a number, recs preserved — `apps/overlay/src/overlayState.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
