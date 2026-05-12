@@ -159,6 +159,13 @@ to `loop-ledger.md`.
 - [x] [S] Advisor diff: `apps/replay/src/advisorDiff.ts` — `advisorDiff(actual: Recommendation[], predicted: Recommendation[]): string` returns human-readable diff lines like "+ Buy X (score 0.8)" / "- TierUp (score 0.6)"; test empty arrays returns empty string — `apps/replay/src/advisorDiff.ts` + `apps/replay/src/advisorDiff.test.ts` (commit 820a705)
 - [x] [S] Report exporter: `apps/replay/src/exportReport.ts` — `exportReport(turns: {state: GameState, recs: Recommendation[]}[]): string` returns Markdown with a `## Turn N` heading per turn + top 3 recommendations; test with 1-turn input contains "## Turn" — `apps/replay/src/exportReport.ts` + `apps/replay/src/exportReport.test.ts` (commit ff42219)
 
+## M2 — State reducer foundations (continued)
+
+- [x] [S] Opponent health tracker: add `applyOpponentHealth(state, event)` to `packages/state/src/reducer/opponentHealth.ts` — finds opponent by entity ID matching `event.entity`, updates `state.opponents[i].hero.hp`; test: 3 opponents, update middle one's HP, assert only middle changed — `packages/state/src/reducer/opponentHealth.ts` + test (commit d765f21)
+- [ ] [S] Opponent tier tracker: add `applyOpponentTier(state, event)` to `packages/state/src/reducer/opponentTier.ts` — finds opponent by entity ID, updates `state.opponents[i].tier`; test: update opponent tier from 3→5, assert only that opponent changed — `packages/state/src/reducer/opponentTier.ts` + test
+- [ ] [S] Shop refresh handler: add `TAG_CHANGE tag=ZONE_CHANGE_LIST` case to reducer → update `state.player.shop.minions` from entity registry; test: shop refresh event replaces shop minions — `packages/state/src/reducer/shopRefresh.ts` + test
+- [ ] [S] Shop buy handler: `TAG_CHANGE tag=ZONE` from SHOP to PLAY on player controller → add minion to player board, remove from shop; test: buy shop minion appears on board — `packages/state/src/reducer/shopBuy.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
