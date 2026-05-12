@@ -159,6 +159,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add `hpBucket(hp: number): 'critical'|'low'|'safe'` to `packages/shared/src/utils.ts` (critical<6, low<15, safe otherwise); 3 tests — packages/shared/src/utils.ts update + test
 
+- [ ] [S] RECOVERY: Add `parseLine(line: string): HsEvent | null` to `packages/log-parser/src/parseLine.ts` that tries each parser in order and returns the first non-null; test with a TAG_CHANGE line and a garbage line — packages/log-parser/src/parseLine.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
