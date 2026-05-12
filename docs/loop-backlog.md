@@ -198,6 +198,23 @@ to `loop-ledger.md`.
 - [ ] [M] Combat phase resolver: `packages/state/src/reducer/combatPhase.ts` — `resolveCombatPhase(state, events)` takes a batch of combat events, applies damage/deathrattles in order, returns updated state; test: 2v2 combat with deathrattles resolves correctly — `packages/state/src/reducer/combatPhase.ts` + test
 - [ ] [S] Tier-up handler: `packages/state/src/reducer/tierUp.ts` — `applyTierUp(state, event)` handles `TAG_CHANGE tag=PLAYER_TECH_LEVEL` increment (tier 3→4→etc.), updates `state.player.tier` and recalculates `tierUpCost` (3→4→5→6→7); test: tier 3→4 sets tierUpCost to 4 — `packages/state/src/reducer/tierUp.ts` + test
 
+## M18 — Shop mechanics
+
+- [ ] [S] Freeze handler: `packages/state/src/reducer/shopFreeze.ts` — `applyShopFreeze(state, event)` handles `TAG_CHANGE tag=FROZEN value=1` on player controller → sets `state.player.shop.frozen = true`; and `value=0` → false; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopFreeze.ts` + test
+- [ ] [S] Reroll handler: `packages/state/src/reducer/shopReroll.ts` — `applyShopReroll(state, event)` handles `TAG_CHANGE tag=RESOURCES_USED` on own controller → decrements `state.player.gold` by the value; also clears `shop.frozen = false` on reroll; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopReroll.ts` + test
+- [ ] [S] Triple bonus handler: `packages/state/src/reducer/tripleBonus.ts` — `applyTripleBonus(state, event)` detects when 3 identical cardIds appear across board+hand (by checking entityRegistry), sets a `state.player.pendingTriple: string | null` field (add to PlayerState); 3 tests: no triple returns null, 3 of same returns cardId — `packages/state/src/reducer/tripleBonus.ts` + test
+
+## M19 — Integration pipeline
+
+- [ ] [S] Pipeline factory: `packages/state/src/pipeline.ts` — `createPipeline(): {onEvent: (e: HsEvent) => void, getState: () => GameState}` wires `streamEvents` output into `reducer`, exposes current state; test: construct pipeline, feed 2 TAG_CHANGE events, assert state reflects both — `packages/state/src/pipeline.ts` + test
+- [ ] [S] Overlay coordinator: `apps/overlay/src/coordinator.ts` — `startCoordinator(win: BrowserWindow): () => void` (returns stop fn) — creates pipeline, on each state change calls `setAdvice(recommend(state))`, pushes via ipcBridge; test: mock win and recommend, assert setAdvice called after event — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+- [ ] [S] Replay CLI wiring: update `apps/replay/src/main.ts` so `run(path)` calls `loadFixture(path)`, creates `Scrubber`, seeks to end, prints `formatState` + `exportReport`; test: `run` with a 2-event fixture file returns a string containing "## Turn" — `apps/replay/src/main.ts` update + test
+
+## M20 — Golden minion and hero power stubs
+
+- [ ] [S] Golden minion detector: `packages/state/src/reducer/goldenMinion.ts` — `applyGoldenMinion(state, event)` handles `TAG_CHANGE tag=PREMIUM value=1` on an entity in the player board or shop → sets `minion.golden = true` on that entity (add `golden: boolean` to Minion); wire into reducer; 3 tests — `packages/state/src/reducer/goldenMinion.ts` + test
+- [ ] [S] Hero power tracker: `packages/state/src/reducer/heroPower.ts` — `applyHeroPower(state, event)` handles `TAG_CHANGE tag=NUM_TIMES_HERO_POWER_USED_THIS_GAME value=N` → sets `state.player.heroPowerUsedThisTurn = true` (add field to PlayerState, reset to false on MAIN_READY step); 4 tests — `packages/state/src/reducer/heroPower.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
