@@ -8,6 +8,7 @@ import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHeroPower } from './reducer/heroPower';
+import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
@@ -28,6 +29,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return { ...state, turn: 1, phase: 'shopping' };
       }
       return applyDeathrattle(state, event);
+
+    case 'FULL_ENTITY':
+      return applyMinionPlaced(state, event);
 
     case 'ZONE_CHANGE_LIST':
       return applyShopRefresh(state, event);
@@ -65,7 +69,11 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyMinionRemoved(state, event);
       }
       if (event.tag === 'ZONE' && event.value === 'PLAY') {
-        return applyShopBuy(state, event);
+        const afterShopBuy = applyShopBuy(state, event);
+        if (afterShopBuy === state) {
+          return applyMinionPlaced(state, event);
+        }
+        return afterShopBuy;
       }
       if (event.tag === 'ZONE' && event.value === 'HAND') {
         // Check if this entity is in the hand (not a shop buy)
@@ -92,6 +100,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_TIMES_HERO_POWER_USED_THIS_GAME') {
         return applyHeroPower(state, event);
+      }
+      if (event.tag === 'CONTROLLER') {
+        return applyMinionPlaced(state, event);
       }
       return applyTripleBonus(state, event);
 

@@ -3,6 +3,17 @@ import type { GameState } from '@overlay/shared';
 import { applyEntityEvent } from '../entityRegistry';
 
 export function applyMinionPlaced(state: GameState, event: HsEvent): GameState {
+  if (event.kind === 'FULL_ENTITY') {
+    const nextRegistry = applyEntityEvent(new Map(state.player.entityRegistry), event);
+    return {
+      ...state,
+      player: {
+        ...state.player,
+        entityRegistry: nextRegistry,
+      },
+    };
+  }
+
   if (event.kind !== 'TAG_CHANGE') return state;
 
   // Always keep the entity registry in sync for this entity
@@ -45,6 +56,7 @@ export function applyMinionPlaced(state: GameState, event: HsEvent): GameState {
               poisonous: false,
               reborn: false,
               frozen: false,
+              golden: false,
               tribes: [],
             },
           ],
