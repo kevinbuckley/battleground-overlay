@@ -310,7 +310,7 @@ to `loop-ledger.md`.
 
 - [x] [S] LLM explain in coordinator: `explain(top, state)` already wired in `apps/overlay/src/coordinator.ts` — fires when `top.needsExplanation === true`, result passed to `setExplanation` ✓ (commit 86e07bc)
 
-- [ ] [S] Session log calls in coordinator: add `opts?: { logFn?: (kind: string, payload: unknown) => void }` param to `startCoordinator(win, opts?)` in `apps/overlay/src/coordinator.ts`; inside `pipeline.onEvent`, after computing recs call `(opts?.logFn ?? appendSessionEvent)('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })`; add 1 test to `coordinator.test.ts`: pass a spy as `opts.logFn`, feed one TAG_CHANGE event, assert spy called with kind `'recommendation'` — `apps/overlay/src/coordinator.ts` update + test
+- [x] [S] Session log calls in coordinator: add `opts?: { logFn?: (kind: string, payload: unknown) => void }` param to `startCoordinator(win, opts?)` in `apps/overlay/src/coordinator.ts`; inside `pipeline.onEvent`, after computing recs call `(opts?.logFn ?? appendSessionEvent)('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })`; add 1 test to `coordinator.test.ts`: pass a spy as `opts.logFn`, feed one TAG_CHANGE event, assert spy called with kind `'recommendation'` — `apps/overlay/src/coordinator.ts` update + test (commit d22d982)
 
 - [x] [S] RECOVERY: clamp already in `packages/shared/src/utils.ts` ✓
 
