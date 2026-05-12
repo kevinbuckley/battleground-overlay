@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 08:45  [DONE]  M8: State viewer — `formatState` outputs turn, phase, hp/tier/gold, board minion count, opponent details, 5 tests (commit 914205c)
+
 2026-05-12 08:30  [DONE]  M8: Scrubber — `Scrubber` class with `seek(n)`, `replay()`, `jump(n)`, `length` property, 7 tests (commit ebe1809)
 
 Format:
