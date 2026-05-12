@@ -41,6 +41,7 @@ export function parseLine(line: string): HsEvent | null {
 export { parseBlockEnd, parseBlockStart } from './parseBlock';
 export { parseFullEntity } from './parseFullEntity';
 export { parseTagChange } from './parseTagChange';
+export { runFixtureTest } from './fixtureTest';
 
 export type {
   HsEvent,
