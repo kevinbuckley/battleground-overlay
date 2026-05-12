@@ -9,3 +9,4 @@ export { scoreCandidate } from './simScorer';
 export type { ScoreResult } from './simScorer';
 export { hillClimbPosition } from './positionHillClimb';
 export type { PositionResult } from './positionHillClimb';
+export { withBudget } from './withBudget';
