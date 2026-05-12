@@ -14,6 +14,7 @@ import { applyPlayerLost } from './reducer/playerLost';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
+import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
 import { applyTierUp } from './reducer/tierUp';
 import { applyTurnPhase } from './reducer/turnPhase';
@@ -96,6 +97,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'FROZEN') {
         return applyShopFreeze(state, event);
+      }
+      if (event.tag === 'RESOURCES_USED') {
+        return applyShopReroll(state, event);
       }
       return applyMinionPlaced(state, event);
 
