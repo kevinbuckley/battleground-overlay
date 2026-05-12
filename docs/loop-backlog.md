@@ -232,7 +232,7 @@ to `loop-ledger.md`.
 
 ## M21 — Reducer completeness + state utilities
 
-- [ ] [S] Fix duplicate TAG_CHANGE branches in reducer: `packages/state/src/reducer.ts` has two identical ZONE=PLAY and two identical ZONE=GRAVEYARD branches — remove the second occurrence of each duplicate; add 2 regression tests confirming `applyShopBuy` still fires on ZONE=PLAY and `applyMinionRemoved` still fires on ZONE=GRAVEYARD — `packages/state/src/reducer.ts` + test
+- [x] [S] Fix duplicate TAG_CHANGE branches in reducer: `packages/state/src/reducer.ts` has two identical ZONE=PLAY and two identical ZONE=GRAVEYARD branches — remove the second occurrence of each duplicate; add 2 regression tests confirming `applyShopBuy` still fires on ZONE=PLAY and `applyMinionRemoved` still fires on ZONE=GRAVEYARD — `packages/state/src/reducer.ts` + test (commit 92b52ec)
 
 - [ ] [S] Wire `applyMinionPlaced` into reducer: import `applyMinionPlaced` from `./reducer/minionPlaced` in `packages/state/src/reducer.ts`; add `case 'FULL_ENTITY':` branch that calls `applyMinionPlaced(state, event)`; 3 tests: FULL_ENTITY event with ZONE=PLAY updates board size — `packages/state/src/reducer.ts` update
 

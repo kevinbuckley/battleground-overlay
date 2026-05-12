@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 23:00  [DONE]  M21: Fix duplicate TAG_CHANGE branches — removed dead ZONE=PLAY and ZONE=GRAVEYARD/REMOVEDFROMGAME duplicate branches from reducer, added 2 regression tests (commit 92b52ec)
+
 2026-05-12 22:30  [DONE]  M1: Fixture integration test harness — `runFixtureTest` reads fixture file, parses via `parseLine`, asserts event count and type match expected; 3 tests (commit b03401a)
 
 2026-05-12 22:00  [DONE]  M5: Worker thread offload — `createWorkerPool(size)` creates pool of `worker_threads` Workers, exposes `submitBatch` (round-robin) + `close`, 3 tests (commit 645a269)
