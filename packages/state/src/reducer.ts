@@ -75,25 +75,6 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         }
         return applyShopSell(state, event);
       }
-      if (event.tag === 'ZONE' && event.value === 'PLAY') {
-        // Check if this entity is in the hand (not a shop buy)
-        const entityId = Number.parseInt(event.entity, 10);
-        if (state.player.hand.includes(entityId)) {
-          return applyHandTracker(state, event);
-        }
-        return applyShopBuy(state, event);
-      }
-      if (
-        event.tag === 'ZONE' &&
-        (event.value === 'GRAVEYARD' || event.value === 'REMOVEDFROMGAME')
-      ) {
-        // Check if this entity is in the hand
-        const entityId = Number.parseInt(event.entity, 10);
-        if (state.player.hand.includes(entityId)) {
-          return applyHandTracker(state, event);
-        }
-        return applyMinionRemoved(state, event);
-      }
       if (event.tag === 'STEP') {
         return applyTurnPhase(state, event);
       }
