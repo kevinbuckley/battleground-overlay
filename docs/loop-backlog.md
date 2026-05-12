@@ -101,7 +101,7 @@ to `loop-ledger.md`.
 - [x] [S] OpenAI-compat client: `packages/llm/src/client.ts` — `chatCompletion(messages, opts)` POSTs to `http://localhost:8080/v1/chat/completions`; returns `string`; timeout 1s; throws on non-2xx — packages/llm/src/client.ts + test (commit a9d73c3)
 - [x] [S] Prompt builder: `packages/llm/src/buildPrompt.ts` — `buildExplainPrompt(state, recs)` returns a system + user message array for "explain top recommendation in 1 sentence" — packages/llm/src/buildPrompt.ts + test (commit 2b926d6)
 - [x] [S] State-hash cache: `packages/llm/src/cache.ts` — `hashState(state): string` (stable JSON stringify of key fields) + `LlmCache` Map with max 50 entries LRU — packages/llm/src/cache.ts + test (commit 997ba98)
-- [ ] [M] `explain(rec, state)` implementation: calls `buildPrompt`, checks cache, if miss calls `chatCompletion` with 1s budget via `withBudget`, stores result; logs round-trip via `appendSessionEvent` — packages/llm/src/index.ts + test
+- [x] [M] `explain(rec, state)` implementation: calls `buildPrompt`, checks cache, if miss calls `chatCompletion` with 1s budget via `withBudget`, stores result; logs round-trip via `appendSessionEvent` — packages/llm/src/index.ts + test (commit 2d841c3)
 
 ## M9 — Sell + freeze heuristics
 
