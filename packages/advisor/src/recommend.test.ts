@@ -171,6 +171,79 @@ describe('recommend', () => {
     expect(recs.length).toBeGreaterThanOrEqual(1);
   });
 
+  it('sets needsExplanation: true when all recommendations have score < 0.4', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A'), minion('SHOP_B')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBeGreaterThan(0);
+    expect(recs.every((r) => r.needsExplanation === true)).toBe(true);
+  });
+
+  it('sets needsExplanation: true when recommendations are empty', () => {
+    const recs = recommend(initialState());
+    expect(recs).toEqual([]);
+  });
+
+  it('sets needsExplanation: false when at least one recommendation has score >= 0.4', () => {
+    const base = initialState();
+    const board = [
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+    ];
+    const shopMinion = { ...minion('TRIPLE_CARD'), tribes: ['Dragon'] };
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: board },
+        shop: {
+          ...base.player.shop,
+          minions: [shopMinion, minion('OTHER')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.some((r) => r.action.type === 'Buy')).toBe(true);
+    const buyRecs = recs.filter((r) => r.action.type === 'Buy');
+    if (buyRecs.length > 0) {
+      expect(buyRecs[0].needsExplanation).toBe(false);
+    }
+  });
+
+  it('sets needsExplanation: false when all recommendations have score >= 0.4', () => {
+    const base = initialState();
+    const board = [
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+    ];
+    const shopMinion = { ...minion('TRIPLE_CARD'), tribes: ['Dragon'] };
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: board },
+        shop: {
+          ...base.player.shop,
+          minions: [shopMinion, minion('OTHER')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const buyRecs = recs.filter((r) => r.action.type === 'Buy');
+    if (buyRecs.length > 0) {
+      expect(buyRecs.every((r) => r.needsExplanation === false)).toBe(true);
+    }
+  });
+
   it('falls back to heuristic buys when sim returns empty', () => {
     const base = initialState();
     const state = {

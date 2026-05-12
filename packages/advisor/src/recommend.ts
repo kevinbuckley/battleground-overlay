@@ -96,5 +96,7 @@ export function recommend(state: GameState): Recommendation[] {
     ...sellRecs,
     ...(rerollRec ? [rerollRec] : []),
   ];
-  return all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
+  const sorted = all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
+  const needsExplanation = sorted.length === 0 || sorted.every((r) => r.score < 0.4);
+  return sorted.map((r) => ({ ...r, needsExplanation }));
 }

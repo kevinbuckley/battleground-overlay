@@ -18,4 +18,5 @@ export interface Recommendation {
   score: number;
   confidence: number;
   reason: string;
+  needsExplanation?: boolean;
 }
