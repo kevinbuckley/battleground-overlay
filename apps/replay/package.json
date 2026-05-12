@@ -1,0 +1,13 @@
+{
+  "name": "@overlay/replay-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/main.ts",
+  "scripts": {
+    "dev": "bun run src/main.ts"
+  },
+  "dependencies": {
+    "@overlay/shared": "workspace:*"
+  }
+}

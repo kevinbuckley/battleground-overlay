@@ -1,0 +1,16 @@
+{
+  "name": "@overlay/overlay-app",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/main.ts",
+  "scripts": {
+    "dev": "electron ."
+  },
+  "dependencies": {
+    "@overlay/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "electron": "^33.0.0"
+  }
+}

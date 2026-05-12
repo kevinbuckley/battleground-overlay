@@ -1,0 +1,13 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./packages/shared" },
+    { "path": "./packages/log-parser" },
+    { "path": "./packages/state" },
+    { "path": "./packages/card-data" },
+    { "path": "./packages/sim" },
+    { "path": "./packages/advisor" },
+    { "path": "./packages/llm" }
+  ]
+}

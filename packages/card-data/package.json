@@ -1,0 +1,13 @@
+{
+  "name": "@overlay/card-data",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "fetch-cards": "curl -fsSL \"https://api.hearthstonejson.com/v1/$(cat PATCH.txt)/enUS/cards.collectible.json\" -o cards.json"
+  }
+}

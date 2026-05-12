@@ -1,0 +1,46 @@
+import type { GameState, Recommendation } from '@overlay/shared';
+import { tierCurveScore } from './heuristics/tierCurve';
+import { tripleScore } from './heuristics/triple';
+import { tribeSynergyScore } from './heuristics/tribeSynergy';
+
+const TOP_N = 3;
+
+export function recommend(state: GameState): Recommendation[] {
+  const { player } = state;
+  const shopMinions = player.shop.minions;
+  const boardMinions = player.board.minions;
+
+  const buyRecs: Recommendation[] = shopMinions.map((shopCard, i) => {
+    const triple = tripleScore(shopCard, boardMinions);
+    const tribe = tribeSynergyScore(boardMinions, shopCard);
+    const score = triple * 0.6 + tribe * 0.4;
+
+    return {
+      action: { type: 'Buy', cardId: shopCard.cardId, shopIndex: i },
+      score,
+      confidence: Math.min(1, score + 0.1),
+      reason: triple > 0 ? 'triple opportunity' : tribe > 0 ? 'tribe synergy' : 'no strong reason',
+    };
+  });
+
+  const tierScore = tierCurveScore(
+    state.turn,
+    player.hero.hp,
+    player.gold,
+    player.tier,
+    player.tierUpCost,
+  );
+
+  const tierRec: Recommendation | null =
+    tierScore > 0.5
+      ? {
+          action: { type: 'TierUp' },
+          score: tierScore,
+          confidence: tierScore,
+          reason: 'on curve to tier up',
+        }
+      : null;
+
+  const all = [...buyRecs, ...(tierRec ? [tierRec] : [])];
+  return all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
+}

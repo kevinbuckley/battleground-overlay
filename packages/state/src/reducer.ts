@@ -1,0 +1,37 @@
+import type { GameState } from '@overlay/shared';
+import type { HsEvent } from '@overlay/log-parser';
+import { applyPlayerLost } from './reducer/playerLost';
+import { applyHeroHealth } from './reducer/health';
+import { applyGold } from './reducer/gold';
+import { applyTier } from './reducer/tier';
+
+export function reducer(state: GameState, event: HsEvent): GameState {
+  switch (event.kind) {
+    case 'BLOCK_START':
+      if (
+        event.blockType === 'TRIGGER' &&
+        event.effectCardId === 'TB_BaconShop_StartGame'
+      ) {
+        return { ...state, turn: 1, phase: 'shopping' };
+      }
+      return state;
+
+    case 'TAG_CHANGE':
+      if (event.tag === 'PLAYSTATE' && event.value === 'LOST') {
+        return applyPlayerLost(state, event);
+      }
+      if (event.tag === 'HEALTH') {
+        return applyHeroHealth(state, event);
+      }
+      if (event.tag === 'RESOURCES') {
+        return applyGold(state, event);
+      }
+      if (event.tag === 'PLAYER_TECH_LEVEL') {
+        return applyTier(state, event);
+      }
+      return state;
+
+    default:
+      return state;
+  }
+}

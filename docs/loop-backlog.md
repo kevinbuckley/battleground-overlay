@@ -21,69 +21,94 @@ to `loop-ledger.md`.
 
 ## M0 — Bootstrap (do these first, in order)
 
-- [ ] [S] Create `package.json` with bun workspaces declared for `apps/*` and `packages/*`; add scripts: `test`, `typecheck`, `lint`, `lint:fix`; commit only this file — package.json
-- [ ] [S] Create `tsconfig.base.json` with strict TS, `moduleResolution: bundler`, path alias `@overlay/*` → `packages/*/src`; create `tsconfig.json` extending it with project references stub — tsconfig.base.json, tsconfig.json
-- [ ] [S] Create standalone `biome.json` (no parent extends) with strict rules: noExplicitAny=error, noUnusedVariables=error, formatter enabled, 2-space indent, single-quote JS; add `.gitignore` (node_modules, dist, logs/, *.log, .DS_Store) — biome.json, .gitignore
-- [ ] [S] Scaffold `packages/shared` with `package.json`, `tsconfig.json` (extends base), `src/index.ts` exporting a placeholder `export type Placeholder = never;`, and a noop test — packages/shared/*
-- [ ] [S] Scaffold `packages/log-parser` mirroring the shared package layout; export a stub `parseLine(line: string): null` and one test asserting `parseLine("") === null` — packages/log-parser/*
-- [ ] [S] Scaffold `packages/state` — same pattern, stub `applyEvent(state, event)` that returns state unchanged + noop test — packages/state/*
-- [ ] [S] Scaffold `packages/card-data` — stub `getCard(dbfId: number)` returning `null` + noop test — packages/card-data/*
-- [ ] [S] Scaffold `packages/sim` — stub `simulateBatch()` returning `{wins:0,losses:0,ties:0}` + noop test — packages/sim/*
-- [ ] [S] Scaffold `packages/advisor` — stub `recommend(state)` returning `[]` + noop test — packages/advisor/*
-- [ ] [S] Scaffold `packages/llm` — stub `explain(rec)` returning `""` + noop test — packages/llm/*
-- [ ] [S] Scaffold `apps/overlay` with an empty Electron `main.ts` that opens a transparent always-on-top window (no rendering yet); package.json + tsconfig — apps/overlay/*
-- [ ] [S] Scaffold `apps/replay` as a Bun CLI stub: `bun run dev:replay <fixture>` prints "TODO" — apps/replay/*
+- [x] [S] Create `package.json` with bun workspaces declared for `apps/*` and `packages/*`; add scripts: `test`, `typecheck`, `lint`, `lint:fix`; commit only this file — package.json ✓
+- [x] [S] Create `tsconfig.base.json` with strict TS, `moduleResolution: bundler`, path alias `@overlay/*` → `packages/*/src`; create `tsconfig.json` extending it with project references stub — tsconfig.base.json, tsconfig.json ✓
+- [x] [S] Create standalone `biome.json` (no parent extends) with strict rules: noExplicitAny=error, noUnusedVariables=error, formatter enabled, 2-space indent, single-quote JS; add `.gitignore` (node_modules, dist, logs/, *.log, .DS_Store) — biome.json, .gitignore ✓
+- [x] [S] Scaffold `packages/shared` with `package.json`, `tsconfig.json` (extends base), `src/index.ts` exporting a placeholder `export type Placeholder = never;`, and a noop test — packages/shared/* ✓
+- [x] [S] Scaffold `packages/log-parser` mirroring the shared package layout; export a stub `parseLine(line: string): null` and one test asserting `parseLine("") === null` — packages/log-parser/* ✓
+- [x] [S] Scaffold `packages/state` — same pattern, stub `applyEvent(state, event)` that returns state unchanged + noop test — packages/state/* ✓
+- [x] [S] Scaffold `packages/card-data` — stub `getCard(dbfId: number)` returning `null` + noop test — packages/card-data/* ✓
+- [x] [S] Scaffold `packages/sim` — stub `simulateBatch()` returning `{wins:0,losses:0,ties:0}` + noop test — packages/sim/* ✓
+- [x] [S] Scaffold `packages/advisor` — stub `recommend(state)` returning `[]` + noop test — packages/advisor/* ✓
+- [x] [S] Scaffold `packages/llm` — stub `explain(rec)` returning `""` + noop test — packages/llm/* ✓
+- [x] [S] Scaffold `apps/overlay` with an empty Electron `main.ts` that opens a transparent always-on-top window (no rendering yet); package.json + tsconfig — apps/overlay/* ✓
+- [x] [S] Scaffold `apps/replay` as a Bun CLI stub: `bun run dev:replay <fixture>` prints "TODO" — apps/replay/* ✓
 - [x] [S] Add `scripts/enable-hs-logging.sh` — writes `~/Library/Preferences/Blizzard/Hearthstone/log.config` with `[Power]` and `[Zone]` verbose sections; idempotent — scripts/enable-hs-logging.sh ✓ delivered with initial harness
-- [ ] [S] Confirm `bun typecheck` runs across all workspaces with no errors; if it fails fix the misconfig in this iteration — repo root
+- [x] [S] Confirm `bun typecheck` runs across all workspaces with no errors; if it fails fix the misconfig in this iteration — repo root ✓
 
 ## M1 — Log parser foundations
 
-- [ ] [M] Record fixture: capture a real `Power.log` from a 1-turn BG match into `fixtures/turn-1-bootstrap.log`; document how it was captured in `fixtures/README.md` — fixtures/turn-1-bootstrap.log, fixtures/README.md
-- [ ] [S] Define `HsEvent` discriminated union in `packages/log-parser/src/types.ts`: `TagChange | FullEntity | ShowEntity | BlockStart | BlockEnd | ZoneChangeList`; export from index — packages/log-parser/src/types.ts
-- [ ] [S] Implement `tokenizeLine(line: string)` that splits an indented Power.log line into `{depth, kind, payload}` — packages/log-parser/src/tokenize.ts + test
-- [ ] [S] Implement `parseTagChange(line)` for `TAG_CHANGE Entity=... tag=... value=...` lines; return `null` if not a tag change — packages/log-parser/src/parseTagChange.ts + test with 3 sample lines
-- [ ] [S] Implement `parseFullEntity(line)` for `FULL_ENTITY - Updating ...` and `FULL_ENTITY - Creating ID=...` — packages/log-parser/src/parseFullEntity.ts + test
-- [ ] [S] Implement `parseBlockStart(line)` and `parseBlockEnd(line)` — packages/log-parser/src/parseBlock.ts + test
-- [ ] [M] Implement `streamEvents(filePath, onEvent)` that tails a file with chokidar, parses each new line, and calls onEvent for each recognized event; closeable — packages/log-parser/src/stream.ts + test using a temp file
-- [ ] [S] Locate-latest-log-dir helper: `findActiveLogDir(): string` that returns `~/Library/Logs/Blizzard/Hearthstone/Logs/Hearthstone_<latest>` — packages/log-parser/src/findActiveLogDir.ts + test (mock fs)
+- [ ] [M] Record fixture: capture a real `Power.log` from a 1-turn BG match into `fixtures/turn-1-bootstrap.log`; document how it was captured in `fixtures/README.md` — fixtures/turn-1-bootstrap.log, fixtures/README.md (NEEDS LIVE GAME — see Quarantined)
+- [x] [S] Define `HsEvent` discriminated union in `packages/log-parser/src/types.ts`: `TagChange | FullEntity | ShowEntity | BlockStart | BlockEnd | ZoneChangeList`; export from index — packages/log-parser/src/types.ts ✓
+- [x] [S] Implement `tokenizeLine(line: string)` that splits an indented Power.log line into `{depth, kind, payload}` — packages/log-parser/src/tokenize.ts + test ✓
+- [x] [S] Implement `parseTagChange(line)` for `TAG_CHANGE Entity=... tag=... value=...` lines; return `null` if not a tag change — packages/log-parser/src/parseTagChange.ts + test with 3 sample lines ✓
+- [x] [S] Implement `parseFullEntity(line)` for `FULL_ENTITY - Updating ...` and `FULL_ENTITY - Creating ID=...` — packages/log-parser/src/parseFullEntity.ts + test ✓
+- [x] [S] Implement `parseBlockStart(line)` and `parseBlockEnd(line)` — packages/log-parser/src/parseBlock.ts + test ✓
+- [x] [M] Implement `streamEvents(filePath, onEvent)` that tails a file with chokidar, parses each new line, and calls onEvent for each recognized event; closeable — packages/log-parser/src/stream.ts + test using a temp file ✓
+- [x] [S] Locate-latest-log-dir helper: `findActiveLogDir(): string` that returns `~/Library/Logs/Blizzard/Hearthstone/Logs/Hearthstone_<latest>` — packages/log-parser/src/findActiveLogDir.ts + test (mock fs) ✓
 
 ## M2 — State reducer foundations
 
-- [ ] [S] Define `GameState`, `PlayerState`, `OpponentState`, `Minion`, `Board`, `Shop`, `Hero` types in `packages/shared/src/state.ts`; export from shared — packages/shared/src/state.ts
-- [ ] [S] Implement `initialState(): GameState` — empty lobby, turn 0, no players yet — packages/state/src/initialState.ts + test
-- [ ] [S] Reducer case: `BLOCK_START` of type `TRIGGER` with name `TB_BaconShop_StartGame` → set `turn = 1` — packages/state/src/reducer.ts + test
-- [ ] [S] Reducer case: `TAG_CHANGE tag=PLAYSTATE value=LOST` for an opponent → mark that opponent eliminated — packages/state/src/reducer/playerLost.ts + test
-- [ ] [S] Reducer case: own hero `TAG_CHANGE tag=HEALTH` → update `state.player.hp` — packages/state/src/reducer/health.ts + test
-- [ ] [S] Reducer case: `TAG_CHANGE tag=RESOURCES` on own controller → update `state.player.gold` (max gold for the turn) — packages/state/src/reducer/gold.ts + test
-- [ ] [S] Reducer case: `TAG_CHANGE tag=PLAYER_TECH_LEVEL` on own controller → update `state.player.tier` — packages/state/src/reducer/tier.ts + test
+- [x] [S] Define `GameState`, `PlayerState`, `OpponentState`, `Minion`, `Board`, `Shop`, `Hero` types in `packages/shared/src/state.ts`; export from shared — packages/shared/src/state.ts ✓
+- [x] [S] Implement `initialState(): GameState` — empty lobby, turn 0, no players yet — packages/state/src/initialState.ts + test ✓
+- [x] [S] Reducer case: `BLOCK_START` of type `TRIGGER` with name `TB_BaconShop_StartGame` → set `turn = 1` — packages/state/src/reducer.ts + test ✓
+- [x] [S] Reducer case: `TAG_CHANGE tag=PLAYSTATE value=LOST` for an opponent → mark that opponent eliminated — packages/state/src/reducer/playerLost.ts + test ✓
+- [x] [S] Reducer case: own hero `TAG_CHANGE tag=HEALTH` → update `state.player.hp` — packages/state/src/reducer/health.ts + test ✓
+- [x] [S] Reducer case: `TAG_CHANGE tag=RESOURCES` on own controller → update `state.player.gold` (max gold for the turn) — packages/state/src/reducer/gold.ts + test ✓
+- [x] [S] Reducer case: `TAG_CHANGE tag=PLAYER_TECH_LEVEL` on own controller → update `state.player.tier` — packages/state/src/reducer/tier.ts + test ✓
 
 ## M3 — Card data foundations
 
-- [ ] [S] Pin patch hash: write `packages/card-data/PATCH.txt` with `30.4.3` (or current); add `package.json` script `fetch-cards` that curls `https://api.hearthstonejson.com/v1/<PATCH>/enUS/cards.collectible.json` into `cards.json` — packages/card-data/PATCH.txt + fetch-cards script
-- [ ] [S] Loader: `loadCards(): Card[]` reads `cards.json`, returns typed array; type derived from JSON schema (subset: `dbfId`, `id`, `name`, `cardClass`, `cost`, `attack`, `health`, `race`, `techLevel`, `mechanics`) — packages/card-data/src/loadCards.ts + test
-- [ ] [S] Index: `byDbfId: Map<number, Card>` built lazily on first call; `getCard(dbfId)` reads from it — packages/card-data/src/indexes.ts + test
-- [ ] [S] BG-pool predicate: `isBattlegroundsPool(card)` returns true if card has `BATTLEGROUND_MINION_TIER_X` mechanic or `TECH_LEVEL` set — packages/card-data/src/isBattlegroundsPool.ts + test
+- [x] [S] Pin patch hash: write `packages/card-data/PATCH.txt` with `30.4.3` (or current); add `package.json` script `fetch-cards` that curls `https://api.hearthstonejson.com/v1/<PATCH>/enUS/cards.collectible.json` into `cards.json` — packages/card-data/PATCH.txt + fetch-cards script ✓
+- [x] [S] Loader: `loadCards(): Card[]` reads `cards.json`, returns typed array; type derived from JSON schema (subset: `dbfId`, `id`, `name`, `cardClass`, `cost`, `attack`, `health`, `race`, `techLevel`, `mechanics`) — packages/card-data/src/loadCards.ts + test ✓
+- [x] [S] Index: `byDbfId: Map<number, Card>` built lazily on first call; `getCard(dbfId)` reads from it — packages/card-data/src/indexes.ts + test ✓
+- [x] [S] BG-pool predicate: `isBattlegroundsPool(card)` returns true if card has `BATTLEGROUND_MINION_TIER_X` mechanic or `TECH_LEVEL` set — packages/card-data/src/isBattlegroundsPool.ts + test ✓
 
 ## M4 — Sim adapter foundations
 
-- [ ] [S] Add `@firestone-hs/simulate-bgs-battle` as a dependency of `packages/sim`; verify it imports cleanly; add a smoke test that runs ONE matchup and asserts non-null output — packages/sim/package.json + smoke test
-- [ ] [M] Adapter `toFirestoneBoard(ourBoard: Board): FirestoneBoard` — packages/sim/src/adapter.ts + test
-- [ ] [M] Adapter `fromFirestoneTranscript(t): Transcript` — packages/sim/src/fromTranscript.ts + test
-- [ ] [S] `simulateBatch(playerBoard, opponentBoards, n, seed) → BatchResult` — implementation + determinism test (same seed = same result twice) — packages/sim/src/simulateBatch.ts + test
+- [x] [S] Add `@firestone-hs/simulate-bgs-battle` as a dependency of `packages/sim`; verify it imports cleanly; add a smoke test that runs ONE matchup and asserts non-null output — packages/sim/package.json + smoke test ✓
+- [x] [M] Adapter `toFirestoneBoard(ourBoard: Board): FirestoneBoard` — packages/sim/src/adapter.ts + test ✓
+- [x] [M] Adapter `fromFirestoneTranscript(t): Transcript` — packages/sim/src/fromTranscript.ts + test ✓
+- [x] [S] `simulateBatch(playerBoard, opponentBoards, n, seed) → BatchResult` — implementation + determinism test (same seed = same result twice) — packages/sim/src/simulateBatch.ts + test ✓
 
 ## M5 — Advisor heuristics, seeds
 
-- [ ] [S] Define `Recommendation` type in shared: `{ action, score, confidence, reason }` where action is a discriminated union `Buy|Sell|Freeze|Reroll|TierUp|Reposition` — packages/shared/src/recommendation.ts
-- [ ] [S] Heuristic: `tierCurveScore(turn, hp, gold)` — return number in [0,1] meaning "should I tier up now"; lookup table from `docs/heuristics/tier-curve.md` — packages/advisor/src/heuristics/tierCurve.ts + test
-- [ ] [S] Heuristic: `tripleScore(state)` — for each shop card, returns bonus if buying it would create a triple given existing board+hand+pool — packages/advisor/src/heuristics/triple.ts + test
-- [ ] [S] Heuristic: `tribeSynergyScore(board, candidateCard)` — counts shared tribe members on board × tribe-bonus weight — packages/advisor/src/heuristics/tribeSynergy.ts + test
-- [ ] [S] `recommend(state)` v0: scores each shop card via tierCurve + triple + tribeSynergy, returns top 3 as Buy recs — packages/advisor/src/recommend.ts + test
+- [x] [S] Define `Recommendation` type in shared: `{ action, score, confidence, reason }` where action is a discriminated union `Buy|Sell|Freeze|Reroll|TierUp|Reposition` — packages/shared/src/recommendation.ts ✓
+- [x] [S] Heuristic: `tierCurveScore(turn, hp, gold)` — return number in [0,1] meaning "should I tier up now"; lookup table from `docs/heuristics/tier-curve.md` — packages/advisor/src/heuristics/tierCurve.ts + test ✓
+- [x] [S] Heuristic: `tripleScore(state)` — for each shop card, returns bonus if buying it would create a triple given existing board+hand+pool — packages/advisor/src/heuristics/triple.ts + test ✓
+- [x] [S] Heuristic: `tribeSynergyScore(board, candidateCard)` — counts shared tribe members on board × tribe-bonus weight — packages/advisor/src/heuristics/tribeSynergy.ts + test ✓
+- [x] [S] `recommend(state)` v0: scores each shop card via tierCurve + triple + tribeSynergy, returns top 3 as Buy recs — packages/advisor/src/recommend.ts + test ✓
 
 ## M6 — Misc infrastructure
 
 - [x] [M] `scripts/loop.sh` — autonomous builder loop. ✓ delivered with initial harness (uses opencode + MLX, prompt at scripts/loop-prompt.md)
 - [x] [S] `scripts/stop-loop.sh` — graceful stop via `.loop-stop` sentinel or `--force` for pkill. ✓ delivered
-- [ ] [S] Session log writer: `packages/shared/src/sessionLog.ts` exposes `appendSessionEvent(kind, payload)` writing JSONL to `logs/session-<ts>.jsonl`; rotates by session — packages/shared/src/sessionLog.ts + test
+- [x] [S] Session log writer: `packages/shared/src/sessionLog.ts` exposes `appendSessionEvent(kind, payload)` writing JSONL to `logs/session-<ts>.jsonl`; rotates by session — packages/shared/src/sessionLog.ts + test ✓
+
+## M7 — Advisor: simulation search
+
+- [ ] [S] `packages/state/src/reducer/shopRefresh.ts` — reducer case: `TAG_CHANGE tag=ZONE value=HAND` for a minion moving to hand from PLAY (sell) marks that minion as removed from board — packages/state/src/reducer/shopRefresh.ts + test
+- [ ] [S] `packages/state/src/reducer/minionPlaced.ts` — reducer case: entity with `TAG_CHANGE tag=ZONE value=PLAY` on player controller → add minion to `state.player.board` — packages/state/src/reducer/minionPlaced.ts + test
+- [ ] [S] `packages/state/src/reducer/shopMinion.ts` — reducer case: `TAG_CHANGE tag=ZONE value=HAND` for a shop minion → add it to `state.player.shop.minions` — packages/state/src/reducer/shopMinion.ts + test
+- [ ] [M] Opponent board predictor stub: `packages/advisor/src/opponentPredictor.ts` — `predictOpponentBoard(opp: OpponentState): Board` that returns opp.board as-is (no projection yet) + test — packages/advisor/src/opponentPredictor.ts + test
+- [ ] [S] Candidate action enumerator: `packages/advisor/src/candidates.ts` — `enumerateBuyCandidates(state)` returns one candidate per shop minion as `{action: BuyAction, projectedBoard: Board}` — packages/advisor/src/candidates.ts + test
+- [ ] [M] Simulation scorer: `packages/advisor/src/simScorer.ts` — `scoreCandidate(playerBoard, opponentBoards, n)` calls `simulateBatch` for each opponent board and returns `{winPct, avgHpDelta}` — packages/advisor/src/simScorer.ts + test (mock sim)
+- [ ] [S] Position hill-climber stub: `packages/advisor/src/positionHillClimb.ts` — `hillClimbPosition(board, scorer, maxSwaps)` returns best permutation found in ≤20 swaps; with n=0 sims it's a no-op — packages/advisor/src/positionHillClimb.ts + test
+- [ ] [S] Time-budget guard: `packages/advisor/src/withBudget.ts` — `withBudget<T>(fn: () => T, ms: number, fallback: T): T` runs fn and returns fallback if wall-clock exceeds ms — packages/advisor/src/withBudget.ts + test
+
+## M8 — LLM layer
+
+- [ ] [S] OpenAI-compat client: `packages/llm/src/client.ts` — `chatCompletion(messages, opts)` POSTs to `http://localhost:8080/v1/chat/completions`; returns `string`; timeout 1s; throws on non-2xx — packages/llm/src/client.ts + test (mock fetch)
+- [ ] [S] Prompt builder: `packages/llm/src/buildPrompt.ts` — `buildExplainPrompt(state, recs)` returns a system + user message array for "explain top recommendation in 1 sentence" — packages/llm/src/buildPrompt.ts + test
+- [ ] [S] State-hash cache: `packages/llm/src/cache.ts` — `hashState(state): string` (stable JSON stringify of key fields) + `LlmCache` Map with max 50 entries LRU — packages/llm/src/cache.ts + test
+- [ ] [M] `explain(rec, state)` implementation: calls `buildPrompt`, checks cache, if miss calls `chatCompletion` with 1s budget via `withBudget`, stores result; logs round-trip via `appendSessionEvent` — packages/llm/src/index.ts + test
+
+## M9 — Sell + freeze heuristics
+
+- [ ] [S] Sell heuristic: `packages/advisor/src/heuristics/sellScore.ts` — `sellScore(minion, board, state)` returns [0,1] based on: weakest board member by attack+health, zero synergy with remaining board, not a triple-in-progress — packages/advisor/src/heuristics/sellScore.ts + test
+- [ ] [S] Freeze heuristic: `packages/advisor/src/heuristics/freezeScore.ts` — `freezeScore(state)` returns [0,1]: high if shop has triple opportunity or top-tier synergy card AND player hp is safe — packages/advisor/src/heuristics/freezeScore.ts + test
+- [ ] [S] Reroll heuristic: `packages/advisor/src/heuristics/rerollScore.ts` — `rerollScore(state)` returns [0,1]: high if shop has no synergy + no triple + hp is safe AND gold after reroll > 0 — packages/advisor/src/heuristics/rerollScore.ts + test
+- [ ] [S] Wire sell/freeze/reroll into `recommend()`: include them in scored candidates alongside Buy + TierUp; still return top 3 — packages/advisor/src/recommend.ts update + test
 
 ---
 
@@ -91,4 +116,4 @@ to `loop-ledger.md`.
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
 
-_none yet_
+- [Q] Record fixture: requires a live Hearthstone Battlegrounds session. Run `scripts/enable-hs-logging.sh`, play a BG match, then copy `~/Library/Logs/Blizzard/Hearthstone/Logs/Hearthstone_<latest>/Power.log` into `fixtures/turn-1-bootstrap.log` and create `fixtures/README.md`.
