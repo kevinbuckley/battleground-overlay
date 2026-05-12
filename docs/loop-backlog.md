@@ -246,7 +246,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Pipeline session logging: in `packages/state/src/pipeline.ts`, after each `onEvent` call, invoke `appendSessionEvent('state_snapshot', { turn: state.turn, phase: state.phase, boardSize: state.player.board.minions.length })`; test verifies pipeline calls session logging without crashing — `packages/state/src/pipeline.ts` update + test (commit 1038b3a)
 
-- [ ] [M] Electron main window bootstrap: in `apps/overlay/src/main.ts`, implement `createOverlayWindow(BrowserWindowCtor: typeof BrowserWindow): BrowserWindow` that instantiates a transparent, always-on-top, frame-less BrowserWindow with `width:800, height:200, transparent:true, frame:false, alwaysOnTop:true, webPreferences:{ contextIsolation:true, nodeIntegration:false }`; test by passing a spy constructor and asserting it was called with those exact options — `apps/overlay/src/main.ts` update + test
+- [x] [M] Electron main window bootstrap: in `apps/overlay/src/main.ts`, implement `createOverlayWindow(BrowserWindowCtor: typeof BrowserWindow): BrowserWindow` that instantiates a transparent, always-on-top, frame-less BrowserWindow with `width:800, height:200, transparent:true, frame:false, alwaysOnTop:true, webPreferences:{ contextIsolation:true, nodeIntegration:false }`; test by passing a spy constructor and asserting it was called with those exact options — `apps/overlay/src/main.ts` update + test (commit 5e68f4c)
 
 ## Quarantined
 

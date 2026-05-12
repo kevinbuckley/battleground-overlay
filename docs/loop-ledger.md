@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 23:59  [DONE]  M21: Pipeline session logging — `needsExplanation` flag on Recommendation + pipeline calls `appendSessionEvent('state_snapshot', ...)` on each event, 5 tests (commit 1038b3a)
 
+2026-05-12 14:00  [DONE]  M21: Electron main window bootstrap — `createOverlayWindow` with 800x200 transparent frameless window, contextIsolation:true, nodeIntegration:false, 4 tests (commit 5e68f4c)
+
 2026-05-12 23:59  [DONE]  M21: State serializer — `serializeGameState` + `deserializeGameState` with Map serialization, 7 round-trip tests (commit 110937a)
 
 2026-05-12 23:59  [DONE]  M21: Shared utility functions — `clamp`, `lerp`, `round2` with 8 tests, exported from shared index (commit 15e1149)
