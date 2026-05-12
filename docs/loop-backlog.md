@@ -200,7 +200,7 @@ to `loop-ledger.md`.
 
 ## M18 — Shop mechanics
 
-- [ ] [S] Freeze handler: `packages/state/src/reducer/shopFreeze.ts` — `applyShopFreeze(state, event)` handles `TAG_CHANGE tag=FROZEN value=1` on player controller → sets `state.player.shop.frozen = true`; and `value=0` → false; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopFreeze.ts` + test
+- [x] [S] Freeze handler: `packages/state/src/reducer/shopFreeze.ts` — `applyShopFreeze(state, event)` handles `TAG_CHANGE tag=FROZEN value=1` on player controller → sets `state.player.shop.frozen = true`; and `value=0` → false; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopFreeze.ts` + test (commit a625a16)
 - [ ] [S] Reroll handler: `packages/state/src/reducer/shopReroll.ts` — `applyShopReroll(state, event)` handles `TAG_CHANGE tag=RESOURCES_USED` on own controller → decrements `state.player.gold` by the value; also clears `shop.frozen = false` on reroll; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopReroll.ts` + test
 - [ ] [S] Triple bonus handler: `packages/state/src/reducer/tripleBonus.ts` — `applyTripleBonus(state, event)` detects when 3 identical cardIds appear across board+hand (by checking entityRegistry), sets a `state.player.pendingTriple: string | null` field (add to PlayerState); 3 tests: no triple returns null, 3 of same returns cardId — `packages/state/src/reducer/tripleBonus.ts` + test
 
