@@ -11,3 +11,4 @@ export type { EntityRegistry, EntityInfo } from './entityRegistry';
 export { createPipeline } from './pipeline';
 export type { Pipeline } from './pipeline';
 export { replayFixture } from './replayFixture';
+export { serializeGameState, deserializeGameState } from './serialize';
