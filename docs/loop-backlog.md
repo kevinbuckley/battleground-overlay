@@ -238,7 +238,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Increment turn counter on MAIN_READY: in `packages/state/src/reducer/turnPhase.ts`, when `event.value === 'MAIN_READY'` increment `state.turn` AND set phase to 'shopping'; 3 tests: turn starts at 1, increments to 2 on second MAIN_READY, phase set to shopping — `packages/state/src/reducer/turnPhase.ts` update + test (commit 3941ab3)
 
-- [ ] [S] State serializer: `packages/state/src/serialize.ts` — `serializeGameState(state: GameState): string` (JSON.stringify), `deserializeGameState(json: string): GameState` (JSON.parse with cast); round-trip test with 4 assertions (turn preserved, phase preserved, board length preserved, shop length preserved); export both from `packages/state/src/index.ts` — `packages/state/src/serialize.ts` + test
+- [x] [S] State serializer: `packages/state/src/serialize.ts` — `serializeGameState(state: GameState): string` (JSON.stringify), `deserializeGameState(json: string): GameState` (JSON.parse with cast); round-trip test with 4 assertions (turn preserved, phase preserved, board length preserved, shop length preserved); export both from `packages/state/src/index.ts` — `packages/state/src/serialize.ts` + test (commit 110937a)
 
 - [ ] [S] Shared utility functions: `packages/shared/src/utils.ts` — `clamp(n: number, lo: number, hi: number): number`, `lerp(a: number, b: number, t: number): number`, `round2(n: number): number` (rounds to 2 decimal places using `Math.round(n * 100) / 100`); export all three from `packages/shared/src/index.ts`; 6 tests (clamp low, clamp high, clamp mid, lerp 0, lerp 1, round2) — `packages/shared/src/utils.ts` + test
 
