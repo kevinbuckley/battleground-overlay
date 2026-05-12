@@ -94,7 +94,7 @@ to `loop-ledger.md`.
 - [x] [S] Candidate action enumerator: `packages/advisor/src/candidates.ts` — `enumerateBuyCandidates(state)` returns one candidate per shop minion as `{action: BuyAction, projectedBoard: Board}` — packages/advisor/src/candidates.ts + test
 - [x] [M] Simulation scorer: `packages/advisor/src/simScorer.ts` — `scoreCandidate(playerBoard, playerState, opponents, n)` calls `simulateBatch` for each opponent board and returns `{winPct, avgHpDelta}` — packages/advisor/src/simScorer.ts + test (commit 3673a6f)
 - [x] [S] Position hill-climber stub: `packages/advisor/src/positionHillClimb.ts` — `hillClimbPosition(board, scorer, maxSwaps)` returns best permutation found in ≤20 swaps; with n=0 sims it's a no-op — packages/advisor/src/positionHillClimb.ts + test (commit add7043)
-- [ ] [S] Time-budget guard: `packages/advisor/src/withBudget.ts` — `withBudget<T>(fn: () => T, ms: number, fallback: T): T` runs fn and returns fallback if wall-clock exceeds ms — packages/advisor/src/withBudget.ts + test
+- [x] [S] Time-budget guard: `packages/advisor/src/withBudget.ts` — `withBudget<T>(fn: () => T, ms: number, fallback: T): T` runs fn and returns fallback if wall-clock exceeds ms — packages/advisor/src/withBudget.ts + test (commit b50b73b)
 
 ## M8 — LLM layer
 
