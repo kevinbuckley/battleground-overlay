@@ -338,7 +338,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Scrubber seek test: in `apps/replay/src/scrubber.test.ts`, add 2 tests — (1) create Scrubber with 5 synthetic TAG_CHANGE events, call `seek(2)`, assert `currentIndex === 2` and `getState()` reflects 2 events applied; (2) call `seek(0)`, assert state equals `initialState()` — `apps/replay/src/scrubber.test.ts` update + `apps/replay/src/scrubber.ts` (added `getState()`) ✓
 
-- [ ] [S] Board panel IPC push: in `apps/overlay/src/ipcBridge.ts`, after pushing `overlay:state-update`, call `win.webContents.send('overlay:board-update', { minions: state.player.board.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health, taunt: m.taunt, divineShield: m.divineShield })) })`; add 1 test to `ipcBridge.test.ts` asserting `overlay:board-update` is sent with the board minions shape — `apps/overlay/src/ipcBridge.ts` update + test
+- [x] [S] Board panel IPC push: in `apps/overlay/src/ipcBridge.ts`, after pushing `overlay:state-update`, call `win.webContents.send('overlay:board-update', { minions: state.player.board.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health, taunt: m.taunt, divineShield: m.divineShield })) })`; add 1 test to `ipcBridge.test.ts` asserting `overlay:board-update` is sent with the board minions shape — `apps/overlay/src/ipcBridge.ts` update + test (commit aa4be38)
 
 - [ ] [S] Opponent panel IPC push: in `apps/overlay/src/ipcBridge.ts`, push `overlay:opponents-update` with `state.opponents.map(o => ({ entityId: o.entityId, hp: o.hero.hp, tier: o.tier, eliminated: o.eliminated }))`; add 1 test asserting the channel is sent with that shape — `apps/overlay/src/ipcBridge.ts` update + test
 

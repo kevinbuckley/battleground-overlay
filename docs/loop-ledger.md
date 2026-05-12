@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:30  [DONE]  M29: Board panel IPC push — `overlay:board-update` sent with minion shape (cardId, attack, health, taunt, divineShield), 1 test (commit aa4be38)
+
 2026-05-12 22:00  [DONE]  M28: Session log round-trip test — 55 files → prune(50) → 50 remain (commit ab7409d)
 
 2026-05-12 23:30  [DONE]  M29: Scrubber seek test — added `getState()` method to `Scrubber` class, 2 new tests in `scrubber.test.ts` (currentIndex assertion + seek(0) reset), 9 total tests (commit 3d09e4c)
