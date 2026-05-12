@@ -5,6 +5,7 @@ export function initialState(): GameState {
     turn: 0,
     phase: 'lobby',
     lobbySize: 8,
+    anomaly: null,
     player: {
       entityId: 0,
       playerId: 0,

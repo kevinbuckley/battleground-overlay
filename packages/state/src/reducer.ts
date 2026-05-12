@@ -1,5 +1,6 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
@@ -111,6 +112,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'CONTROLLER') {
         return applyMinionPlaced(state, event);
+      }
+      if (event.tag === 'ANOMALY') {
+        return applyAnomaly(state, event);
       }
       return applyTripleBonus(state, event);
 

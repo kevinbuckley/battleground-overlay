@@ -58,6 +58,7 @@ export interface GameState {
   turn: number;
   phase: 'lobby' | 'shopping' | 'combat' | 'end';
   lobbySize: number;
+  anomaly: string | null;
   player: PlayerState;
   opponents: OpponentState[];
 }
