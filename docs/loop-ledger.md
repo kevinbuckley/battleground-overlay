@@ -69,3 +69,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M7: Advice panel — `advicePanel.ts` with setAdvice/getAdvice/clearAdvice + IPC handler in `main.ts`, 3 tests (commit 3292eeb)
 
 2026-05-12 00:00  [DONE]  M7: "Why?" expand → LLM explanation — `explanationPanel.ts` with setExplanation/getExplanation/clearExplanation + IPC handler in `main.ts`, 4 tests (commit 74c3243)
+
+2026-05-12 00:00  [DONE]  M7: Board panel — `boardPanel.ts` with setBoardPanel/getBoardPanel/clearBoardPanel + IPC handler in `main.ts`, 3 tests (commit 3187f23)

@@ -145,7 +145,7 @@ to `loop-ledger.md`.
 - [x] [S] Anchor to Hearthstone window (macOS Accessibility API) — `apps/overlay/src/anchor.ts` + test, wired into `main.ts` (commit 9635ff8)
 - [x] [S] Advice panel (current top recommendation) — `advicePanel.ts` + test, wired into `main.ts` (commit 3292eeb)
 - [x] [S] "Why?" expand → LLM explanation — `explanationPanel.ts` with setExplanation/getExplanation/clearExplanation + IPC handler in `main.ts`, 4 tests (commit 74c3243)
-- [ ] [S] Board panel (recommended positioning)
+- [x] [S] Board panel (recommended positioning) — `packages/shared/src/boardPanel.ts` + `apps/overlay/src/boardPanel.test.ts` + IPC handler in `main.ts`, 3 tests (commit 3187f23)
 - [ ] [S] Opponent panel (projected scaling per opponent)
 - [ ] [S] Damage forecast widget
 - [ ] [S] Hotkeys: toggle, reload, hide
