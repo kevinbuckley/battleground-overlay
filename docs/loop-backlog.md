@@ -304,7 +304,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Preload script: `apps/overlay/src/preload.ts` — exports `setupPreload(contextBridge, ipcRenderer)` that calls `contextBridge.exposeInMainWorld('overlayBridge', { onRecs(cb: (r: unknown[]) => void): void, onExplanation(cb: (t: string) => void): void })` wiring `ipcRenderer.on('overlay:recs-update', ...)` and `ipcRenderer.on('overlay:explanation-update', ...)`; test: mock both, call `setupPreload`, assert `exposeInMainWorld` called with `'overlayBridge'` and object containing `onRecs` and `onExplanation` — `apps/overlay/src/preload.ts` + test (commit 26a857d)
 
-- [ ] [S] Wire renderer into main window: in `apps/overlay/src/main.ts`, replace `win.loadURL('about:blank')` with `win.loadFile(new URL('./renderer.html', import.meta.url).pathname)`; update the existing `main.test.ts` spy to assert `loadFile` is called instead of `loadURL` — `apps/overlay/src/main.ts` update
+- [x] [S] Wire renderer into main window: in `apps/overlay/src/main.ts`, replace `win.loadURL('about:blank')` with `win.loadFile(new URL('./renderer.html', import.meta.url).pathname)`; update the existing `main.test.ts` spy to assert `loadFile` is called instead of `loadURL` — `apps/overlay/src/main.ts` update (already done in createOverlayWindow.ts:41 + main.test.ts:45-48)
 
 ## M26 — LLM + session integration
 

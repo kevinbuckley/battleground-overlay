@@ -1,9 +1,11 @@
 import { recommend } from '@overlay/advisor';
+import { explain } from '@overlay/llm';
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { type Pipeline, createPipeline } from '@overlay/state';
 import type { BrowserWindow } from 'electron';
 import { setAdvice } from './advicePanel';
+import { setExplanation } from './explanationPanel';
 import { startBridge, stopBridge } from './ipcBridge';
 
 export interface Coordinator {
@@ -24,6 +26,11 @@ export function startCoordinator(win: BrowserWindow): () => void {
       const top = recs[0];
       if (top) {
         setAdvice(top);
+        if (top.needsExplanation === true) {
+          explain(top, pipeline.getState())
+            .then((text) => setExplanation(text))
+            .catch(() => {});
+        }
       }
     } catch {
       // If recommend throws, clear advice rather than crashing
