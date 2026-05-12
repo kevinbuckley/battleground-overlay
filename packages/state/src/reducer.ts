@@ -7,6 +7,7 @@ import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
+import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyTier } from './reducer/tier';
 
@@ -49,6 +50,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         (event.value === 'GRAVEYARD' || event.value === 'REMOVEDFROMGAME')
       ) {
         return applyMinionRemoved(state, event);
+      }
+      if (event.tag === 'ZONE' && event.value === 'PLAY') {
+        return applyShopBuy(state, event);
       }
       return applyMinionPlaced(state, event);
 
