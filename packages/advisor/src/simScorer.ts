@@ -26,6 +26,7 @@ export function scoreCandidate(
 
   let totalWins = 0;
   let totalSims = 0;
+  let totalHpDelta = 0;
 
   for (const opp of opponents) {
     if (opp.eliminated) continue;
@@ -46,7 +47,12 @@ export function scoreCandidate(
     const result = simulateBatch(ourFirestoneBoard, oppFirestoneBoard, n, hashOpponent(opp));
 
     totalWins += result.wins;
-    totalSims += result.wins + result.losses + result.ties;
+    const totalOutcomes = result.wins + result.losses + result.ties;
+    totalSims += totalOutcomes;
+
+    // Weighted HP delta: win → +opponentTier, loss → -playerTier, tie → 0
+    const oppDelta = result.wins * opp.tier - result.losses * playerState.tier;
+    totalHpDelta += oppDelta;
   }
 
   if (totalSims === 0) {
@@ -55,7 +61,7 @@ export function scoreCandidate(
 
   return {
     winPct: totalWins / totalSims,
-    avgHpDelta: 0,
+    avgHpDelta: totalHpDelta / totalSims,
   };
 }
 

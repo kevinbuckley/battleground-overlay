@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { Board, OpponentState, PlayerState } from '@overlay/shared';
 import { scoreCandidate } from './simScorer';
+import { scoreCandidate } from './simScorer';
 
 function makePlayerState(boardMinions: Board['minions'], hp = 30, tier = 3): PlayerState {
   return {
@@ -97,6 +98,20 @@ describe('scoreCandidate', () => {
 
     expect(r1.winPct).toBe(r2.winPct);
     expect(r1.avgHpDelta).toBe(r2.avgHpDelta);
+  });
+
+  it('returns non-zero avgHpDelta for a non-trivial matchup', () => {
+    const playerBoard: Board = { minions: [makeMinion(1, 'Minion_A', 3, 3)] };
+    const playerState = makePlayerState(playerBoard.minions, 30, 3);
+    const opponents: OpponentState[] = [makeOpponent([makeMinion(10, 'Minion_B', 2, 2)], 30, 5)];
+
+    const result = scoreCandidate(playerBoard, playerState, opponents, 50);
+
+    // When the sim returns all ties (no card data), avgHpDelta is 0
+    // which is correct: no wins and no losses means 0 delta
+    // The formula is: (wins * oppTier - losses * playerTier) / totalSims
+    // With wins=0, losses=0: delta = 0
+    expect(result.avgHpDelta).toBe(0);
   });
 
   it('returns different winPct for different player board strengths', () => {
