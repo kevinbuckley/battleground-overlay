@@ -1,7 +1,8 @@
 import type { GameState, Recommendation } from '@overlay/shared';
+import { sellScore } from './heuristics/sellScore';
 import { tierCurveScore } from './heuristics/tierCurve';
-import { tripleScore } from './heuristics/triple';
 import { tribeSynergyScore } from './heuristics/tribeSynergy';
+import { tripleScore } from './heuristics/triple';
 
 const TOP_N = 3;
 
@@ -41,6 +42,19 @@ export function recommend(state: GameState): Recommendation[] {
         }
       : null;
 
-  const all = [...buyRecs, ...(tierRec ? [tierRec] : [])];
+  const sellRecs: Recommendation[] = boardMinions
+    .map((minion, idx) => {
+      const score = sellScore(minion, boardMinions, state);
+      if (score < 0.5) return null;
+      return {
+        action: { type: 'Sell', boardIndex: idx },
+        score,
+        confidence: Math.min(1, score + 0.1),
+        reason: score >= 0.8 ? 'weak with no synergy' : 'low sell value',
+      } as Recommendation;
+    })
+    .filter((r): r is Recommendation => r !== null);
+
+  const all = [...buyRecs, ...(tierRec ? [tierRec] : []), ...sellRecs];
   return all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
 }

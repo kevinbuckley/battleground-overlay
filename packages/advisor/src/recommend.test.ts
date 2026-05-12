@@ -1,14 +1,20 @@
 import { describe, expect, it } from 'bun:test';
-import { recommend } from './recommend';
-import { initialState } from '@overlay/state';
 import type { Minion } from '@overlay/shared';
+import { initialState } from '@overlay/state';
+import { recommend } from './recommend';
 
 function minion(cardId: string, tribes: string[] = []): Minion {
   return {
     entityId: Math.floor(Math.random() * 10000),
-    cardId, attack: 1, health: 1,
-    taunt: false, divineShield: false, poisonous: false,
-    reborn: false, frozen: false, tribes,
+    cardId,
+    attack: 1,
+    health: 1,
+    taunt: false,
+    divineShield: false,
+    poisonous: false,
+    reborn: false,
+    frozen: false,
+    tribes,
   };
 }
 
@@ -25,9 +31,7 @@ describe('recommend', () => {
         ...base.player,
         shop: {
           ...base.player.shop,
-          minions: [
-            minion('A'), minion('B'), minion('C'), minion('D'), minion('E'),
-          ],
+          minions: [minion('A'), minion('B'), minion('C'), minion('D'), minion('E')],
         },
       },
     };
@@ -36,7 +40,11 @@ describe('recommend', () => {
 
   it('ranks triple opportunity highest', () => {
     const base = initialState();
-    const board = [minion('TRIPLE_CARD'), minion('TRIPLE_CARD')];
+    const board = [
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+      { ...minion('TRIPLE_CARD'), attack: 5, health: 5, tribes: ['Dragon'] },
+    ];
+    const shopMinion = { ...minion('TRIPLE_CARD'), tribes: ['Dragon'] };
     const state = {
       ...base,
       player: {
@@ -44,7 +52,7 @@ describe('recommend', () => {
         board: { minions: board },
         shop: {
           ...base.player.shop,
-          minions: [minion('TRIPLE_CARD'), minion('OTHER')],
+          minions: [shopMinion, minion('OTHER')],
         },
       },
     };

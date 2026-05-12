@@ -2,6 +2,7 @@ export { recommend } from './recommend';
 export { tierCurveScore } from './heuristics/tierCurve';
 export { tripleScore } from './heuristics/triple';
 export { tribeSynergyScore } from './heuristics/tribeSynergy';
+export { sellScore } from './heuristics/sellScore';
 export { predictOpponentBoard } from './opponentPredictor';
 export { enumerateBuyCandidates } from './candidates';
 export type { BuyCandidate } from './candidates';
