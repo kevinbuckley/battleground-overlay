@@ -137,3 +137,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 20:00  [DONE]  M19: Replay CLI wiring — `run(path)` loads fixture, creates Scrubber, replays to end, prints formatState + exportReport; 3 tests (commit 543ba0e)
 
 2026-05-12 20:30  [DONE]  M20: Golden minion detector — `applyGoldenMinion` handles `TAG_CHANGE tag=PREMIUM value=1`, adds `golden: boolean` to Minion, 3 tests (commit b9e9f0e)
+
+2026-05-12 19:00  [DONE]  M21: Hero power tracker — `applyHeroPower` handles `TAG_CHANGE tag=NUM_TIMES_HERO_POWER_USED_THIS_GAME`, sets `state.player.heroPowerUsedThisTurn`, 4 tests, wired into reducer (commit 7a15390)

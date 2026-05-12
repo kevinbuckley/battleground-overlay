@@ -213,7 +213,7 @@ to `loop-ledger.md`.
 ## M20 — Golden minion and hero power stubs
 
 - [x] [S] Golden minion detector: `packages/state/src/reducer/goldenMinion.ts` — `applyGoldenMinion(state, event)` handles `TAG_CHANGE tag=PREMIUM value=1` on an entity in the player board or shop → sets `minion.golden = true` on that entity (add `golden: boolean` to Minion); wire into reducer; 3 tests — `packages/state/src/reducer/goldenMinion.ts` + test (commit b9e9f0e)
-- [ ] [S] Hero power tracker: `packages/state/src/reducer/heroPower.ts` — `applyHeroPower(state, event)` handles `TAG_CHANGE tag=NUM_TIMES_HERO_POWER_USED_THIS_GAME value=N` → sets `state.player.heroPowerUsedThisTurn = true` (add field to PlayerState, reset to false on MAIN_READY step); 4 tests — `packages/state/src/reducer/heroPower.ts` + test
+- [x] [S] Hero power tracker: `packages/state/src/reducer/heroPower.ts` — `applyHeroPower(state, event)` handles `TAG_CHANGE tag=NUM_TIMES_HERO_POWER_USED_THIS_GAME value=N` → sets `state.player.heroPowerUsedThisTurn = true` (add field to PlayerState, reset to false on MAIN_READY step); 4 tests — `packages/state/src/reducer/heroPower.ts` + test (commit 7a15390)
 
 ## Quarantined
 
