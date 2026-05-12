@@ -308,13 +308,31 @@ to `loop-ledger.md`.
 
 ## M26 — LLM + session integration
 
-- [ ] [S] LLM explain in coordinator: in `apps/overlay/src/coordinator.ts`, after `setAdvice(top)`, if `top.needsExplanation === true`, call `explain(top, state)` from `@overlay/llm` (fire-and-forget, `.then(text => setExplanation(text)).catch(() => {})`) ; update `coordinator.test.ts` to mock `explain` and assert it is called when `needsExplanation=true` and NOT called when false — `apps/overlay/src/coordinator.ts` update + test
+- [x] [S] LLM explain in coordinator: `explain(top, state)` already wired in `apps/overlay/src/coordinator.ts` — fires when `top.needsExplanation === true`, result passed to `setExplanation` ✓ (commit 86e07bc)
 
-- [ ] [S] Session log calls in coordinator: in `apps/overlay/src/coordinator.ts` inside the `pipeline.onEvent` wrapper, after computing `recs`, call `appendSessionEvent('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })` from `@overlay/shared`; update `coordinator.test.ts` to mock `appendSessionEvent` and assert it is called once per event fed — `apps/overlay/src/coordinator.ts` update + test
+- [ ] [S] Session log calls in coordinator: add `opts?: { logFn?: (kind: string, payload: unknown) => void }` param to `startCoordinator(win, opts?)` in `apps/overlay/src/coordinator.ts`; inside `pipeline.onEvent`, after computing recs call `(opts?.logFn ?? appendSessionEvent)('recommendation', { turn: state.turn, action: recs[0]?.action ?? null })`; add 1 test to `coordinator.test.ts`: pass a spy as `opts.logFn`, feed one TAG_CHANGE event, assert spy called with kind `'recommendation'` — `apps/overlay/src/coordinator.ts` update + test
 
-- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+- [x] [S] RECOVERY: clamp already in `packages/shared/src/utils.ts` ✓
 
-- [ ] [S] RECOVERY: Add `isShoppingPhase(state: GameState): boolean` to `packages/shared/src/utils.ts` returning state.phase==='shopping'; test two cases — packages/shared/src/utils.ts update + test
+- [ ] [S] RECOVERY: `isShoppingPhase(state: GameState): boolean` in `packages/shared/src/utils.ts` — returns `state.phase === 'shopping'`; export from `packages/shared/src/index.ts`; 2 tests: returns true when phase='shopping', false when phase='combat' — `packages/shared/src/utils.ts` + test
+
+## M27 — Advisor completeness
+
+- [ ] [S] Triple discover advice in recommend: in `packages/advisor/src/recommend.ts`, when `state.player.pendingTriple !== null`, return early with `[{ action: { type: 'Buy', cardId: state.player.pendingTriple, shopIndex: -1 }, score: 1.0, confidence: 1.0, reason: 'complete your triple', needsExplanation: false }]` before any other scoring; 3 tests: pendingTriple returns single rec score=1.0, null pendingTriple doesn't trigger early return, returned rec has correct cardId — `packages/advisor/src/recommend.ts` update + test
+
+- [ ] [S] Reposition recommendation in advisor: in `packages/advisor/src/recommend.ts`, call `hillClimbPosition(state.player.board, state.opponents, 50)` from `positionHillClimb`; if `result.scoreDelta > 0.05`, push `{ action: { type: 'Reposition', fromIndex: result.fromIndex, toIndex: result.toIndex }, score: result.scoreDelta, confidence: result.scoreDelta, reason: 'improved win rate by repositioning' }` into candidates before sort; 3 tests: empty board → no reposition, scoreDelta=0.1 → rec added, scoreDelta=0.01 → not added — `packages/advisor/src/recommend.ts` update + test
+
+- [ ] [S] Renderer script: `apps/overlay/src/renderer.ts` — exports `initRenderer(bridge: { onRecs(cb: (r: unknown[]) => void): void; onExplanation(cb: (t: string) => void): void })` that calls `bridge.onRecs` to update `#advice-action` text from top rec's action type and `#advice-reason` from reason, and `bridge.onExplanation` to set `#explanation` text and toggle class `visible`; 4 tests using jsdom or plain object mocks: onRecs updates action text, onRecs updates reason, onExplanation shows explanation, empty string hides it — `apps/overlay/src/renderer.ts` + test
+
+- [ ] [S] Log pruning on startup: import `pruneOldSessions` from `@overlay/shared` and call `pruneOldSessions(50)` at top of `createOverlayWindow` in `apps/overlay/src/main.ts`; add a test that passes a spy as part of module mock or by refactoring `createOverlayWindow` to accept `opts?: { pruneFn?: () => void }` and assert the spy is called — `apps/overlay/src/main.ts` update + test
+
+## M28 — Integration tests
+
+- [ ] [M] End-to-end pipeline integration test: `packages/state/src/pipeline.integration.test.ts` — create `createPipeline()`, feed synthetic events: `{ kind: 'BLOCK_START', blockType: 'TRIGGER', effectCardId: 'TB_BaconShop_StartGame', entity: '1', index: 0 }`, then `{ kind: 'TAG_CHANGE', entity: '2', tag: 'HEALTH', value: '40' }`, then `{ kind: 'TAG_CHANGE', entity: '2', tag: 'RESOURCES', value: '3' }`; assert `pipeline.getState().turn === 1`, `.player.gold === 3`; no external files needed — `packages/state/src/pipeline.integration.test.ts`
+
+- [ ] [S] Session log round-trip test: add a test to `packages/shared/src/sessionLog.test.ts` — write 55 files named `session-<n>.jsonl` into a tmp dir, call `pruneOldSessions(50, tmpDir)`, assert exactly 50 files remain — `packages/shared/src/sessionLog.test.ts` update
+
+- [ ] [S] Opponent board prediction in budgetScorer: in `packages/advisor/src/budgetScorer.ts`, import `predictOpponentBoard` from `./opponentPredictor`; replace `opponents` passed to `scoreCandidate` with `state.opponents.map(o => ({ ...o, board: predictOpponentBoard(o, state.turn).board }))`; 2 tests: empty opponent board gets predicted expansion, non-empty opponent board is updated — `packages/advisor/src/budgetScorer.ts` update + test
 
 ## Quarantined
 
