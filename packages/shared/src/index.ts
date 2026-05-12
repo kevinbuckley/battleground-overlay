@@ -23,3 +23,4 @@ export type { BoardPanelState } from './boardPanel';
 export { setBoardPanel, getBoardPanel, clearBoardPanel } from './boardPanel';
 export type { OpponentPanelState } from './opponentPanel';
 export { setOpponentPanel, getOpponentPanel, clearOpponentPanel } from './opponentPanel';
+export { clamp, lerp, round2 } from './utils';
