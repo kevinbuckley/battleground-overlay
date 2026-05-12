@@ -324,7 +324,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Renderer script: `apps/overlay/src/renderer.ts` — exports `initRenderer(bridge: { onRecs(cb: (r: unknown[]) => void): void; onExplanation(cb: (t: string) => void): void })` that calls `bridge.onRecs` to update `#advice-action` text from top rec's action type and `#advice-reason` from reason, and `bridge.onExplanation` to set `#explanation` text and toggle class `visible`; 4 tests using jsdom or plain object mocks: onRecs updates action text, onRecs updates reason, onExplanation shows explanation, empty string hides it — `apps/overlay/src/renderer.ts` + test (commit 027ac81)
 
-- [ ] [S] Log pruning on startup: import `pruneOldSessions` from `@overlay/shared` and call `pruneOldSessions(50)` at top of `createOverlayWindow` in `apps/overlay/src/main.ts`; add a test that passes a spy as part of module mock or by refactoring `createOverlayWindow` to accept `opts?: { pruneFn?: () => void }` and assert the spy is called — `apps/overlay/src/main.ts` update + test
+- [x] [S] Log pruning on startup: import `pruneOldSessions` from `@overlay/shared` and call `pruneOldSessions(50)` at top of `createOverlayWindow` in `apps/overlay/src/main.ts`; add a test that passes a spy as part of module mock or by refactoring `createOverlayWindow` to accept `opts?: { pruneFn?: () => void }` and assert the spy is called — `apps/overlay/src/main.ts` update + test (commit 8dbfcbf)
 
 ## M28 — Integration tests
 
