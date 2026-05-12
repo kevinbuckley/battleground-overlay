@@ -112,6 +112,8 @@ to `loop-ledger.md`.
 
 ---
 
+- [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
