@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 21:30  [DONE]  M24: Poisonous tag handler — `applyPoisonous` handles `TAG_CHANGE tag=POISONOUS value=1/0` on entities in PLAY zone, sets `minion.poisonous`, wired into reducer, 6 tests (commit 04bf37d)
+
 2026-05-12 21:30  [DONE]  M24: Taunt tag handler — `applyTaunt` handles `TAG_CHANGE tag=TAUNT value=1/0` on PLAY zone entities, wired into reducer, 6 tests (commit 42dc3e7)
 
 2026-05-12 22:00  [DONE]  M23: Silence handler — `applySilence` handles `TAG_CHANGE tag=SILENCED value=1` on entities in PLAY zone, resets taunt/divineShield/poisonous/reborn to false, 4 tests, wired into reducer (commit 9400df9)

@@ -292,7 +292,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Taunt tag handler: `packages/state/src/reducer/taunt.ts` — `applyTaunt(state, event)` handles `TAG_CHANGE tag=TAUNT value=1` and `value=0` on entities in PLAY zone → sets `minion.taunt = true/false` (`taunt` already on Minion type); wire into reducer; 4 tests (set taunt, clear taunt, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/taunt.ts` + test (commit 42dc3e7)
 
-- [ ] [S] Poisonous tag handler: `packages/state/src/reducer/poisonous.ts` — `applyPoisonous(state, event)` handles `TAG_CHANGE tag=POISONOUS value=1` and `value=0` on entities in PLAY zone → sets `minion.poisonous = true/false` (`poisonous` already on Minion type); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/poisonous.ts` + test
+- [x] [S] Poisonous tag handler: `packages/state/src/reducer/poisonous.ts` — `applyPoisonous(state, event)` handles `TAG_CHANGE tag=POISONOUS value=1` and `value=0` on entities in PLAY zone → sets `minion.poisonous = true/false` (`poisonous` already on Minion type); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/poisonous.ts` + test (commit 04bf37d)
 
 - [ ] [S] Windfury tag handler: `packages/state/src/reducer/windfury.ts` — `applyWindfury(state, event)` handles `TAG_CHANGE tag=WINDFURY value=1` and `value=0`; add `windfury: boolean` to `Minion` interface in `packages/shared/src/state.ts`; wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/windfury.ts` + test
 
