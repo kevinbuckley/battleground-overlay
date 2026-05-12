@@ -141,6 +141,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add LICENSE file (MIT, kevinbuckley) at repo root — LICENSE
 
+- [ ] [S] RECOVERY: Add a CONTRIBUTING.md stub pointing builders at docs/loop-backlog.md — CONTRIBUTING.md
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
