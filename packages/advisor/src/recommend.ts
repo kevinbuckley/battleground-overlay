@@ -1,4 +1,5 @@
 import type { GameState, Recommendation } from '@overlay/shared';
+import { scoreBuysWithSim } from './budgetScorer';
 import { freezeMinion } from './heuristics/freezeMinion';
 import { rerollScore } from './heuristics/rerollScore';
 import { sellScore } from './heuristics/sellScore';
@@ -13,7 +14,11 @@ export function recommend(state: GameState): Recommendation[] {
   const shopMinions = player.shop.minions;
   const boardMinions = player.board.minions;
 
-  const buyRecs: Recommendation[] = shopMinions.map((shopCard, i) => {
+  // Simulation-based buy scores (primary source)
+  const simRecs = scoreBuysWithSim(state, 50, 2000);
+
+  // Heuristic-based buy scores (fallback when sim returns nothing)
+  const heuristicBuyRecs: Recommendation[] = shopMinions.map((shopCard, i) => {
     const triple = tripleScore(shopCard, boardMinions);
     const tribe = tribeSynergyScore(boardMinions, shopCard);
     const score = triple * 0.6 + tribe * 0.4;
@@ -25,6 +30,10 @@ export function recommend(state: GameState): Recommendation[] {
       reason: triple > 0 ? 'triple opportunity' : tribe > 0 ? 'tribe synergy' : 'no strong reason',
     };
   });
+
+  // Use sim recs only when they have actual simulation signal (score > 0);
+  // otherwise fall back to heuristics so existing behavior is preserved.
+  const buyRecs: Recommendation[] = simRecs.some((r) => r.score > 0) ? simRecs : heuristicBuyRecs;
 
   const tierScore = tierCurveScore(
     state.turn,
