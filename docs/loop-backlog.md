@@ -282,7 +282,7 @@ to `loop-ledger.md`.
   hero, no-op on non-play entity) —
   `packages/state/src/reducer/silence.ts` + test, wired into reducer
   (commit 9400df9)
-- [ ] [S] Hand size tracker: `packages/state/src/reducer/handSize.ts` —
+- [x] [S] Hand size tracker: `packages/state/src/reducer/handSize.ts` —
   `applyHandSize(state, event)` handles `TAG_CHANGE tag=NUM_CARDS_IN_HAND` on
   player controller → updates `state.player.handSize: number` (add field
   to PlayerState); 4 tests (initial=0, increments to 3, decrements to 2, no-op on wrong entity) —
