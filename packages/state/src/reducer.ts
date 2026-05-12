@@ -11,6 +11,7 @@ import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopSell } from './reducer/shopSell';
 import { applyTier } from './reducer/tier';
+import { applyTurnPhase } from './reducer/turnPhase';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
   switch (event.kind) {
@@ -57,6 +58,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'ZONE' && event.value === 'HAND') {
         return applyShopSell(state, event);
+      }
+      if (event.tag === 'STEP') {
+        return applyTurnPhase(state, event);
       }
       return applyMinionPlaced(state, event);
 
