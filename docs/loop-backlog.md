@@ -168,10 +168,10 @@ to `loop-ledger.md`.
 
 ## M10 — Patch update pipeline
 
-- [x] [S] Patch version reader: `packages/card-data/src/patchVersion.ts` — `patchVersion(): string` reads `PATCH.txt` synchronously and returns the trimmed string; test: returns "30.4.3" from existing file — `packages/card-data/src/patchVersion.ts` + test
-- [x] [S] Patch version setter: `packages/card-data/src/setPatchVersion.ts` — `setPatchVersion(version: string): void` writes to `PATCH.txt`; test: write "31.0.0", read back confirms — `packages/card-data/src/setPatchVersion.ts` + test
-- [x] [S] Patch diff checker: `packages/card-data/src/patchDiff.ts` — `patchDiff(oldCards: Card[], newCards: Card[]): {added: Card[], removed: Card[], statChanges: {id: string, oldStat: string, newStat: string}[]}` compares two card arrays, returns added/removed by dbfId and stat changes (cost/attack/health) for shared cards; 5 tests — `packages/card-data/src/patchDiff.ts` + test
-- [x] [S] Bump script: `scripts/bump-patch.ts` — CLI that reads current patch, fetches new cards from HearthstoneJSON, runs `patchDiff` against old cards.json, writes new `cards.json` and `PATCH.txt`, prints diff summary to stdout; test: stub fetch, assert diff output format — `scripts/bump-patch.ts` + test
+- [x] [S] Patch version reader: `packages/card-data/src/patchVersion.ts` — `patchVersion(): string` reads `PATCH.txt` synchronously and returns the trimmed string; test: returns "30.4.3" from existing file — `packages/card-data/src/patchVersion.ts` + test (commit a33691a)
+- [x] [S] Patch version setter: `packages/card-data/src/setPatchVersion.ts` — `setPatchVersion(version: string): void` writes to `PATCH.txt`; test: write "31.0.0", read back confirms — `packages/card-data/src/setPatchVersion.ts` + test (commit a33691a)
+- [x] [S] Patch diff checker: `packages/card-data/src/patchDiff.ts` — `patchDiff(oldCards: Card[], newCards: Card[]): {added: Card[], removed: Card[], statChanges: {id: string, oldStat: string, newStat: string}[]}` compares two card arrays, returns added/removed by dbfId and stat changes (cost/attack/health) for shared cards; 5 tests — `packages/card-data/src/patchDiff.ts` + test (commit a33691a)
+- [x] [S] Bump script: `scripts/bump-patch.ts` — CLI that reads current patch, fetches new cards from HearthstoneJSON, runs `patchDiff` against old cards.json, writes new `cards.json` and `PATCH.txt`, prints diff summary to stdout; test: stub fetch, assert diff output format — `scripts/bump-patch.ts` + test (commit a33691a)
 
 ## M14 — State reducer completions
 
