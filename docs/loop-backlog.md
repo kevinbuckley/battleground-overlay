@@ -318,7 +318,7 @@ to `loop-ledger.md`.
 
 ## M27 — Advisor completeness
 
-- [ ] [S] Triple discover advice in recommend: in `packages/advisor/src/recommend.ts`, when `state.player.pendingTriple !== null`, return early with `[{ action: { type: 'Buy', cardId: state.player.pendingTriple, shopIndex: -1 }, score: 1.0, confidence: 1.0, reason: 'complete your triple', needsExplanation: false }]` before any other scoring; 3 tests: pendingTriple returns single rec score=1.0, null pendingTriple doesn't trigger early return, returned rec has correct cardId — `packages/advisor/src/recommend.ts` update + test
+- [x] [S] Triple discover advice in recommend: in `packages/advisor/src/recommend.ts`, when `state.player.pendingTriple !== null`, return early with `[{ action: { type: 'Buy', cardId: state.player.pendingTriple, shopIndex: -1 }, score: 1.0, confidence: 1.0, reason: 'complete your triple', needsExplanation: false }]` before any other scoring; 3 tests: pendingTriple returns single rec score=1.0, null pendingTriple doesn't trigger early return, returned rec has correct cardId — `packages/advisor/src/recommend.ts` update + test (commit 87a6ba1)
 
 - [ ] [S] Reposition recommendation in advisor: in `packages/advisor/src/recommend.ts`, call `hillClimbPosition(state.player.board, state.opponents, 50)` from `positionHillClimb`; if `result.scoreDelta > 0.05`, push `{ action: { type: 'Reposition', fromIndex: result.fromIndex, toIndex: result.toIndex }, score: result.scoreDelta, confidence: result.scoreDelta, reason: 'improved win rate by repositioning' }` into candidates before sort; 3 tests: empty board → no reposition, scoreDelta=0.1 → rec added, scoreDelta=0.01 → not added — `packages/advisor/src/recommend.ts` update + test
 
