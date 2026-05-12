@@ -188,7 +188,7 @@ to `loop-ledger.md`.
 ## M16 — Session review tooling
 
 - [x] [S] Session pretty-printer: `scripts/review-session.ts` — Bun CLI: reads a `logs/session-*.jsonl` file, prints each entry as `[kind] payload-summary` to stdout; export `formatEntry(line: string): string`; test `formatEntry` with a hand-crafted JSONL line returns a non-empty string — `scripts/review-session.ts` + test (commit 7c80ede)
-- [ ] [S] IPC bridge module: `apps/overlay/src/ipcBridge.ts` — `startBridge(win: BrowserWindow, getState: () => GameState, getRecs: () => Recommendation[]): void` sets up a 500ms poll that pushes `overlay:state-update` and `overlay:recs-update` events to the renderer; test: mock win.webContents.send called with correct channel names — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+- [x] [S] IPC bridge module: `apps/overlay/src/ipcBridge.ts` — `startBridge(win: BrowserWindow, getState: () => GameState, getRecs: () => Recommendation[]): void` sets up a 500ms poll that pushes `overlay:state-update` and `overlay:recs-update` events to the renderer; test: mock win.webContents.send called with correct channel names — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts` (commit e04b402)
 - [x] [S] Overlay state snapshot: `apps/overlay/src/overlayState.ts` (already exists as M7 click-through toggle module — M16 snapshot type `OverlaySnapshot` + `makeSnapshot` would conflict; skip or rename existing) — `apps/overlay/src/overlayState.ts` (conflicts with M7 — see note)
 
 ## Quarantined
