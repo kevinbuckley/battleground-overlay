@@ -177,7 +177,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Shop sell handler: `packages/state/src/reducer/shopSell.ts` — reducer case: `TAG_CHANGE tag=ZONE value=HAND` on an entity that is currently on `state.player.board` → remove that entityId from board + update entityRegistry zone; wire into reducer.ts; 3 tests — `packages/state/src/reducer/shopSell.ts` + test (commit 64d49d8)
 - [x] [S] Turn phase tracker: `packages/state/src/reducer/turnPhase.ts` — reducer case: `TAG_CHANGE tag=STEP` — `MAIN_READY`→`'shopping'`, `BEGIN_SHOOTING_ATTACK`→`'combat'`, `MAIN_CLEANUP`→`'end'`; wire into reducer.ts; 3 tests — `packages/state/src/reducer/turnPhase.ts` + test (commit b90ab1d)
-- [ ] [S] Hand tracker: add `hand: number[]` field to `PlayerState` in `packages/shared/src/state.ts` (entityIds); add reducer cases to `packages/state/src/reducer/handTracker.ts`: ZONE=HAND adds, ZONE=PLAY/GRAVEYARD removes from hand; update `initialState()`; 4 tests — `packages/state/src/reducer/handTracker.ts` + test
+- [x] [S] Hand tracker: add `hand: number[]` field to `PlayerState` in `packages/shared/src/state.ts` (entityIds); add reducer cases to `packages/state/src/reducer/handTracker.ts`: ZONE=HAND adds, ZONE=PLAY/GRAVEYARD removes from hand; update `initialState()`; 4 tests — `packages/state/src/reducer/handTracker.ts` + test (commit 6b8a08b)
 
 ## M15 — Advisor sim integration
 
