@@ -33,7 +33,7 @@ to `loop-ledger.md`.
 - [ ] [S] Scaffold `packages/llm` — stub `explain(rec)` returning `""` + noop test — packages/llm/*
 - [ ] [S] Scaffold `apps/overlay` with an empty Electron `main.ts` that opens a transparent always-on-top window (no rendering yet); package.json + tsconfig — apps/overlay/*
 - [ ] [S] Scaffold `apps/replay` as a Bun CLI stub: `bun run dev:replay <fixture>` prints "TODO" — apps/replay/*
-- [ ] [S] Add `scripts/enable-hs-logging.sh` — writes `~/Library/Preferences/Blizzard/Hearthstone/log.config` with `[Power]` and `[Zone]` verbose sections; idempotent — scripts/enable-hs-logging.sh
+- [x] [S] Add `scripts/enable-hs-logging.sh` — writes `~/Library/Preferences/Blizzard/Hearthstone/log.config` with `[Power]` and `[Zone]` verbose sections; idempotent — scripts/enable-hs-logging.sh ✓ delivered with initial harness
 - [ ] [S] Confirm `bun typecheck` runs across all workspaces with no errors; if it fails fix the misconfig in this iteration — repo root
 
 ## M1 — Log parser foundations
@@ -81,8 +81,8 @@ to `loop-ledger.md`.
 
 ## M6 — Misc infrastructure
 
-- [ ] [M] `scripts/loop.sh` — self-contained autonomous builder loop, lives in this repo. Each iter: snapshot HEAD, pick top unblocked task from docs/loop-backlog.md, invoke `claude -p` (or opencode) with .claude/commands/loop-iter.md as prompt, run `bun test && bun typecheck`, revert on failure, append to docs/loop-ledger.md, sleep 20s. Args: --iters, --max-time, --debug. Logs to logs/loop-<ts>.log — scripts/loop.sh
-- [ ] [S] `scripts/stop-loop.sh` — pkill the loop and confirm — scripts/stop-loop.sh
+- [x] [M] `scripts/loop.sh` — autonomous builder loop. ✓ delivered with initial harness (uses opencode + MLX, prompt at scripts/loop-prompt.md)
+- [x] [S] `scripts/stop-loop.sh` — graceful stop via `.loop-stop` sentinel or `--force` for pkill. ✓ delivered
 - [ ] [S] Session log writer: `packages/shared/src/sessionLog.ts` exposes `appendSessionEvent(kind, payload)` writing JSONL to `logs/session-<ts>.jsonl`; rotates by session — packages/shared/src/sessionLog.ts + test
 
 ---

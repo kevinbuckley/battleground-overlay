@@ -40,11 +40,24 @@ ln -s /Users/kbux/code/battleground-overlay/.claude/skills/overlay-loop \
       ~/.claude/skills/overlay-loop
 ```
 
+## Scripts
+
+```bash
+./scripts/start-mlx-server.sh    # bring up Qwen3 on :8080 (needed by loop)
+./scripts/enable-hs-logging.sh   # write Hearthstone log.config (once)
+
+./scripts/loop.sh                # run the autonomous builder loop
+./scripts/loop.sh --iters 5      # bounded run for testing
+./scripts/loop.sh --debug --iters 1   # one iter, full output
+
+./scripts/stop-loop.sh           # graceful stop after current iter
+./scripts/stop-loop.sh --force   # immediate kill
+```
+
 Once M0–M2 are done you'll also be able to:
 
 ```bash
 bun install
-./scripts/enable-hs-logging.sh   # write log.config (once)
 bun run dev:replay fixtures/turn-1-bootstrap.log
 ```
 
