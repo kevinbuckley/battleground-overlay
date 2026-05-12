@@ -1,6 +1,7 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyCombatDamage } from './reducer/combatDamage';
+import { resolveCombatPhase } from './reducer/combatPhase';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
 import { applyHandTracker } from './reducer/handTracker';

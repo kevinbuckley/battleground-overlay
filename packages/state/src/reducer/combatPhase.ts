@@ -1,5 +1,7 @@
-import type { BlockStart, HsEvent } from '@overlay/log-parser';
+import type { BlockStart, HsEvent, TagChange } from '@overlay/log-parser';
 import type { GameState, Minion } from '@overlay/shared';
+import { applyCombatDamage } from './combatDamage';
+import { applyDeathrattle } from './deathrattle';
 
 const DEATHRATTLE_KEYWORDS = [
   'DEATHRATTLE: Add a minion',
@@ -11,7 +13,7 @@ const DEATHRATTLE_KEYWORDS = [
   'DEATHRATTLE: Give your minions +1 Health',
   'DEATHRATTLE: Resummon a random friendly Deathrattle minion',
   'DEATHRATTLE: Resummon a random friendly minion',
-  'DEATHRATTLE: Resummon a random friendly minion of the same Cost',
+  'DEATHRATTLE: Resummon a random minion of the same Cost',
   'DEATHRATTLE: Resummon a random friendly minion of the same Tribe',
   'DEATHRATTLE: Resummon a random friendly minion of the same Cost and Tribe',
   'DEATHRATTLE: Add a random minion of the same Cost',
@@ -149,77 +151,16 @@ function createDeathrattleMinion(
   };
 }
 
-export function applyDeathrattle(state: GameState, event: HsEvent): GameState {
-  if (event.kind !== 'BLOCK_START') return state;
-  if (!isDeathrattleBlock(event)) return state;
+export function resolveCombatPhase(state: GameState, events: HsEvent[]): GameState {
+  let result = state;
 
-  const dyingEntityId = Number.parseInt(event.entity, 10);
-  if (Number.isNaN(dyingEntityId)) return state;
-
-  const target = event.target || 'HAND';
-  const isHandTarget = target === 'HAND' || target === 'Hand';
-  const isBoardTarget = target === 'PLAY' || target === 'Board' || target === 'BOARD';
-
-  // Check if the dying entity belongs to the player
-  const registryEntry = state.player.entityRegistry.get(dyingEntityId);
-  if (!registryEntry || registryEntry.controller !== state.player.playerId) {
-    return state;
+  for (const event of events) {
+    if (event.kind === 'TAG_CHANGE' && event.tag === 'DAMAGE') {
+      result = applyCombatDamage(result, event as TagChange);
+    } else if (event.kind === 'BLOCK_START' && isDeathrattleBlock(event)) {
+      result = applyDeathrattle(result, event as BlockStart);
+    }
   }
 
-  // Check if the dying entity is on the player's board
-  const existingMinion = state.player.board.minions.find((m) => m.entityId === dyingEntityId);
-  // If not on board, check registry — it may have been removed by combat damage
-  // but the deathrattle still fires (the registry entry may still exist with zone=PLAY)
-  if (!existingMinion && registryEntry.zone === 'PLAY') {
-    // Proceed with deathrattle using registry info
-  } else if (!existingMinion) {
-    return state;
-  }
-
-  const newMinion = createDeathrattleMinion(
-    dyingEntityId,
-    registryEntry.cardId,
-    target,
-    state.player.playerId,
-  );
-
-  if (isHandTarget) {
-    // Add the deathrattle minion to hand
-    const nextHand = [...state.player.hand, newMinion.entityId];
-    const nextRegistry = new Map(state.player.entityRegistry);
-    nextRegistry.set(newMinion.entityId, {
-      cardId: newMinion.cardId,
-      zone: 'HAND',
-      controller: state.player.playerId,
-    });
-    return {
-      ...state,
-      player: {
-        ...state.player,
-        hand: nextHand,
-        entityRegistry: nextRegistry,
-      },
-    };
-  }
-
-  if (isBoardTarget) {
-    // Add the deathrattle minion to board
-    const nextMinions = [...state.player.board.minions, newMinion];
-    const nextRegistry = new Map(state.player.entityRegistry);
-    nextRegistry.set(newMinion.entityId, {
-      cardId: newMinion.cardId,
-      zone: 'PLAY',
-      controller: state.player.playerId,
-    });
-    return {
-      ...state,
-      player: {
-        ...state.player,
-        board: { ...state.player.board, minions: nextMinions },
-        entityRegistry: nextRegistry,
-      },
-    };
-  }
-
-  return state;
+  return result;
 }
