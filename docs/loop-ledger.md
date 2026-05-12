@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M25: isShoppingPhase helper — `isShoppingPhase(state: GameState): boolean` returns `state.phase === 'shopping'`; exported from shared index; 2 tests (commit 471cba5)
+
 2026-05-12 19:00  [DONE]  M25: Renderer HTML — `apps/overlay/src/renderer.html` with `#advice-action`, `#advice-reason`, `#explanation` divs + `loadFile` wiring in `createOverlayWindow`, 5 tests (commit c288179)
 
 2026-05-12 21:30  [DONE]  M24: Poisonous tag handler — `applyPoisonous` handles `TAG_CHANGE tag=POISONOUS value=1/0` on entities in PLAY zone, sets `minion.poisonous`, wired into reducer, 6 tests (commit 04bf37d)

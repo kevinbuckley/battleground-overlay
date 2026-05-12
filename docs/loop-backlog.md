@@ -314,7 +314,7 @@ to `loop-ledger.md`.
 
 - [x] [S] RECOVERY: clamp already in `packages/shared/src/utils.ts` ✓
 
-- [ ] [S] RECOVERY: `isShoppingPhase(state: GameState): boolean` in `packages/shared/src/utils.ts` — returns `state.phase === 'shopping'`; export from `packages/shared/src/index.ts`; 2 tests: returns true when phase='shopping', false when phase='combat' — `packages/shared/src/utils.ts` + test
+- [x] [S] RECOVERY: `isShoppingPhase(state: GameState): boolean` in `packages/shared/src/utils.ts` — returns `state.phase === 'shopping'`; export from `packages/shared/src/index.ts`; 2 tests: returns true when phase='shopping', false when phase='combat' — `packages/shared/src/utils.ts` + test (commit 471cba5)
 
 ## M27 — Advisor completeness
 
