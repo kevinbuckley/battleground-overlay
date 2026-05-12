@@ -244,6 +244,95 @@ describe('recommend', () => {
     }
   });
 
+  it('returns single Buy rec with score 1.0 when pendingTriple is set', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        pendingTriple: 'TB_BaconShop_Min1',
+        shop: {
+          ...base.player.shop,
+          minions: [minion('TB_BaconShop_Min1'), minion('OTHER')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBe(1);
+    const r = recs[0];
+    expect(r.action.type).toBe('Buy');
+    if (r.action.type === 'Buy') {
+      expect(r.action.cardId).toBe('TB_BaconShop_Min1');
+    }
+    expect(r.score).toBe(1.0);
+    expect(r.confidence).toBe(1.0);
+    expect(r.reason).toBe('complete your triple');
+    expect(r.needsExplanation).toBe(false);
+  });
+
+  it('does not trigger early return when pendingTriple is null', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        pendingTriple: null,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A'), minion('SHOP_B')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    // Should NOT return a single triple-discover rec; should have normal recs
+    expect(recs.length).toBeGreaterThan(0);
+    const tripleRecs = recs.filter((r) => r.reason === 'complete your triple');
+    expect(tripleRecs.length).toBe(0);
+  });
+
+  it('returns correct cardId matching pendingTriple', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        pendingTriple: 'TB_Golden_BaconShop_Min1',
+        shop: {
+          ...base.player.shop,
+          minions: [minion('TB_Golden_BaconShop_Min1')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBe(1);
+    const r = recs[0];
+    expect(r.action.type).toBe('Buy');
+    if (r.action.type === 'Buy') {
+      expect(r.action.cardId).toBe('TB_Golden_BaconShop_Min1');
+    }
+  });
+
+  it('returns correct cardId matching pendingTriple', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        pendingTriple: 'TB_Golden_BaconShop_Min1',
+        shop: {
+          ...base.player.shop,
+          minions: [minion('TB_Golden_BaconShop_Min1')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBe(1);
+    expect(recs[0].action.type).toBe('Buy');
+    if (recs[0].action.type === 'Buy') {
+      expect(recs[0].action.cardId).toBe('TB_Golden_BaconShop_Min1');
+    }
+  });
+
   it('falls back to heuristic buys when sim returns empty', () => {
     const base = initialState();
     const state = {

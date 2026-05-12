@@ -11,6 +11,20 @@ const TOP_N = 3;
 
 export function recommend(state: GameState): Recommendation[] {
   const { player } = state;
+
+  // Triple discover: if a triple is pending, recommend buying it immediately.
+  if (player.pendingTriple !== null) {
+    return [
+      {
+        action: { type: 'Buy', cardId: player.pendingTriple, shopIndex: -1 },
+        score: 1.0,
+        confidence: 1.0,
+        reason: 'complete your triple',
+        needsExplanation: false,
+      },
+    ];
+  }
+
   const shopMinions = player.shop.minions;
   const boardMinions = player.board.minions;
 
