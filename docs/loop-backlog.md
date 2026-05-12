@@ -332,7 +332,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Session log round-trip test: add a test to `packages/shared/src/sessionLog.test.ts` — write 55 files named `session-<n>.jsonl` into a tmp dir, call `pruneOldSessions(50, tmpDir)`, assert exactly 50 files remain — `packages/shared/src/sessionLog.test.ts` update (commit ab7409d)
 
-- [ ] [S] Opponent board prediction in budgetScorer: in `packages/advisor/src/budgetScorer.ts`, import `predictOpponentBoard` from `./opponentPredictor`; replace `opponents` passed to `scoreCandidate` with `state.opponents.map(o => ({ ...o, board: predictOpponentBoard(o, state.turn).board }))`; 2 tests: empty opponent board gets predicted expansion, non-empty opponent board is updated — `packages/advisor/src/budgetScorer.ts` update + test
+- [x] [S] Opponent board prediction in budgetScorer: in `packages/advisor/src/budgetScorer.ts`, import `predictOpponentBoard` from `./opponentPredictor`; replace `opponents` passed to `scoreCandidate` with `state.opponents.map(o => ({ ...o, board: predictOpponentBoard(o, state.turn).board }))`; 2 tests: empty opponent board gets predicted expansion, non-empty opponent board is updated — `packages/advisor/src/budgetScorer.ts` update + test (commit c3ea5d1)
 
 ## M29 — Replay + IPC completeness
 
