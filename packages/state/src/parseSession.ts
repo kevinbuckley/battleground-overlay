@@ -6,7 +6,6 @@ import { parseTagChange } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { initialState } from './initialState';
 import { reducer } from './reducer';
-import { reducer } from './reducer';
 
 function parseSingleLine(line: string): HsEvent | null {
   return (

@@ -2,14 +2,12 @@ import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyArmor } from './reducer/armor';
 import { applyCombatDamage } from './reducer/combatDamage';
-import { resolveCombatPhase } from './reducer/combatPhase';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHeroPower } from './reducer/heroPower';
-import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
@@ -53,7 +51,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       // Check if this is an opponent health change
       {
         const entityId = Number.parseInt(event.entity, 10);
-        if (!isNaN(entityId) && state.opponents.some((o) => o.entityId === entityId)) {
+        if (!Number.isNaN(entityId) && state.opponents.some((o) => o.entityId === entityId)) {
           if (event.tag === 'PLAYER_TECH_LEVEL') {
             return applyOpponentTier(state, event);
           }

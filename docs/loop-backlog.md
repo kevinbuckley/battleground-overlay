@@ -216,6 +216,20 @@ to `loop-ledger.md`.
 - [x] [S] Hero power tracker: `packages/state/src/reducer/heroPower.ts` — `applyHeroPower(state, event)` handles `TAG_CHANGE tag=NUM_TIMES_HERO_POWER_USED_THIS_GAME value=N` → sets `state.player.heroPowerUsedThisTurn = true` (add field to PlayerState, reset to false on MAIN_READY step); 4 tests — `packages/state/src/reducer/heroPower.ts` + test (commit 7a15390)
 - [x] [S] Armor tracker: `packages/state/src/reducer/armor.ts` — `applyArmor(state, event)` handles `TAG_CHANGE tag=ARMOR` on player controller, updates `state.player.hero.armor`; 4 tests, wired into reducer (commit 3858770)
 
+## M2 — State model (continued)
+
+- [ ] [S] Replay fixture helper: `packages/state/src/replayFixture.ts` — `replayFixture(filePath: string): GameState` reads a raw Power.log text file line-by-line, calls `parseLine` on each line, filters nulls, and replays through `reducer` returning the final `GameState`; 4 tests: empty file returns initialState, single TAG_CHANGE event updates state, multi-line file with garbage lines returns correct final state, non-existent file throws — `packages/state/src/replayFixture.ts` + test
+
+## M5 — Advisor: simulation search (continued)
+
+- [ ] [M] Benchmark suite: `packages/sim/src/bench.ts` — `Benchmark` class with `addScenario(name, boards, n, seed)`, `runAll(): Record<string, BenchResult>`, `BenchResult { durationMs, winPct, sims }`; exports `compareBenchmarks(old: Record<string, BenchResult>, new: Record<string, BenchResult>): string` for regression reporting; 5 tests — `packages/sim/src/bench.ts` + test
+
+- [ ] [S] Worker thread offload: `packages/sim/src/worker.ts` — `createWorkerPool(size: number): WorkerPool` using `worker_threads`, exposes `submitBatch(boards, n, seed): Promise<BatchResult>`; test: pool processes 3 batches concurrently, asserts results match single-threaded output — `packages/sim/src/worker.ts` + test
+
+## M1 — Log parser (continued)
+
+- [ ] [S] Fixture integration test harness: `packages/log-parser/src/fixtureTest.ts` — `runFixtureTest(fixturePath: string, expectedEvents: HsEvent[]): void` reads a fixture file, parses all lines, asserts event count and types match expected; 3 tests: exact match passes, wrong count fails, wrong type fails — `packages/log-parser/src/fixtureTest.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
