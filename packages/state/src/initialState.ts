@@ -14,6 +14,7 @@ export function initialState(): GameState {
       tier: 1,
       tierUpCost: 6,
       eliminated: false,
+      entityRegistry: new Map(),
     },
     opponents: [],
   };

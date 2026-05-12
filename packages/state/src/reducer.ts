@@ -1,17 +1,15 @@
-import type { GameState } from '@overlay/shared';
 import type { HsEvent } from '@overlay/log-parser';
-import { applyPlayerLost } from './reducer/playerLost';
-import { applyHeroHealth } from './reducer/health';
+import type { GameState } from '@overlay/shared';
 import { applyGold } from './reducer/gold';
+import { applyHeroHealth } from './reducer/health';
+import { applyMinionPlaced } from './reducer/minionPlaced';
+import { applyPlayerLost } from './reducer/playerLost';
 import { applyTier } from './reducer/tier';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
   switch (event.kind) {
     case 'BLOCK_START':
-      if (
-        event.blockType === 'TRIGGER' &&
-        event.effectCardId === 'TB_BaconShop_StartGame'
-      ) {
+      if (event.blockType === 'TRIGGER' && event.effectCardId === 'TB_BaconShop_StartGame') {
         return { ...state, turn: 1, phase: 'shopping' };
       }
       return state;
@@ -29,7 +27,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       if (event.tag === 'PLAYER_TECH_LEVEL') {
         return applyTier(state, event);
       }
-      return state;
+      return applyMinionPlaced(state, event);
 
     default:
       return state;
