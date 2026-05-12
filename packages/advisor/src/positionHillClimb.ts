@@ -5,6 +5,9 @@ import type { ScoreResult } from './simScorer';
 export interface PositionResult {
   bestOrder: number[];
   bestScore: ScoreResult;
+  scoreDelta: number;
+  fromIndex: number | null;
+  toIndex: number | null;
 }
 
 /**
@@ -32,6 +35,9 @@ export function hillClimbPosition(
     return {
       bestOrder: [...board.minions.map((_, i) => i)],
       bestScore: { winPct: 0, avgHpDelta: 0 },
+      scoreDelta: 0,
+      fromIndex: null,
+      toIndex: null,
     };
   }
 
@@ -41,6 +47,9 @@ export function hillClimbPosition(
     return {
       bestOrder: [...board.minions.map((_, i) => i)],
       bestScore: { winPct: 0, avgHpDelta: 0 },
+      scoreDelta: 0,
+      fromIndex: null,
+      toIndex: null,
     };
   }
 
@@ -99,5 +108,25 @@ export function hillClimbPosition(
     }
   }
 
-  return { bestOrder, bestScore };
+  // Compute scoreDelta and the indices that changed
+  const initialScore = scoreCandidate(
+    reorderBoard([...board.minions.map((_, i) => i)]),
+    playerState,
+    activeOpponents,
+    n,
+  );
+  const scoreDelta = bestScore.winPct - initialScore.winPct;
+
+  // Find which indices changed between initial and best order
+  let fromIndex: number | null = null;
+  let toIndex: number | null = null;
+  for (let k = 0; k < minionCount; k++) {
+    if (bestOrder[k] !== k) {
+      fromIndex = k;
+      toIndex = bestOrder[k] as number;
+      break;
+    }
+  }
+
+  return { bestOrder, bestScore, scoreDelta, fromIndex, toIndex };
 }

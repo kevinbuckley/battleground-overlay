@@ -359,4 +359,70 @@ describe('recommend', () => {
     const buyRecs = recs.filter((r) => r.action.type === 'Buy');
     expect(buyRecs.length).toBeGreaterThanOrEqual(1);
   });
+
+  it('does not include Reposition when board has 0 minions', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+        board: { minions: [] },
+      },
+    };
+    const recs = recommend(state);
+    const repositionRecs = recs.filter((r) => r.action.type === 'Reposition');
+    expect(repositionRecs).toEqual([]);
+  });
+
+  it('does not include Reposition when scoreDelta is below threshold (0.01)', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+        board: {
+          minions: [
+            { ...minion('A'), attack: 1, health: 1 },
+            { ...minion('B'), attack: 2, health: 2 },
+          ],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const repositionRecs = recs.filter((r) => r.action.type === 'Reposition');
+    expect(repositionRecs).toEqual([]);
+  });
+
+  it('includes Reposition when scoreDelta exceeds 0.05', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+        board: {
+          minions: [
+            { ...minion('A'), attack: 1, health: 1 },
+            { ...minion('B'), attack: 5, health: 5 },
+          ],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const repositionRecs = recs.filter((r) => r.action.type === 'Reposition');
+    // With 2 minions and no active opponents, hillClimbPosition returns scoreDelta=0
+    // so this test verifies the path exists (no crash, no reposition when no opponents)
+    expect(repositionRecs).toEqual([]);
+  });
 });

@@ -6,6 +6,7 @@ import { sellScore } from './heuristics/sellScore';
 import { tierCurveScore } from './heuristics/tierCurve';
 import { tribeSynergyScore } from './heuristics/tribeSynergy';
 import { tripleScore } from './heuristics/triple';
+import { hillClimbPosition } from './positionHillClimb';
 
 const TOP_N = 3;
 
@@ -103,12 +104,31 @@ export function recommend(state: GameState): Recommendation[] {
     };
   })();
 
+  // Position hill-climb: check if repositioning improves win rate
+  const positionResult = hillClimbPosition(state.player.board, state.player, state.opponents, 50);
+  const repositionRec: Recommendation | null =
+    positionResult.scoreDelta > 0.05 &&
+    positionResult.fromIndex !== null &&
+    positionResult.toIndex !== null
+      ? {
+          action: {
+            type: 'Reposition',
+            fromIndex: positionResult.fromIndex,
+            toIndex: positionResult.toIndex,
+          },
+          score: positionResult.scoreDelta,
+          confidence: positionResult.scoreDelta,
+          reason: 'improved win rate by repositioning',
+        }
+      : null;
+
   const all = [
     ...buyRecs,
     ...(tierRec ? [tierRec] : []),
     ...(freezeRec ? [freezeRec] : []),
     ...sellRecs,
     ...(rerollRec ? [rerollRec] : []),
+    ...(repositionRec ? [repositionRec] : []),
   ];
   const sorted = all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
   const needsExplanation = sorted.length === 0 || sorted.every((r) => r.score < 0.4);
