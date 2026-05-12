@@ -12,6 +12,8 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 ---
 
+2026-05-11 06:30  [DONE]  Wire rerollScore into recommend() — RerollAction included in scored candidates alongside Buy/Sell/Freeze/TierUp, 8 tests (commit bf2c5a2)
+
 2026-05-11 05:00  [DONE]  State-hash cache — hashState + LlmCache with 50-entry LRU (commit 997ba98)
 
 2026-05-11 00:00  [DONE]  M0: workspace bootstrap — package.json, tsconfig, biome, 7 package stubs + 2 app stubs, 7 passing noop tests
