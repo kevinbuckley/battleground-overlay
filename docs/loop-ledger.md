@@ -51,3 +51,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M10: Sim benchmark — bench.test.ts runs 5 batches of n=20, asserts <3000ms total (commit 3e36ac7)
 
 2026-05-12 00:00  [DONE]  M11: Tribe + tier indexes — getCardsByTribe(tribe) and getCardsByTier(tier) with lazy caching, 4 tests (commit 328219f)
+
+2026-05-12 00:00  [DONE]  M11: BG pool by tribe — getBgMinionsByTribe(tribe) combining isBattlegroundsPool filter + tribe index, 2 tests (commit a1b43a1)
