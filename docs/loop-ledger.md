@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 21:30  [DONE]  M23: Hero identification — `applyHeroIdentify` handles `SHOW_ENTITY` where `cardId` starts with "Hero_", identifies player vs opponent by matching entity to registry controller, sets `state.player.hero.cardId` and `state.opponents[i].hero.cardId`; 4 tests, wired into reducer (commit f365a66)
+
 2026-05-12 23:59  [DONE]  M21: Pipeline session logging — `needsExplanation` flag on Recommendation + pipeline calls `appendSessionEvent('state_snapshot', ...)` on each event, 5 tests (commit 1038b3a)
 
 2026-05-12 14:00  [DONE]  M21: Electron main window bootstrap — `createOverlayWindow` with 800x200 transparent frameless window, contextIsolation:true, nodeIntegration:false, 4 tests (commit 5e68f4c)
