@@ -5,4 +5,6 @@ export function applyEvent<S>(state: S, _event: unknown): S {
 export { initialState } from './initialState';
 export { reducer } from './reducer';
 export { applyEntityEvent } from './entityRegistry';
+export { parseSession } from './parseSession';
+export type { SessionSnapshot } from './parseSession';
 export type { EntityRegistry, EntityInfo } from './entityRegistry';
