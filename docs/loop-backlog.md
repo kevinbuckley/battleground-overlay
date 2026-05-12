@@ -296,7 +296,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Windfury tag handler: `packages/state/src/reducer/windfury.ts` — `applyWindfury(state, event)` handles `TAG_CHANGE tag=WINDFURY value=1` and `value=0`; add `windfury: boolean` to `Minion` interface in `packages/shared/src/state.ts`; wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/windfury.ts` + test (commit 624ec08)
 
-- [ ] [S] Cleave tag handler: `packages/state/src/reducer/cleave.ts` — `applyCleave(state, event)` handles `TAG_CHANGE tag=CLEAVE value=1`; add `cleave: boolean` to `Minion` in `packages/shared/src/state.ts`; wire into reducer; 3 tests (cleave set on player minion, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/cleave.ts` + test
+- [x] [S] Cleave tag handler: `packages/state/src/reducer/cleave.ts` — `applyCleave(state, event)` handles `TAG_CHANGE tag=CLEAVE value=1`; add `cleave: boolean` to `Minion` in `packages/shared/src/state.ts`; wire into reducer; 4 tests (cleave set on player/opponent minion, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` update + `packages/state/src/reducer/cleave.ts` + test (commit 46d6c3c)
 
 ## M25 — Overlay renderer
 

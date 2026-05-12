@@ -185,3 +185,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M23: Hand size tracker — `applyHandSize` handles `TAG_CHANGE tag=NUM_CARDS_IN_HAND` on player controller, sets `state.player.handSize: number`, 4 tests, wired into reducer (commit 151a394)
 
 2026-05-12 00:00  [DONE]  M24: Windfury tag handler — `applyWindfury` handles `TAG_CHANGE tag=WINDFURY value=1/0`; adds `windfury: boolean` to `Minion` interface; 6 tests, wired into reducer (commit 624ec08)
+
+2026-05-12 00:00  [DONE]  M24: Cleave tag handler — `applyCleave` handles `TAG_CHANGE tag=CLEAVE value=1/0`; adds `cleave: boolean` to `Minion` interface; 4 tests, wired into reducer (commit 46d6c3c)
