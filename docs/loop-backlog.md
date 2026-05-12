@@ -342,7 +342,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Opponent panel IPC push: in `apps/overlay/src/ipcBridge.ts`, push `overlay:opponents-update` with `state.opponents.map(o => ({ entityId: o.entityId, hp: o.hero.hp, tier: o.tier, eliminated: o.eliminated }))`; add 1 test asserting the channel is sent with that shape — `apps/overlay/src/ipcBridge.ts` update + test (commit 0889157)
 
-- [ ] [S] Damage forecast IPC push: in `apps/overlay/src/ipcBridge.ts`, compute `computeForecast(scoreResult)` from `apps/overlay/src/damageWidget.ts` using the top sim result and push `overlay:damage-update` with the forecast; for the test, mock `computeForecast` and assert `overlay:damage-update` is sent — `apps/overlay/src/ipcBridge.ts` update + test
+- [x] [S] Damage forecast IPC push: `computeDamageForecast` already wired in `ipcBridge.ts:56-64`, pushes `overlay:damage-update` with forecast; test at line 385-410 passes — `apps/overlay/src/ipcBridge.ts` update + test (commit existing)
 
 - [ ] [S] Settings apply on load: in `apps/overlay/src/main.ts`, after constructing the window call `loadSettings()` and apply `settings.opacity` via `win.setOpacity(settings.opacity)` and position via `win.setPosition(settings.x, settings.y)`; add 2 tests: spy confirms `setOpacity` called with default 0.85, `setPosition` called with default 0/0 — `apps/overlay/src/main.ts` update + test
 
@@ -357,6 +357,9 @@ to `loop-ledger.md`.
 - [ ] [S] `hpBucket(hp: number): 'critical'|'low'|'safe'` in `packages/shared/src/utils.ts` — critical < 6, low < 15, safe otherwise; export from shared index; 4 tests — `packages/shared/src/utils.ts` + test
 
 - [ ] [S] Tribe filter in card-data: `packages/card-data/src/indexes.ts` — add `byTribe: Map<string, Card[]>` built lazily; `getCardsByTribe(tribe: string): Card[]` returns all cards with that race; 3 tests: known tribe returns cards, unknown tribe returns empty, lazy init works — `packages/card-data/src/indexes.ts` update + test
+- [ ] [S] `overlayState` gold/tier selectors: in `apps/overlay/src/overlayState.ts`, add `getGold(state: GameState): number` returning `state.player.gold` and `getTier(state: GameState): number` returning `state.player.tier`; export both from the file; 4 tests: getGold returns correct value, getTier returns correct value, each returns 0 for empty player — `apps/overlay/src/overlayState.ts` + test
+- [ ] [S] `opponentPanel` worst-threat selector: in `packages/shared/src/opponentPanel.ts`, add `getWorstThreat(opponents: OpponentState[]): OpponentState | null` — returns the non-eliminated opponent with the highest board minion count (ties: pick first); returns null if all eliminated or empty; 4 tests: empty, all eliminated, two opponents, tie — `packages/shared/src/opponentPanel.ts` update + test
+- [ ] [S] Session log `readSession(path: string): SessionEntry[]` in `packages/shared/src/sessionLog.ts` — reads a JSONL file and returns parsed entries `{ ts: number; kind: string; payload: unknown }[]`; skips blank lines; 3 tests: empty file returns [], single entry roundtrip, multi-entry roundtrip — `packages/shared/src/sessionLog.ts` update + test
 
 ## Quarantined
 
