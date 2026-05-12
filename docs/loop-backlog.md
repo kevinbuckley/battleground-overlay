@@ -124,8 +124,8 @@ to `loop-ledger.md`.
 
 ## M11 — Card data indexes
 
-- [ ] [S] Tribe index: add `getCardsByTribe(tribe: string): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTribe: Map<string, Card[]>` lazily from `loadCards()`; test with empty card list returns [] — `packages/card-data/src/indexes.ts` update + test
-- [ ] [S] Tier index: add `getCardsByTier(tier: number): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTier: Map<number, Card[]>` lazily; test with empty card list — `packages/card-data/src/indexes.ts` update + test
+- [x] [S] Tribe index: add `getCardsByTribe(tribe: string): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTribe: Map<string, Card[]>` lazily from `loadCards()`; test with empty card list returns [] — `packages/card-data/src/indexes.ts` update + test
+- [x] [S] Tier index: add `getCardsByTier(tier: number): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTier: Map<number, Card[]>` lazily; test with empty card list — `packages/card-data/src/indexes.ts` update + test
 - [ ] [S] BG pool by tribe: `packages/card-data/src/isBattlegroundsPool.ts` — add `getBgMinionsByTribe(tribe: string): Card[]` combining `isBattlegroundsPool` filter + tribe index; test returns empty array when no cards loaded — `packages/card-data/src/isBattlegroundsPool.ts` update + test
 
 ## M12 — Session log improvements
