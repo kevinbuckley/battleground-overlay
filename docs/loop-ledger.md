@@ -75,3 +75,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 06:45  [DONE]  M7: Opponent panel — `opponentPanel.ts` with setOpponentPanel/getOpponentPanel/clearOpponentPanel + IPC handler in `main.ts`, 3 tests (commit bdb5add)
 
 2026-05-12 07:00  [DONE]  M7: Damage forecast widget — `computeDamageForecast` derives minDmg/maxDmg from winPct + playerTier, 3 tests (commit 5d06350)
+
+2026-05-12 07:30  [DONE]  M7: Hotkey config — `hotkeys.ts` with HotkeyConfig type, defaultHotkeyConfig, registerHotkeys(mockable interface), 7 tests (commit 294245c)
