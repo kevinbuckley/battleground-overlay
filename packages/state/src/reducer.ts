@@ -18,6 +18,7 @@ import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
+import { applyPoisonous } from './reducer/poisonous';
 import { applyReborn } from './reducer/reborn';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
@@ -134,6 +135,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'TAUNT') {
         return applyTaunt(state, event);
+      }
+      if (event.tag === 'POISONOUS') {
+        return applyPoisonous(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
