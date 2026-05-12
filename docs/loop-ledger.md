@@ -62,7 +62,7 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-12 00:00  [DONE]  M12: Session list — listSessions(logsDir) returns sorted session-*.jsonl paths, 2 tests (commit 4421ab3)
 
-2026-05-12 00:00  [DONE]  M12: Session pruning — pruneOldSessions(keepLast, logsDir) deletes all but most recent N session files, 3 tests (commit b4720ea)
+2026-05-12 00:00  [DONE]  M13: Session pruning — pruneOldSessions(keepLast, logsDir) deletes all but most recent N session files, 3 tests (commit b4720ea)
 
 2026-05-12 00:00  [DONE]  M13: Session replay — parseSession reads session JSONL, replays events through state reducer, returns GameState[] snapshots, 4 tests (commit 164f934)
 
@@ -101,3 +101,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 12:00  [DONE]  M2: Shop buy handler — `applyShopBuy` handles `TAG_CHANGE tag=ZONE` from SHOP to PLAY, moves minion from shop to board, wired into reducer, 7 tests (commit cc8436a)
 
 2026-05-12 10:30  [DONE]  M2: Opponent tier tracker — `applyOpponentTier` finds opponent by entity ID, updates tier from TAG_CHANGE, 5 tests, wired into reducer (commit a81c4bb)
+
+2026-05-12 00:00  [DONE]  M14: Turn phase tracker — `applyTurnPhase` maps TAG_CHANGE tag=STEP values (MAIN_READY→shopping, BEGIN_SHOOTING_ATTACK→combat, MAIN_CLEANUP→end), wired into reducer, 5 tests (commit b90ab1d)
