@@ -4,6 +4,8 @@ export interface BatchResult {
   ties: number;
 }
 
+export type { BenchResult } from './bench';
+export { Benchmark, compareBenchmarks } from './bench';
 export { toFirestoneBoard } from './adapter';
 export { fromFirestoneTranscript } from './fromTranscript';
 export type { Transcript } from './fromTranscript';
