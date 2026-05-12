@@ -206,7 +206,7 @@ to `loop-ledger.md`.
 
 ## M19 — Integration pipeline
 
-- [ ] [S] Pipeline factory: `packages/state/src/pipeline.ts` — `createPipeline(): {onEvent: (e: HsEvent) => void, getState: () => GameState}` wires `streamEvents` output into `reducer`, exposes current state; test: construct pipeline, feed 2 TAG_CHANGE events, assert state reflects both — `packages/state/src/pipeline.ts` + test
+- [x] [S] Pipeline factory: `packages/state/src/pipeline.ts` — `createPipeline(): {onEvent: (e: HsEvent) => void, getState: () => GameState}` wires `streamEvents` output into `reducer`, exposes current state; test: construct pipeline, feed 2 TAG_CHANGE events, assert state reflects both — `packages/state/src/pipeline.ts` + test (commit a702034)
 - [ ] [S] Overlay coordinator: `apps/overlay/src/coordinator.ts` — `startCoordinator(win: BrowserWindow): () => void` (returns stop fn) — creates pipeline, on each state change calls `setAdvice(recommend(state))`, pushes via ipcBridge; test: mock win and recommend, assert setAdvice called after event — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
 - [ ] [S] Replay CLI wiring: update `apps/replay/src/main.ts` so `run(path)` calls `loadFixture(path)`, creates `Scrubber`, seeks to end, prints `formatState` + `exportReport`; test: `run` with a 2-event fixture file returns a string containing "## Turn" — `apps/replay/src/main.ts` update + test
 

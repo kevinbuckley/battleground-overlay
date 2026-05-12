@@ -129,3 +129,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 18:30  [DONE]  M18: Triple bonus handler — `applyTripleBonus` detects 3+ identical cardIds across board+hand+shop, sets `pendingTriple`, 8 tests (commit cb5a284)
 
 2026-05-12 18:00  [DONE]  M18: Reroll handler — `applyShopReroll` handles `TAG_CHANGE tag=RESOURCES_USED`, decrements gold, clears shop.frozen, 3 tests, wired into reducer (commit ccd431e)
+
+2026-05-12 19:00  [DONE]  M19: Pipeline factory — `createPipeline()` returns `{onEvent, getState, reset}` wiring reducer into event loop, 6 tests (commit a702034)
