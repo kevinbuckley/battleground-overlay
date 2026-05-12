@@ -151,6 +151,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add `parseLine(line: string): HsEvent | null` to `packages/log-parser/src/parseLine.ts` that tries each parser in order and returns the first non-null; test with a TAG_CHANGE line and a garbage line — packages/log-parser/src/parseLine.ts + test
 
+- [ ] [S] RECOVERY: Add `formatRecommendation(rec: Recommendation): string` to `packages/shared/src/utils.ts` returning a short human-readable string like 'Buy Murloc Tidecaller (score: 0.8)'; test one Buy and one TierUp — packages/shared/src/utils.ts update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
