@@ -19,6 +19,7 @@ export function initialState(): GameState {
       eliminated: false,
       pendingTriple: null,
       heroPowerUsedThisTurn: false,
+      handSize: 0,
       entityRegistry: new Map(),
     },
     opponents: [],

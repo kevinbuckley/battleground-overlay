@@ -7,6 +7,7 @@ import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
+import { applyHandSize } from './reducer/handSize';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHeroIdentify } from './reducer/heroIdentify';
@@ -129,6 +130,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'SILENCED') {
         return applySilence(state, event);
+      }
+      if (event.tag === 'NUM_CARDS_IN_HAND') {
+        return applyHandSize(state, event);
       }
       return applyTripleBonus(state, event);
 
