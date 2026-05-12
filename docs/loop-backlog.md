@@ -135,6 +135,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts
 
+- [ ] [S] RECOVERY: Add a one-line description to README explaining how to invoke scripts/loop.sh — README.md
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
