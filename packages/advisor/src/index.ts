@@ -3,3 +3,5 @@ export { tierCurveScore } from './heuristics/tierCurve';
 export { tripleScore } from './heuristics/triple';
 export { tribeSynergyScore } from './heuristics/tribeSynergy';
 export { predictOpponentBoard } from './opponentPredictor';
+export { enumerateBuyCandidates } from './candidates';
+export type { BuyCandidate } from './candidates';
