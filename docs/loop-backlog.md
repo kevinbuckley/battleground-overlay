@@ -139,6 +139,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Ensure .gitignore includes a logs/ entry; add if missing — .gitignore
 
+- [ ] [S] RECOVERY: Add LICENSE file (MIT, kevinbuckley) at repo root — LICENSE
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
