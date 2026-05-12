@@ -334,6 +334,30 @@ to `loop-ledger.md`.
 
 - [ ] [S] Opponent board prediction in budgetScorer: in `packages/advisor/src/budgetScorer.ts`, import `predictOpponentBoard` from `./opponentPredictor`; replace `opponents` passed to `scoreCandidate` with `state.opponents.map(o => ({ ...o, board: predictOpponentBoard(o, state.turn).board }))`; 2 tests: empty opponent board gets predicted expansion, non-empty opponent board is updated — `packages/advisor/src/budgetScorer.ts` update + test
 
+## M29 — Replay + IPC completeness
+
+- [ ] [S] Scrubber seek test: in `apps/replay/src/scrubber.test.ts`, add 2 tests — (1) create Scrubber with 5 synthetic TAG_CHANGE events, call `seek(2)`, assert `currentIndex === 2` and `getState()` reflects 2 events applied; (2) call `seek(0)`, assert state equals `initialState()` — `apps/replay/src/scrubber.test.ts` update
+
+- [ ] [S] Board panel IPC push: in `apps/overlay/src/ipcBridge.ts`, after pushing `overlay:state-update`, call `win.webContents.send('overlay:board-update', { minions: state.player.board.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health, taunt: m.taunt, divineShield: m.divineShield })) })`; add 1 test to `ipcBridge.test.ts` asserting `overlay:board-update` is sent with the board minions shape — `apps/overlay/src/ipcBridge.ts` update + test
+
+- [ ] [S] Opponent panel IPC push: in `apps/overlay/src/ipcBridge.ts`, push `overlay:opponents-update` with `state.opponents.map(o => ({ entityId: o.entityId, hp: o.hero.hp, tier: o.tier, eliminated: o.eliminated }))`; add 1 test asserting the channel is sent with that shape — `apps/overlay/src/ipcBridge.ts` update + test
+
+- [ ] [S] Damage forecast IPC push: in `apps/overlay/src/ipcBridge.ts`, compute `computeForecast(scoreResult)` from `apps/overlay/src/damageWidget.ts` using the top sim result and push `overlay:damage-update` with the forecast; for the test, mock `computeForecast` and assert `overlay:damage-update` is sent — `apps/overlay/src/ipcBridge.ts` update + test
+
+- [ ] [S] Settings apply on load: in `apps/overlay/src/main.ts`, after constructing the window call `loadSettings()` and apply `settings.opacity` via `win.setOpacity(settings.opacity)` and position via `win.setPosition(settings.x, settings.y)`; add 2 tests: spy confirms `setOpacity` called with default 0.85, `setPosition` called with default 0/0 — `apps/overlay/src/main.ts` update + test
+
+## M30 — Card data fetch + shell improvements
+
+- [ ] [S] Fetch-cards script: `packages/card-data/src/fetchCards.ts` — `fetchCards(patch: string, outPath: string): Promise<void>` fetches `https://api.hearthstonejson.com/v1/<patch>/enUS/cards.collectible.json` and writes to `outPath`; test: mock `fetch` (globalThis.fetch = mockFn), assert called with correct URL, assert file written — `packages/card-data/src/fetchCards.ts` + test
+
+- [ ] [S] Patch diff reporter: `packages/card-data/src/patchDiff.ts` (if stub) — `diffPatches(oldCards: Card[], newCards: Card[]): { added: Card[]; removed: Card[]; changed: Card[] }` compares two card arrays by `dbfId`, returns added/removed/changed; 5 tests (no change, add, remove, change attack, combined) — `packages/card-data/src/patchDiff.ts` + test
+
+- [ ] [S] `formatState` completeness in replay: in `apps/replay/src/stateViewer.ts`, if `formatState` only returns a stub, implement it to return a multi-line string: `Turn: N | Phase: X | HP: N | Gold: N | Tier: N\nBoard: [cardId x A/H, ...]`; 3 tests: empty board, 1 minion, 2 minions — `apps/replay/src/stateViewer.ts` update + test
+
+- [ ] [S] `hpBucket(hp: number): 'critical'|'low'|'safe'` in `packages/shared/src/utils.ts` — critical < 6, low < 15, safe otherwise; export from shared index; 4 tests — `packages/shared/src/utils.ts` + test
+
+- [ ] [S] Tribe filter in card-data: `packages/card-data/src/indexes.ts` — add `byTribe: Map<string, Card[]>` built lazily; `getCardsByTribe(tribe: string): Card[]` returns all cards with that race; 3 tests: known tribe returns cards, unknown tribe returns empty, lazy init works — `packages/card-data/src/indexes.ts` update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
