@@ -234,7 +234,7 @@ to `loop-ledger.md`.
 
 - [x] [S] Fix duplicate TAG_CHANGE branches in reducer: `packages/state/src/reducer.ts` has two identical ZONE=PLAY and two identical ZONE=GRAVEYARD branches — remove the second occurrence of each duplicate; add 2 regression tests confirming `applyShopBuy` still fires on ZONE=PLAY and `applyMinionRemoved` still fires on ZONE=GRAVEYARD — `packages/state/src/reducer.ts` + test (commit 92b52ec)
 
-- [ ] [S] Wire `applyMinionPlaced` into reducer: import `applyMinionPlaced` from `./reducer/minionPlaced` in `packages/state/src/reducer.ts`; add `case 'FULL_ENTITY':` branch that calls `applyMinionPlaced(state, event)`; 3 tests: FULL_ENTITY event with ZONE=PLAY updates board size — `packages/state/src/reducer.ts` update
+- [x] [S] Wire `applyMinionPlaced` into reducer: import `applyMinionPlaced` from `./reducer/minionPlaced` in `packages/state/src/reducer.ts`; add `case 'FULL_ENTITY':` branch that calls `applyMinionPlaced(state, event)`; 3 tests: FULL_ENTITY event with ZONE=PLAY updates board size — `packages/state/src/reducer.ts` update + test (commit a1e5c96)
 
 - [ ] [S] Increment turn counter on MAIN_READY: in `packages/state/src/reducer/turnPhase.ts`, when `event.value === 'MAIN_READY'` increment `state.turn` AND set phase to 'shopping'; 3 tests: turn starts at 1, increments to 2 on second MAIN_READY, phase set to shopping — `packages/state/src/reducer/turnPhase.ts` update + test
 
