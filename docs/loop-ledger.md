@@ -45,3 +45,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-11 06:15  [DONE]  M9: rerollScore heuristic — returns [0,1] based on triple/synergy/hp/gold checks, 6 tests (commit 0942e5c)
 
 2026-05-12 00:00  [DONE]  M10: HP delta in scoreCandidate — compute avgHpDelta as (wins*oppTier - losses*playerTier)/totalSims, 6 tests (commit d97a287)
+
+2026-05-12 00:00  [DONE]  M10: Sell candidate enumerator — enumerateSellCandidates returns SellCandidate per board minion with projected board (minus that minion), 4 tests (commit 77bdc40)
