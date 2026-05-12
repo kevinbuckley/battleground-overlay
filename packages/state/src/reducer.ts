@@ -1,6 +1,7 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyGold } from './reducer/gold';
+import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
@@ -57,7 +58,31 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyShopBuy(state, event);
       }
       if (event.tag === 'ZONE' && event.value === 'HAND') {
+        // Check if this entity is in the hand (not a shop buy)
+        const entityId = Number.parseInt(event.entity, 10);
+        if (state.player.hand.includes(entityId)) {
+          return applyHandTracker(state, event);
+        }
         return applyShopSell(state, event);
+      }
+      if (event.tag === 'ZONE' && event.value === 'PLAY') {
+        // Check if this entity is in the hand (not a shop buy)
+        const entityId = Number.parseInt(event.entity, 10);
+        if (state.player.hand.includes(entityId)) {
+          return applyHandTracker(state, event);
+        }
+        return applyShopBuy(state, event);
+      }
+      if (
+        event.tag === 'ZONE' &&
+        (event.value === 'GRAVEYARD' || event.value === 'REMOVEDFROMGAME')
+      ) {
+        // Check if this entity is in the hand
+        const entityId = Number.parseInt(event.entity, 10);
+        if (state.player.hand.includes(entityId)) {
+          return applyHandTracker(state, event);
+        }
+        return applyMinionRemoved(state, event);
       }
       if (event.tag === 'STEP') {
         return applyTurnPhase(state, event);

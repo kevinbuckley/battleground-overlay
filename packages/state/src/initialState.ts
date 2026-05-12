@@ -10,6 +10,7 @@ export function initialState(): GameState {
       hero: { entityId: 0, cardId: '', hp: 40, armor: 0 },
       board: { minions: [] },
       shop: { minions: [], frozen: false, rollCost: 1 },
+      hand: [],
       gold: 0,
       tier: 1,
       tierUpCost: 6,

@@ -34,6 +34,7 @@ export interface PlayerState {
   hero: Hero;
   board: Board;
   shop: Shop;
+  hand: number[];
   gold: number;
   tier: number;
   tierUpCost: number;
