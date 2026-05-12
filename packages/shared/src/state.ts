@@ -39,6 +39,7 @@ export interface PlayerState {
   tier: number;
   tierUpCost: number;
   eliminated: boolean;
+  pendingTriple: string | null;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

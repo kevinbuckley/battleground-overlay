@@ -15,6 +15,7 @@ export function initialState(): GameState {
       tier: 1,
       tierUpCost: 6,
       eliminated: false,
+      pendingTriple: null,
       entityRegistry: new Map(),
     },
     opponents: [],

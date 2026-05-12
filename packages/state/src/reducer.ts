@@ -17,6 +17,7 @@ import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
 import { applyTierUp } from './reducer/tierUp';
+import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -101,7 +102,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       if (event.tag === 'RESOURCES_USED') {
         return applyShopReroll(state, event);
       }
-      return applyMinionPlaced(state, event);
+      return applyTripleBonus(state, event);
 
     default:
       return state;
