@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 08:30  [DONE]  M8: Scrubber — `Scrubber` class with `seek(n)`, `replay()`, `jump(n)`, `length` property, 7 tests (commit ebe1809)
+
 Format:
 ```
 YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
