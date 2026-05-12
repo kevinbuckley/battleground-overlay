@@ -99,15 +99,18 @@ inject_recovery_task() {
   local next_task="${fallbacks[$idx]}"
   CONSECUTIVE_FAILS_TOTAL=$(( CONSECUTIVE_FAILS_TOTAL + 1 ))
 
-  # Insert at the top of the M0 section so it gets picked first
-  if grep -q "^## M0" "$REPO/docs/loop-backlog.md"; then
+  # Insert just before the Quarantined section (or at end of file) so it gets
+  # picked in the next iteration without burying it in all-done M0 tasks.
+  if grep -q "^## Quarantined" "$REPO/docs/loop-backlog.md"; then
     awk -v task="$next_task" '
-      /^## M0/ && !done { print; print ""; print task; done=1; next }
+      /^## Quarantined/ && !done { print task; print ""; done=1 }
       { print }
     ' "$REPO/docs/loop-backlog.md" > "$REPO/docs/loop-backlog.md.tmp" \
       && mv "$REPO/docs/loop-backlog.md.tmp" "$REPO/docs/loop-backlog.md"
-    log "  → Recovery task injected: $next_task"
+  else
+    printf '\n%s\n' "$next_task" >> "$REPO/docs/loop-backlog.md"
   fi
+  log "  → Recovery task injected: $next_task"
 }
 
 # ---------------------------------------------------------------------------

@@ -38,13 +38,13 @@ should have committed or reverted. Avoid these failure modes:
 
    a. **Skip the "Quarantined" section** — those tasks have failed.
    b. **Skip any vague task** (see anti-loop rule #3).
-   c. Pick the **first `[S]` or `[M]` item** that is NOT done.
+   c. Pick the **first `[S]` or `[M]` item** that is NOT done (`[ ]`).
       Do NOT pick `[L]` items.
 
       **Pre-check before picking:**
-      - "Create file X" → check if X exists. If yes, mark `[x]` and
+      - "Create file X" → check if X already exists. If yes, mark `[x]` and
         pick the next item.
-      - "Add function Y to file Z" → grep Z for Y. If wired, mark `[x]`.
+      - "Add function Y to file Z" → grep Z for Y. If already wired, mark `[x]`.
       - Otherwise proceed.
 
    d. Emit on its own line: `CHOSEN TASK: <copy the backlog line verbatim>`
@@ -58,14 +58,26 @@ should have committed or reverted. Avoid these failure modes:
    bun test
    bun typecheck
    ```
-   Both must be green. If they were already failing before your
-   change, STOP and quarantine — don't pile fixes on top.
+   Both must exit 0. If they were already failing before your change,
+   STOP and quarantine — don't pile fixes on top.
 
-4. **COMMIT** — stage only your files. Commit with a clear message.
+4. **COMMIT (implementation)** — stage the implementation files and
+   commit with a clear one-line message. Note the sha:
+   ```bash
+   git add <your files>
+   git commit -m "feat: <task summary>"
+   IMPL_SHA=$(git rev-parse --short HEAD)
+   ```
 
-5. **UPDATE BOOKKEEPING:**
+5. **UPDATE BOOKKEEPING** — edit then commit these two files together:
    - Tick the task `[x]` in `docs/loop-backlog.md`
-   - Append a `DONE` line to `docs/loop-ledger.md` with the commit sha
+   - Append to `docs/loop-ledger.md`:
+     `YYYY-MM-DD HH:MM  [DONE]  <one-line summary>  (commit $IMPL_SHA)`
+   ```bash
+   git add docs/loop-backlog.md docs/loop-ledger.md
+   git commit -m "chore: mark task done in backlog+ledger ($IMPL_SHA)"
+   ```
+   **Both files must be committed — do not leave them dirty.**
 
 6. **EMIT** on its own line: `DONE: <one-line summary>`
 
@@ -73,14 +85,22 @@ should have committed or reverted. Avoid these failure modes:
 
 Move a task to the **Quarantined** section of `docs/loop-backlog.md`
 with a one-line reason when:
-- The task is ambiguous and you'd be guessing
-- A dependency isn't done
-- Clean implementation requires changes outside the named files
+- The task is ambiguous and you'd be guessing at the implementation
+- A dependency task isn't done yet
+- The task requires data unavailable in this environment
+  (e.g., a live Hearthstone session, a downloaded `cards.json`)
+- Clean implementation requires touching files outside the named scope
 
+Commit the quarantine edit:
+```bash
+git add docs/loop-backlog.md
+git commit -m "chore: quarantine <task name>"
+```
 Then pick the next task and continue this same iteration.
 
 ## When the backlog runs thin
 
-If you find fewer than 5 unblocked items in `docs/loop-backlog.md`,
-**add 3 new concrete tasks yourself** from `docs/tasks.md` milestones
-(break the next milestone into atomic items), then do the first one.
+If fewer than 5 unblocked `[ ]` items remain (outside Quarantined),
+**add 3–5 new concrete `[S]`/`[M]` tasks** by breaking the next
+uncompleted milestone from `docs/tasks.md` into atomic items.
+Commit the additions, then do the first new task.
