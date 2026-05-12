@@ -114,6 +114,24 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add a no-op test to packages/shared confirming Placeholder type compiles — packages/shared/src/placeholder.test.ts
 
+## M10 — Sim scoring + advisor depth
+
+- [ ] [S] HP delta in simScorer: update `scoreCandidate` in `packages/advisor/src/simScorer.ts` to compute `avgHpDelta` as weighted sum (win→+opponentTier, loss→-playerTier, tie→0) averaged across all opponents; update existing test to assert `avgHpDelta !== 0` for a non-trivial matchup — `packages/advisor/src/simScorer.ts` update + test
+- [ ] [S] Lobby weight helper: `packages/advisor/src/lobbyWeight.ts` — `lobbyWeights(opponents: OpponentState[]): number[]` returns per-opponent weight = opponent.hp / totalAliveHp (0 for eliminated); test with 3 opponents one eliminated summing to 1.0 — `packages/advisor/src/lobbyWeight.ts` + test
+- [ ] [S] Sell candidate enumerator: add `enumerateSellCandidates(state: GameState): {action: SellAction, projectedBoard: Board}[]` to `packages/advisor/src/candidates.ts` — one entry per board minion, projectedBoard is board minus that minion; test with 2-minion board returns 2 candidates — `packages/advisor/src/candidates.ts` update + test
+- [ ] [S] Sim benchmark: `packages/sim/src/bench.test.ts` — run `simulateBatch` 5 times with n=20 and assert total wall-clock < 3000ms; use `performance.now()`; fails fast if sim regresses — `packages/sim/src/bench.test.ts`
+
+## M11 — Card data indexes
+
+- [ ] [S] Tribe index: add `getCardsByTribe(tribe: string): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTribe: Map<string, Card[]>` lazily from `loadCards()`; test with empty card list returns [] — `packages/card-data/src/indexes.ts` update + test
+- [ ] [S] Tier index: add `getCardsByTier(tier: number): Card[]` to `packages/card-data/src/indexes.ts` — builds `byTier: Map<number, Card[]>` lazily; test with empty card list — `packages/card-data/src/indexes.ts` update + test
+- [ ] [S] BG pool by tribe: `packages/card-data/src/isBattlegroundsPool.ts` — add `getBgMinionsByTribe(tribe: string): Card[]` combining `isBattlegroundsPool` filter + tribe index; test returns empty array when no cards loaded — `packages/card-data/src/isBattlegroundsPool.ts` update + test
+
+## M12 — Session log improvements
+
+- [ ] [S] Session list: add `listSessions(logsDir?: string): string[]` to `packages/shared/src/sessionLog.ts` — returns sorted paths of all `session-*.jsonl` files in `logsDir` (default `logs/`); test with temp dir containing 3 fixture filenames — `packages/shared/src/sessionLog.ts` update + test
+- [ ] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
