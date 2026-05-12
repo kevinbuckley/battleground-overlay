@@ -290,7 +290,7 @@ to `loop-ledger.md`.
 
 ## M24 — Minion keyword handlers
 
-- [ ] [S] Taunt tag handler: `packages/state/src/reducer/taunt.ts` — `applyTaunt(state, event)` handles `TAG_CHANGE tag=TAUNT value=1` and `value=0` on entities in PLAY zone → sets `minion.taunt = true/false` (`taunt` already on Minion type); wire into reducer; 4 tests (set taunt, clear taunt, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/taunt.ts` + test
+- [x] [S] Taunt tag handler: `packages/state/src/reducer/taunt.ts` — `applyTaunt(state, event)` handles `TAG_CHANGE tag=TAUNT value=1` and `value=0` on entities in PLAY zone → sets `minion.taunt = true/false` (`taunt` already on Minion type); wire into reducer; 4 tests (set taunt, clear taunt, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/taunt.ts` + test (commit 42dc3e7)
 
 - [ ] [S] Poisonous tag handler: `packages/state/src/reducer/poisonous.ts` — `applyPoisonous(state, event)` handles `TAG_CHANGE tag=POISONOUS value=1` and `value=0` on entities in PLAY zone → sets `minion.poisonous = true/false` (`poisonous` already on Minion type); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/poisonous.ts` + test
 
