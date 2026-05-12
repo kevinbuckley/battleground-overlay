@@ -5,5 +5,9 @@
     "composite": true
   },
   "include": ["src"],
-  "references": [{ "path": "../../packages/shared" }, { "path": "../../packages/log-parser" }]
+  "references": [
+    { "path": "../../packages/shared" },
+    { "path": "../../packages/log-parser" },
+    { "path": "../../packages/state" }
+  ]
 }
