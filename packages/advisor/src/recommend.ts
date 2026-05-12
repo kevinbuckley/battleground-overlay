@@ -1,5 +1,6 @@
 import type { GameState, Recommendation } from '@overlay/shared';
 import { freezeMinion } from './heuristics/freezeMinion';
+import { rerollScore } from './heuristics/rerollScore';
 import { sellScore } from './heuristics/sellScore';
 import { tierCurveScore } from './heuristics/tierCurve';
 import { tribeSynergyScore } from './heuristics/tribeSynergy';
@@ -68,11 +69,23 @@ export function recommend(state: GameState): Recommendation[] {
     };
   })();
 
+  const rerollRec: Recommendation | null = (() => {
+    const score = rerollScore(state);
+    if (score < 0.5) return null;
+    return {
+      action: { type: 'Reroll' },
+      score,
+      confidence: Math.min(1, score + 0.1),
+      reason: 'no good buys, safe to reroll',
+    };
+  })();
+
   const all = [
     ...buyRecs,
     ...(tierRec ? [tierRec] : []),
     ...(freezeRec ? [freezeRec] : []),
     ...sellRecs,
+    ...(rerollRec ? [rerollRec] : []),
   ];
   return all.sort((a, b) => b.score - a.score).slice(0, TOP_N);
 }

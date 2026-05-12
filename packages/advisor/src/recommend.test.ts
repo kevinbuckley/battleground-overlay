@@ -62,4 +62,89 @@ describe('recommend', () => {
       expect(recs[0].action.cardId).toBe('TRIPLE_CARD');
     }
   });
+
+  it('includes Reroll when shop has no good buys and conditions are met', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: [minion('OTHER', ['Beast'])] },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('NOVEL', ['Murloc']), minion('SAFE', ['Elemental'])],
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 20 },
+        gold: 3,
+      },
+    };
+    const recs = recommend(state);
+    const rerollRec = recs.find((r) => r.action.type === 'Reroll');
+    expect(rerollRec).toBeDefined();
+  });
+
+  it('excludes Reroll when shop has triple potential', () => {
+    const base = initialState();
+    const board = [minion('TRIPLE', ['Dragon']), minion('TRIPLE', ['Dragon'])];
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: board },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('TRIPLE', ['Dragon'])],
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 30 },
+        gold: 3,
+      },
+    };
+    const recs = recommend(state);
+    const rerollRec = recs.find((r) => r.action.type === 'Reroll');
+    expect(rerollRec).toBeUndefined();
+  });
+
+  it('excludes Reroll when HP is unsafe', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: [] },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('NOVEL', ['Murloc'])],
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 10 },
+        gold: 3,
+      },
+    };
+    const recs = recommend(state);
+    const rerollRec = recs.find((r) => r.action.type === 'Reroll');
+    expect(rerollRec).toBeUndefined();
+  });
+
+  it('excludes Reroll when player cannot afford reroll', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: [] },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('NOVEL', ['Murloc'])],
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 30 },
+        gold: 0,
+      },
+    };
+    const recs = recommend(state);
+    const rerollRec = recs.find((r) => r.action.type === 'Reroll');
+    expect(rerollRec).toBeUndefined();
+  });
 });
