@@ -230,6 +230,24 @@ to `loop-ledger.md`.
 
 - [ ] [S] Fixture integration test harness: `packages/log-parser/src/fixtureTest.ts` — `runFixtureTest(fixturePath: string, expectedEvents: HsEvent[]): void` reads a fixture file, parses all lines, asserts event count and types match expected; 3 tests: exact match passes, wrong count fails, wrong type fails — `packages/log-parser/src/fixtureTest.ts` + test
 
+## M21 — Reducer completeness + state utilities
+
+- [ ] [S] Fix duplicate TAG_CHANGE branches in reducer: `packages/state/src/reducer.ts` has two identical ZONE=PLAY and two identical ZONE=GRAVEYARD branches — remove the second occurrence of each duplicate; add 2 regression tests confirming `applyShopBuy` still fires on ZONE=PLAY and `applyMinionRemoved` still fires on ZONE=GRAVEYARD — `packages/state/src/reducer.ts` + test
+
+- [ ] [S] Wire `applyMinionPlaced` into reducer: import `applyMinionPlaced` from `./reducer/minionPlaced` in `packages/state/src/reducer.ts`; add `case 'FULL_ENTITY':` branch that calls `applyMinionPlaced(state, event)`; 3 tests: FULL_ENTITY event with ZONE=PLAY updates board size — `packages/state/src/reducer.ts` update
+
+- [ ] [S] Increment turn counter on MAIN_READY: in `packages/state/src/reducer/turnPhase.ts`, when `event.value === 'MAIN_READY'` increment `state.turn` AND set phase to 'shopping'; 3 tests: turn starts at 1, increments to 2 on second MAIN_READY, phase set to shopping — `packages/state/src/reducer/turnPhase.ts` update + test
+
+- [ ] [S] State serializer: `packages/state/src/serialize.ts` — `serializeGameState(state: GameState): string` (JSON.stringify), `deserializeGameState(json: string): GameState` (JSON.parse with cast); round-trip test with 4 assertions (turn preserved, phase preserved, board length preserved, shop length preserved); export both from `packages/state/src/index.ts` — `packages/state/src/serialize.ts` + test
+
+- [ ] [S] Shared utility functions: `packages/shared/src/utils.ts` — `clamp(n: number, lo: number, hi: number): number`, `lerp(a: number, b: number, t: number): number`, `round2(n: number): number` (rounds to 2 decimal places using `Math.round(n * 100) / 100`); export all three from `packages/shared/src/index.ts`; 6 tests (clamp low, clamp high, clamp mid, lerp 0, lerp 1, round2) — `packages/shared/src/utils.ts` + test
+
+- [ ] [S] Add `needsExplanation` flag to Recommendation: add `needsExplanation?: boolean` to `Recommendation` interface in `packages/shared/src/recommendation.ts`; update `packages/advisor/src/recommend.ts` to set `needsExplanation: true` on each rec when all recommendations have `score < 0.4` or the array is empty; 4 tests (empty=true, all low score=true, mixed=false, all high=false) — `packages/shared/src/recommendation.ts` update + `packages/advisor/src/recommend.ts` update + test
+
+- [ ] [S] Pipeline session logging: in `packages/state/src/pipeline.ts`, after each `onEvent` call, invoke `appendSessionEvent('state_snapshot', { turn: state.turn, phase: state.phase, boardSize: state.player.board.length })`; mock `appendSessionEvent` (import from `@overlay/shared`) in the existing pipeline test and assert it is called once per event fed — `packages/state/src/pipeline.ts` update + test
+
+- [ ] [M] Electron main window bootstrap: in `apps/overlay/src/main.ts`, implement `createOverlayWindow(BrowserWindowCtor: typeof BrowserWindow): BrowserWindow` that instantiates a transparent, always-on-top, frame-less BrowserWindow with `width:800, height:200, transparent:true, frame:false, alwaysOnTop:true, webPreferences:{ contextIsolation:true, nodeIntegration:false }`; test by passing a spy constructor and asserting it was called with those exact options — `apps/overlay/src/main.ts` update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
