@@ -1,5 +1,5 @@
 export type Placeholder = never;
-export { appendSessionEvent, resetSession } from './sessionLog';
+export { appendSessionEvent, resetSession, pruneOldSessions } from './sessionLog';
 export type {
   Minion,
   Board,

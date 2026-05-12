@@ -1,5 +1,6 @@
 import { resolve } from 'node:path';
 
+import { pruneOldSessions } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 
 export function getRendererPath(): string {
@@ -26,6 +27,8 @@ export function createOverlayWindow(
   const electron = require('electron') as typeof import('electron');
   const { app, BrowserWindow: RealBrowserWindow } = electron;
   const Ctor = BrowserWindowCtor !== null ? BrowserWindowCtor : RealBrowserWindow;
+
+  pruneOldSessions(50);
 
   const win = new Ctor(getWindowOptions());
 
