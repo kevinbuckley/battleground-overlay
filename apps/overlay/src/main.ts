@@ -1,31 +1,12 @@
 import { setBoardPanel, setOpponentPanel } from '@overlay/shared';
-import { BrowserWindow, app } from 'electron';
+import { app, ipcMain } from 'electron';
 import { setAdvice } from './advicePanel';
-import { anchorToHearthstone } from './anchor';
+import { createOverlayWindow } from './createOverlayWindow';
 import { setExplanation } from './explanationPanel';
-import { defaultHotkeyConfig, registerHotkeys } from './hotkeys';
-import { setInteractive, setOverlayWin } from './overlayState';
+import { setInteractive } from './overlayState';
 
 function createWindow(): void {
-  const win = new BrowserWindow({
-    width: 400,
-    height: 600,
-    transparent: true,
-    frame: false,
-    alwaysOnTop: true,
-    hasShadow: false,
-    webPreferences: {
-      nodeIntegration: true,
-      contextIsolation: false,
-    },
-  });
-
-  setOverlayWin(win);
-  win.setIgnoreMouseEvents(true);
-  anchorToHearthstone(win, { x: 10, y: 10 });
-  const cfg = defaultHotkeyConfig();
-  registerHotkeys(win, cfg, app);
-  win.loadURL('about:blank');
+  createOverlayWindow();
 }
 
 ipcMain.handle('set-interactive', (_event, interactive: boolean) => {
