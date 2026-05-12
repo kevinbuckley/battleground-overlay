@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 23:59  [DONE]  M21: State serializer — `serializeGameState` + `deserializeGameState` with Map serialization, 7 round-trip tests (commit 110937a)
 
+2026-05-12 23:59  [DONE]  M21: Shared utility functions — `clamp`, `lerp`, `round2` with 8 tests, exported from shared index (commit 15e1149)
+
 2026-05-12 23:30  [DONE]  M21: Wire applyMinionPlaced into reducer — added FULL_ENTITY case, CONTROLLER tag handler, fallback from applyShopBuy to applyMinionPlaced for non-shop minions, 3 integration tests (commit a1e5c96)
 
 2026-05-12 23:45  [DONE]  M21: Increment turn counter on MAIN_READY — `applyTurnPhase` now increments `state.turn` when `event.value === 'MAIN_READY'`, 3 new tests (commit 3941ab3)
