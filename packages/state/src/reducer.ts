@@ -1,6 +1,7 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyCombatDamage } from './reducer/combatDamage';
+import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
@@ -21,7 +22,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       if (event.blockType === 'TRIGGER' && event.effectCardId === 'TB_BaconShop_StartGame') {
         return { ...state, turn: 1, phase: 'shopping' };
       }
-      return state;
+      return applyDeathrattle(state, event);
 
     case 'ZONE_CHANGE_LIST':
       return applyShopRefresh(state, event);
