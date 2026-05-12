@@ -137,6 +137,27 @@ to `loop-ledger.md`.
 
 - [x] [M] Session replay: `packages/state/src/parseSession.ts` — `parseSession(filePath)` reads a session-*.jsonl file, replays events through state reducer, returns `GameState[]` snapshots; 4 tests — `packages/state/src/parseSession.ts` + test
 
+## M7 — Overlay UI (Electron)
+
+- [x] [S] Transparent always-on-top window — scaffolded in `apps/overlay/src/main.ts` (transparent, frameless, alwaysOnTop)
+- [ ] [S] Click-through toggle: add `setIgnoreMouseEvents(true)` on window ready, expose `setInteractive(bool)` IPC handler to toggle click-through; test by verifying the Electron API is called in a headless test — `apps/overlay/src/main.ts` update + test
+- [ ] [S] Anchor to Hearthstone window (macOS Accessibility API)
+- [ ] [S] Advice panel (current top recommendation)
+- [ ] [S] "Why?" expand → LLM explanation
+- [ ] [S] Board panel (recommended positioning)
+- [ ] [S] Opponent panel (projected scaling per opponent)
+- [ ] [S] Damage forecast widget
+- [ ] [S] Hotkeys: toggle, reload, hide
+- [ ] [S] Settings: opacity, position, hotkey rebinding
+
+## M8 — Replay app
+
+- [ ] [M] Load a fixture `.log`
+- [ ] [M] Scrub through events
+- [ ] [M] State viewer at current tick
+- [ ] [M] "What advisor would have said" diff vs. what user did
+- [ ] [M] Export reviewable report as Markdown for post-game analysis
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)

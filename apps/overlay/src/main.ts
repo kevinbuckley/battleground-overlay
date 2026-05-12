@@ -1,4 +1,5 @@
-import { app, BrowserWindow } from 'electron';
+import { BrowserWindow, app, ipcMain } from 'electron';
+import { setInteractive, setOverlayWin } from './overlayState';
 
 function createWindow(): void {
   const win = new BrowserWindow({
@@ -14,9 +15,15 @@ function createWindow(): void {
     },
   });
 
-  win.setIgnoreMouseEvents(true, { forward: true });
+  setOverlayWin(win);
+  win.setIgnoreMouseEvents(true);
   win.loadURL('about:blank');
 }
+
+ipcMain.handle('set-interactive', (_event, interactive: boolean) => {
+  setInteractive(interactive);
+  return true;
+});
 
 app.whenReady().then(createWindow);
 app.on('window-all-closed', () => app.quit());
