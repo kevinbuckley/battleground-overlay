@@ -2,6 +2,7 @@ import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
+import { applyBuffs } from './reducer/buffs';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
@@ -121,6 +122,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'ANOMALY') {
         return applyAnomaly(state, event);
+      }
+      if (event.tag === 'ATK' || event.tag === 'DIVINE_SHIELD') {
+        return applyBuffs(state, event);
       }
       return applyTripleBonus(state, event);
 
