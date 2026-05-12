@@ -7,6 +7,7 @@ import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerLost } from './reducer/playerLost';
+import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyTier } from './reducer/tier';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -16,6 +17,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return { ...state, turn: 1, phase: 'shopping' };
       }
       return state;
+
+    case 'ZONE_CHANGE_LIST':
+      return applyShopRefresh(state, event);
 
     case 'TAG_CHANGE':
       if (event.tag === 'PLAYSTATE' && event.value === 'LOST') {

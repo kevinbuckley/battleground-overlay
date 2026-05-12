@@ -36,21 +36,39 @@ export function getCardsByTribe(tribe: string): Card[] {
 }
 
 export function getCardsByTier(tier: number): Card[] {
-  if (!byTierCache) {
-    const map = new Map<number, Card[]>();
-    for (const card of loadCards()) {
-      if (card.techLevel) {
-        const existing = map.get(card.techLevel) ?? [];
-        existing.push(card);
-        map.set(card.techLevel, existing);
-      }
+  if (byTierCache) {
+    let result = byTierCache.get(tier);
+    if (!result) {
+      result = [];
+      byTierCache.set(tier, result);
     }
-    byTierCache = map;
+    return result;
   }
+  const map = new Map<number, Card[]>();
+  for (const card of loadCards()) {
+    if (card.techLevel) {
+      const existing = map.get(card.techLevel) ?? [];
+      existing.push(card);
+      map.set(card.techLevel, existing);
+    }
+  }
+  byTierCache = map;
   let result = byTierCache.get(tier);
   if (!result) {
     result = [];
     byTierCache.set(tier, result);
   }
   return result;
+}
+
+let byIdCache: Map<string, Card> | null = null;
+
+export function getByDbfIdStr(): Map<string, Card> {
+  if (byIdCache) return byIdCache;
+  byIdCache = new Map(loadCards().map((c) => [c.id, c]));
+  return byIdCache;
+}
+
+export function getCardById(cardId: string): Card | null {
+  return getByDbfIdStr().get(cardId) ?? null;
 }
