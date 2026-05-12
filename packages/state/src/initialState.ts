@@ -16,6 +16,7 @@ export function initialState(): GameState {
       tierUpCost: 6,
       eliminated: false,
       pendingTriple: null,
+      heroPowerUsedThisTurn: false,
       entityRegistry: new Map(),
     },
     opponents: [],

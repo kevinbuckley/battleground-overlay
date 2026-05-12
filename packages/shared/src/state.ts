@@ -41,6 +41,7 @@ export interface PlayerState {
   tierUpCost: number;
   eliminated: boolean;
   pendingTriple: string | null;
+  heroPowerUsedThisTurn: boolean;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
