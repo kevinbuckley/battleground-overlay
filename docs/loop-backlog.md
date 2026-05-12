@@ -255,6 +255,39 @@ to `loop-ledger.md`.
 - [x] [S] Anomaly handler: `packages/state/src/reducer/anomaly.ts` — `applyAnomaly(state, event)` handles `TAG_CHANGE tag=ANOMALY` → sets `state.anomaly: string | null` (add to GameState); tracks current shop anomaly name; 4 tests (null when no anomaly, set on ANOMALY tag, cleared on ANOMALY=0, persisted across turns) — `packages/state/src/reducer/anomaly.ts` + test (commit 978e4f5)
 - [x] [S] Reborn handler: `packages/state/src/reducer/reborn.ts` — `applyReborn(state, event)` handles `BLOCK_START` with `triggerKeyword` containing "Reborn" → sets `reborn: true` on the minion that re-enters the board (identified by new entityId matching deathrattle pattern); 4 tests (reborn minion on board has reborn=true, non-reborn deathrattle doesn't set it, opponent reborn ignored, multiple reborns tracked) — `packages/state/src/reducer/reborn.ts` + test (commit 020dafb)
 
+## M1 — Log parser (continued)
+
+- [ ] [S] ZoneChangeList parser: `packages/log-parser/src/parseZoneChangeList.ts` —
+  `parseZoneChangeList(line: string): ZoneChangeList | null` that matches
+  `ZONE_CHANGE_LIST ID=(\d+)` and returns `{ kind: 'ZONE_CHANGE_LIST', id }`;
+  export from index.ts; 3 tests (valid line returns ZoneChangeList, garbage
+  returns null, empty string returns null) —
+  `packages/log-parser/src/parseZoneChangeList.ts` + test
+
+## M2 — State reducer (continued)
+
+- [ ] [S] Buff tracker: `packages/state/src/reducer/buffs.ts` —
+  `applyBuffs(state, event)` handles `TAG_CHANGE tag=ATK` on entities in
+  PLAY zone — updates minion `attack` field; also handles
+  `TAG_CHANGE tag=DIVINE_SHIELD value=1` and `value=0` to toggle
+  `divineShield` on minions; 6 tests (ATK update on player minion, ATK
+  update on opponent minion, divine shield on/off, no-op on non-play
+  entity, no-op on hero, no-op on unknown tag) —
+  `packages/state/src/reducer/buffs.ts` + test, wired into reducer
+- [ ] [S] Silence handler: `packages/state/src/reducer/silence.ts` —
+  `applySilence(state, event)` handles `TAG_CHANGE tag=SILENCED value=1`
+  on an entity in PLAY zone → resets that minion's `taunt`,
+  `divineShield`, `poisonous`, `reborn` to false (clears all mechanics);
+  4 tests (silence clears all mechanics, no-op on non-silenced, no-op on
+  hero, no-op on non-play entity) —
+  `packages/state/src/reducer/silence.ts` + test, wired into reducer
+- [ ] [S] Hand size tracker: `packages/state/src/reducer/handSize.ts` —
+  `applyHandSize(state, event)` handles `TAG_CHANGE tag=HANDBY_CARDS` on
+  player controller → updates `state.player.handSize: number` (add field
+  to PlayerState); 4 tests (initial=0, increments on card drawn,
+  decrements on card played, reflected in state) —
+  `packages/state/src/reducer/handSize.ts` + test, wired into reducer
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
