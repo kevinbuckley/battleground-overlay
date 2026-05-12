@@ -33,3 +33,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-11 03:45  [DONE]  M7: time-budget guard — withBudget<T> with 5 tests, wired into advisor index (commit b50b73b)
 2026-05-11 04:00  [DONE]  M8: prompt builder — buildExplainPrompt(state, recs) returns system+user message array covering all action types, 12 tests (commit 2b926d6)
 2026-05-11 05:15  [DONE]  M8: explain(rec, state) — cache check, buildPrompt, async chatCompletion with timeout, LLM cache store, session logging (commit 2d841c3)
+
+2026-05-11 05:30  [DONE]  M9: sell heuristic — sellScore with weakest/synergy/triple checks, wired into recommend(), 6 tests (commit 24aae19)

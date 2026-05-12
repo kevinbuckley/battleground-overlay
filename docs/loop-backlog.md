@@ -105,7 +105,7 @@ to `loop-ledger.md`.
 
 ## M9 — Sell + freeze heuristics
 
-- [ ] [S] Sell heuristic: `packages/advisor/src/heuristics/sellScore.ts` — `sellScore(minion, board, state)` returns [0,1] based on: weakest board member by attack+health, zero synergy with remaining board, not a triple-in-progress — packages/advisor/src/heuristics/sellScore.ts + test
+- [x] [S] Sell heuristic: `packages/advisor/src/heuristics/sellScore.ts` — `sellScore(minion, board, state)` returns [0,1] based on: weakest board member by attack+health, zero synergy with remaining board, not a triple-in-progress — packages/advisor/src/heuristics/sellScore.ts + test
 - [ ] [S] Freeze heuristic: `packages/advisor/src/heuristics/freezeScore.ts` — `freezeScore(state)` returns [0,1]: high if shop has triple opportunity or top-tier synergy card AND player hp is safe — packages/advisor/src/heuristics/freezeScore.ts + test
 - [ ] [S] Reroll heuristic: `packages/advisor/src/heuristics/rerollScore.ts` — `rerollScore(state)` returns [0,1]: high if shop has no synergy + no triple + hp is safe AND gold after reroll > 0 — packages/advisor/src/heuristics/rerollScore.ts + test
 - [ ] [S] Wire sell/freeze/reroll into `recommend()`: include them in scored candidates alongside Buy + TierUp; still return top 3 — packages/advisor/src/recommend.ts update + test
