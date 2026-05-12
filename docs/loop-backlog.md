@@ -181,7 +181,7 @@ to `loop-ledger.md`.
 
 ## M15 — Advisor sim integration
 
-- [ ] [S] Budget-aware buy scorer: `packages/advisor/src/budgetScorer.ts` — `scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[]` — for each shop minion, projects `enumerateBuyCandidates`, calls `scoreCandidate` via `withBudget`, returns top 3 sorted by winPct; test with n=0 returns recs with score 0 — `packages/advisor/src/budgetScorer.ts` + test
+- [x] [S] Budget-aware buy scorer: `packages/advisor/src/budgetScorer.ts` — `scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[]` — for each shop minion, projects `enumerateBuyCandidates`, calls `scoreCandidate` via `withBudget`, returns top 3 sorted by winPct; test with n=0 returns recs with score 0 — `packages/advisor/src/budgetScorer.ts` + test (commit ae8c1cb)
 - [ ] [S] Weighted win scorer: `packages/advisor/src/weightedScore.ts` — `weightedWinScore(scoreResult: ScoreResult, weights: number[]): number` multiplies per-opponent winPct by lobby weights and sums; test: all weights equal → average winPct — `packages/advisor/src/weightedScore.ts` + test
 - [ ] [S] Upgrade `recommend()` to use sim: update `packages/advisor/src/recommend.ts` to call `scoreBuysWithSim(state, 50, 2000)` and merge with heuristic scores; heuristics remain as fallback if sim returns empty; test: with 0 sims still returns ≥1 recommendation — `packages/advisor/src/recommend.ts` update + test
 
@@ -189,7 +189,7 @@ to `loop-ledger.md`.
 
 - [ ] [S] Session pretty-printer: `scripts/review-session.ts` — Bun CLI: reads a `logs/session-*.jsonl` file, prints each entry as `[kind] payload-summary` to stdout; export `formatEntry(line: string): string`; test `formatEntry` with a hand-crafted JSONL line returns a non-empty string — `scripts/review-session.ts` + test
 - [ ] [S] IPC bridge module: `apps/overlay/src/ipcBridge.ts` — `startBridge(win: BrowserWindow, getState: () => GameState, getRecs: () => Recommendation[]): void` sets up a 500ms poll that pushes `overlay:state-update` and `overlay:recs-update` events to the renderer; test: mock win.webContents.send called with correct channel names — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
-- [ ] [S] Overlay state snapshot: `apps/overlay/src/overlayState.ts` (if not already there) — exports `OverlaySnapshot` type `{state: GameState, recs: Recommendation[], ts: number}` + `makeSnapshot(state, recs): OverlaySnapshot`; test: ts is a number, recs preserved — `apps/overlay/src/overlayState.ts` + test
+- [x] [S] Overlay state snapshot: `apps/overlay/src/overlayState.ts` (already exists as M7 click-through toggle module — M16 snapshot type `OverlaySnapshot` + `makeSnapshot` would conflict; skip or rename existing) — `apps/overlay/src/overlayState.ts` (conflicts with M7 — see note)
 
 ## Quarantined
 
