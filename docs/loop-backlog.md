@@ -163,6 +163,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add `formatRecommendation(rec: Recommendation): string` to `packages/shared/src/utils.ts` returning a short human-readable string like 'Buy Murloc Tidecaller (score: 0.8)'; test one Buy and one TierUp — packages/shared/src/utils.ts update + test
 
+- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
