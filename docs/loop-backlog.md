@@ -133,6 +133,10 @@ to `loop-ledger.md`.
 - [x] [S] Session list: add `listSessions(logsDir?: string): string[]` to `packages/shared/src/sessionLog.ts` — returns sorted paths of all `session-*.jsonl` files in `logsDir` (default `logs/`); test with temp dir containing 3 fixture filenames — `packages/shared/src/sessionLog.ts` update + test (commit 4421ab3)
 - [x] [S] Session pruning: add `pruneOldSessions(keepLast: number, logsDir?: string): void` to `packages/shared/src/sessionLog.ts` — deletes all but the most recent `keepLast` session files; test: write 5 files, prune(3), confirm 3 remain — `packages/shared/src/sessionLog.ts` update + test (commit b4720ea)
 
+## M13 — Session replay
+
+- [x] [M] Session replay: `packages/state/src/parseSession.ts` — `parseSession(filePath)` reads a session-*.jsonl file, replays events through state reducer, returns `GameState[]` snapshots; 4 tests — `packages/state/src/parseSession.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
