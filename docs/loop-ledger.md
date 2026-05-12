@@ -63,3 +63,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M7: Click-through toggle — overlayState module with setInteractive(bool) + IPC handler, headless test (commit d08ded7)
 
 2026-05-12 00:00  [DONE]  M7: Position scorer — hillClimbPosition with full simulation (scoreCandidate per swap, skip eliminated opponents, multi-opponent support), 9 tests (commit 2851bef)
+
+2026-05-12 00:00  [DONE]  M7: Anchor to Hearthstone window — macOS Accessibility API via osascript, `anchor.ts` + `anchor.test.ts`, wired into `main.ts` (commit 9635ff8)
