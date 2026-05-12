@@ -248,6 +248,13 @@ to `loop-ledger.md`.
 
 - [x] [M] Electron main window bootstrap: in `apps/overlay/src/main.ts`, implement `createOverlayWindow(BrowserWindowCtor: typeof BrowserWindow): BrowserWindow` that instantiates a transparent, always-on-top, frame-less BrowserWindow with `width:800, height:200, transparent:true, frame:false, alwaysOnTop:true, webPreferences:{ contextIsolation:true, nodeIntegration:false }`; test by passing a spy constructor and asserting it was called with those exact options — `apps/overlay/src/main.ts` update + test (commit 5e68f4c)
 
+## M23 — Game state completeness
+
+- [x] [S] Lobby size tracker: `packages/state/src/reducer/lobbySize.ts` — `applyLobbySize(state, event)` handles `TAG_CHANGE tag=NUM_MINIONS_IN_LOBBY` on player controller → sets `state.lobbySize: number`; add `lobbySize: number` field to `GameState`; wire into reducer; 4 tests (initial=8, decrement on elimination, stays constant, reflected in state) — `packages/state/src/reducer/lobbySize.ts` + test (commit 45d5f5f)
+- [ ] [S] Hero identification: `packages/state/src/reducer/heroIdentify.ts` — `applyHeroIdentify(state, event)` handles `SHOW_ENTITY` where `cardId` starts with "Hero_" → identifies player vs opponent by matching `entity` field to known entity IDs; sets `state.player.hero.cardId` and `state.opponents[i].hero.cardId`; 4 tests (player hero identified, opponent hero identified, no match returns unchanged, duplicate ignored) — `packages/state/src/reducer/heroIdentify.ts` + test
+- [ ] [S] Anomaly handler: `packages/state/src/reducer/anomaly.ts` — `applyAnomaly(state, event)` handles `TAG_CHANGE tag=ANOMALY` → sets `state.anomaly: string | null` (add to GameState); tracks current shop anomaly name; 4 tests (null when no anomaly, set on ANOMALY tag, cleared on ANOMALY=0, persisted across turns) — `packages/state/src/reducer/anomaly.ts` + test
+- [ ] [S] Reborn handler: `packages/state/src/reducer/reborn.ts` — `applyReborn(state, event)` handles `BLOCK_START` with `triggerKeyword` containing "Reborn" → sets `reborn: true` on the minion that re-enters the board (identified by new entityId matching deathrattle pattern); 4 tests (reborn minion on board has reborn=true, non-reborn deathrattle doesn't set it, opponent reborn ignored, multiple reborns tracked) — `packages/state/src/reducer/reborn.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)

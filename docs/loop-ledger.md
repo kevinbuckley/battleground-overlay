@@ -163,3 +163,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 21:00  [DONE]  M22: Armor tracker — `applyArmor` handles `TAG_CHANGE tag=ARMOR` on player controller, updates `state.player.hero.armor`, 4 tests, wired into reducer (commit 3858770)
 
 2026-05-12 05:50  [DONE]  M2: Replay fixture helper — `replayFixture(filePath)` reads raw Power.log, parses via `parseLine`, replays through reducer, returns final GameState, 4 tests (commit 00ff5df)
+
+2026-05-12 00:00  [DONE]  M23: Lobby size tracker — `applyLobbySize` handles `TAG_CHANGE tag=NUM_MINIONS_IN_LOBBY`, adds `lobbySize` to GameState, wired into reducer, 4 tests (commit 45d5f5f)
