@@ -87,3 +87,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 08:00  [DONE]  M7: Settings persistence — `settings.ts` with OverlaySettings type, defaultSettings, loadSettings (JSON fallback), saveSettings, 7 tests (commit e1df2ad)
 
 2026-05-12 09:00  [DONE]  M8: Advisor diff — `advisorDiff(actual, predicted)` returns human-readable +/- diff lines with formatted action labels, 13 tests (commit 820a705)
+
+2026-05-12 09:15  [DONE]  M8: Report exporter — `exportReport` generates Markdown with `## Turn N` headings, player stats, board, opponents, top 3 recs, 7 tests (commit ff42219)

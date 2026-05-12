@@ -157,7 +157,7 @@ to `loop-ledger.md`.
 - [x] [S] Scrubber: `apps/replay/src/scrubber.ts` — `Scrubber` class constructor takes `HsEvent[]`; `.seek(n): GameState` applies first n events; `.length: number` property; test: seek(0)=initialState, seek(1)=state after first event — `apps/replay/src/scrubber.ts` + `apps/replay/src/scrubber.test.ts` (commit ebe1809)
 - [x] [S] State viewer: `apps/replay/src/stateViewer.ts` — `formatState(state: GameState): string` returns multi-line text: turn, phase, player hp/tier/gold, board minion count, opponent count; test with `initialState()` output contains "turn: 0" — `apps/replay/src/stateViewer.ts` + `apps/replay/src/stateViewer.test.ts` (commit 914205c)
 - [x] [S] Advisor diff: `apps/replay/src/advisorDiff.ts` — `advisorDiff(actual: Recommendation[], predicted: Recommendation[]): string` returns human-readable diff lines like "+ Buy X (score 0.8)" / "- TierUp (score 0.6)"; test empty arrays returns empty string — `apps/replay/src/advisorDiff.ts` + `apps/replay/src/advisorDiff.test.ts` (commit 820a705)
-- [ ] [S] Report exporter: `apps/replay/src/exportReport.ts` — `exportReport(turns: {state: GameState, recs: Recommendation[]}[]): string` returns Markdown with a `## Turn N` heading per turn + top 3 recommendations; test with 1-turn input contains "## Turn" — `apps/replay/src/exportReport.ts` + `apps/replay/src/exportReport.test.ts`
+- [x] [S] Report exporter: `apps/replay/src/exportReport.ts` — `exportReport(turns: {state: GameState, recs: Recommendation[]}[]): string` returns Markdown with a `## Turn N` heading per turn + top 3 recommendations; test with 1-turn input contains "## Turn" — `apps/replay/src/exportReport.ts` + `apps/replay/src/exportReport.test.ts` (commit ff42219)
 
 ## Quarantined
 
