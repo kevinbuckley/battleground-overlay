@@ -1,7 +1,7 @@
-import { describe, expect, it, beforeEach } from 'bun:test';
-import { appendSessionEvent, resetSession } from './sessionLog';
-import { readdirSync, readFileSync, rmSync, existsSync } from 'node:fs';
+import { beforeEach, describe, expect, it } from 'bun:test';
+import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { appendSessionEvent, listSessions, resetSession } from './sessionLog';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
 
@@ -47,5 +47,29 @@ describe('appendSessionEvent', () => {
 
     const files = readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-'));
     expect(files).toHaveLength(2);
+  });
+});
+
+describe('listSessions', () => {
+  it('returns sorted paths of session-*.jsonl files in a given directory', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__listtest__');
+    mkdirSync(tmpDir, { recursive: true });
+    writeFileSync(join(tmpDir, 'session-2026-01-01T00:00:00.000Z-1.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-02T00:00:00.000Z-2.jsonl'), '');
+    writeFileSync(join(tmpDir, 'session-2026-01-03T00:00:00.000Z-3.jsonl'), '');
+    writeFileSync(join(tmpDir, 'not-a-session.txt'), '');
+
+    const result = listSessions(tmpDir);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+
+    expect(result).toHaveLength(3);
+    expect(result[0]!).toMatch(/session-2026-01-01T00:00:00.000Z-1\.jsonl$/);
+    expect(result[1]!).toMatch(/session-2026-01-02T00:00:00.000Z-2\.jsonl$/);
+    expect(result[2]!).toMatch(/session-2026-01-03T00:00:00.000Z-3\.jsonl$/);
+  });
+
+  it('returns empty array when directory does not exist', () => {
+    expect(listSessions('/nonexistent/path/that/does/not/exist')).toEqual([]);
   });
 });

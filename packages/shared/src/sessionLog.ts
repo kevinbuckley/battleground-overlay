@@ -1,4 +1,4 @@
-import { appendFileSync, mkdirSync } from 'node:fs';
+import { appendFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
@@ -22,4 +22,13 @@ export function appendSessionEvent(kind: string, payload: unknown): void {
 
 export function resetSession(): void {
   sessionFile = null;
+}
+
+export function listSessions(logsDir?: string): string[] {
+  const dir = logsDir ?? LOGS_DIR;
+  if (!existsSync(dir)) return [];
+  return readdirSync(dir)
+    .filter((n: string) => n.startsWith('session-') && n.endsWith('.jsonl'))
+    .sort()
+    .map((n: string) => join(dir, n));
 }
