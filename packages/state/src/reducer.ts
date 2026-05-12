@@ -4,6 +4,7 @@ import { applyCombatDamage } from './reducer/combatDamage';
 import { resolveCombatPhase } from './reducer/combatPhase';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyGold } from './reducer/gold';
+import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyMinionPlaced } from './reducer/minionPlaced';
@@ -101,6 +102,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'RESOURCES_USED') {
         return applyShopReroll(state, event);
+      }
+      if (event.tag === 'PREMIUM') {
+        return applyGoldenMinion(state, event);
       }
       return applyTripleBonus(state, event);
 

@@ -8,6 +8,7 @@ export interface Minion {
   poisonous: boolean;
   reborn: boolean;
   frozen: boolean;
+  golden: boolean;
   tribes: string[];
 }
 
