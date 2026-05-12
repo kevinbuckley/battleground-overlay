@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M5: Worker thread offload — `createWorkerPool(size)` creates pool of `worker_threads` Workers, exposes `submitBatch` (round-robin) + `close`, 3 tests (commit 645a269)
+
 2026-05-12 21:30  [DONE]  M5: Benchmark suite — `Benchmark` class with `addScenario`/`runAll`, `compareBenchmarks` for regression reporting, 6 tests (commit 8c5d808)
 
 2026-05-12 13:00  [DONE]  M14: Hand tracker — `hand: number[]` field in PlayerState, `applyHandTracker` handles ZONE=HAND adds and ZONE=PLAY/GRAVEYARD/REMOVEDFROMGAME removes, 4 tests (commit 6b8a08b)

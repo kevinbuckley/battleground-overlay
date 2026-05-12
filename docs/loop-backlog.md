@@ -224,7 +224,7 @@ to `loop-ledger.md`.
 
 - [x] [M] Benchmark suite: `packages/sim/src/bench.ts` — `Benchmark` class with `addScenario(name, boards, n, seed)`, `runAll(): Record<string, BenchResult>`, `BenchResult { durationMs, winPct, sims }`; exports `compareBenchmarks(old: Record<string, BenchResult>, new: Record<string, BenchResult>): string` for regression reporting; 6 tests — `packages/sim/src/bench.ts` + test (commit 8c5d808)
 
-- [ ] [S] Worker thread offload: `packages/sim/src/worker.ts` — `createWorkerPool(size: number): WorkerPool` using `worker_threads`, exposes `submitBatch(boards, n, seed): Promise<BatchResult>`; test: pool processes 3 batches concurrently, asserts results match single-threaded output — `packages/sim/src/worker.ts` + test
+- [x] [S] Worker thread offload: `packages/sim/src/worker.ts` — `createWorkerPool(size: number): WorkerPool` using `worker_threads`, exposes `submitBatch(boards, n, seed): Promise<BatchResult>`; test: pool processes 3 batches concurrently, asserts results match single-threaded output — `packages/sim/src/worker.ts` + test (commit 645a269)
 
 ## M1 — Log parser (continued)
 
