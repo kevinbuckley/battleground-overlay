@@ -24,7 +24,7 @@ describe('coordinator', () => {
 
   it('startCoordinator returns a stop function that stops the bridge', async () => {
     const mockWin = makeMockWin();
-    const stop = startCoordinator(mockWin as unknown as BrowserWindow);
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
 
     // Wait for the first bridge poll
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
@@ -32,7 +32,7 @@ describe('coordinator', () => {
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends().length;
 
-    stop();
+    coordinator.stop();
 
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sendsAfter = (
@@ -43,7 +43,7 @@ describe('coordinator', () => {
 
   it('onEvent processes an event and sets advice via recommend', async () => {
     const mockWin = makeMockWin();
-    const stop = startCoordinator(mockWin as unknown as BrowserWindow);
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
 
     // Wait for the first bridge poll to call recommend + setAdvice
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
@@ -53,12 +53,12 @@ describe('coordinator', () => {
     const stateChannels = sends.filter((s) => s.channel === 'overlay:state-update');
     expect(stateChannels.length).toBeGreaterThanOrEqual(1);
 
-    stop();
+    coordinator.stop();
   });
 
   it('onEvent calls recommend and sets the top recommendation as advice', async () => {
     const mockWin = makeMockWin();
-    const stop = startCoordinator(mockWin as unknown as BrowserWindow);
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
 
     // Wait for the first bridge poll to call recommend + setAdvice
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
@@ -69,12 +69,12 @@ describe('coordinator', () => {
     const advice = getAdvice();
     expect(advice).toBeNull();
 
-    stop();
+    coordinator.stop();
   });
 
   it('stop function prevents further bridge polling', async () => {
     const mockWin = makeMockWin();
-    const stop = startCoordinator(mockWin as unknown as BrowserWindow);
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
 
     // Wait for the first bridge poll
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
@@ -82,7 +82,7 @@ describe('coordinator', () => {
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends().length;
 
-    stop();
+    coordinator.stop();
 
     await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sendsAfter = (
@@ -97,10 +97,32 @@ describe('coordinator', () => {
     // by confirming startCoordinator still starts without error when the
     // LLM endpoint is unreachable (explain catches its own errors).
     const mockWin = makeMockWin();
-    const stop = startCoordinator(mockWin as unknown as BrowserWindow);
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
     await new Promise<void>((resolve) => setTimeout(resolve, 100));
-    stop();
+    coordinator.stop();
     // If we reach here, coordinator boots cleanly with explain imported
     expect(true).toBe(true);
+  });
+
+  it('logFn is called with recommendation after onEvent', async () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    // Feed a TAG_CHANGE event through the coordinator's onEvent
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+
+    expect(calls.length).toBeGreaterThanOrEqual(1);
+    const callArgs = (calls[0]?.payload ?? {}) as { turn: number; action: unknown };
+    expect(typeof callArgs.turn).toBe('number');
+    expect(callArgs.action).toBeNull();
   });
 });
