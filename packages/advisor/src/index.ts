@@ -13,3 +13,4 @@ export type { ScoreResult } from './simScorer';
 export { hillClimbPosition } from './positionHillClimb';
 export type { PositionResult } from './positionHillClimb';
 export { withBudget } from './withBudget';
+export { rerollScore } from './heuristics/rerollScore';
