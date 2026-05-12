@@ -147,6 +147,8 @@ to `loop-ledger.md`.
 
 - [ ] [S] RECOVERY: Add a one-line description to README explaining how to invoke scripts/loop.sh — README.md
 
+- [ ] [S] RECOVERY: Ensure .gitignore includes a logs/ entry; add if missing — .gitignore
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
