@@ -8,6 +8,7 @@
     "dev": "electron ."
   },
   "dependencies": {
+    "@overlay/advisor": "workspace:*",
     "@overlay/shared": "workspace:*"
   },
   "devDependencies": {
