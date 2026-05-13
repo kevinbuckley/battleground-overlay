@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 11:30  [DONE]  M37: pipeline shopping-phase integration — added test firing MAIN_READY + RESOURCES + PLAYER_TECH_LEVEL, asserts phase=shopping, gold=4, tier=2; 740 pass (commit 69b7b8e)
 
+2026-05-13 12:00  [DONE]  M37: recommend Buy rec with shop minions — added test setting shop.minions=2, gold=3, phase=shopping, asserts ≥1 Buy recommendation; 741 pass (commit 56f257f)
+
 2026-05-13 11:15  [DONE]  M36: applyFatigue handler — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller, reduces player hero HP by fatigue cost, 5 tests, wired into reducer (commit 403a2f7)
 
 2026-05-13 11:15  [DONE]  M36: applyCardId handler — handles `TAG_CHANGE tag=CARDID` on entities in PLAY zone, updates entityRegistry entry and minion cardId on player/opponent boards, 4 tests, wired into reducer (commit b252480)
