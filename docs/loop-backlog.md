@@ -465,6 +465,16 @@ to `loop-ledger.md`.
 - [x] [S] `applyFatigue` — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller → reduces player hero HP by fatigue cost; wire into reducer; 5 tests (fatigue damage on player hero, fatigue_cost tag, no-op on opponent, no-op when not fatigue tag, no-op on non-player entity) — `packages/state/src/reducer/fatigue.ts` + test
 - [ ] [S] `applyBuffs` wiring — import `applyBuffs` from `./reducer/buffs` in `packages/state/src/reducer.ts`, add `case 'DIVINE_SHIELD':` branch that calls `applyBuffs` when the DIVINE_SHIELD tag is on a minion entity (not the player controller); 4 tests (divine shield on player minion, divine shield on opponent minion, no-op on player controller, no-op on non-play entity) — `packages/state/src/reducer.ts` update + test
 
+## M37 — Integration tests + end-to-end coverage
+
+- [ ] [S] `pipeline` shopping-phase integration: in `packages/state/src/pipeline.integration.test.ts`, add a test firing `TAG_CHANGE tag=STEP value=MAIN_READY`, then `TAG_CHANGE tag=RESOURCES value=4`, then `TAG_CHANGE tag=PLAYER_TECH_LEVEL value=2`; assert `phase === 'shopping'`, `player.gold === 4`, `player.tier === 2` — `packages/state/src/pipeline.integration.test.ts` update
+- [ ] [S] `recommend` Buy rec with shop minions: in `packages/advisor/src/recommend.test.ts`, add a test setting `state.player.shop.minions` to 2 minions, `state.player.gold = 3`, `state.phase = 'shopping'`; call `recommend(state)`; assert at least 1 rec has `action.type === 'Buy'` — `packages/advisor/src/recommend.test.ts` update
+- [ ] [S] `simScorer` with 2 opponents: in `packages/advisor/src/simScorer.test.ts`, add a test building a player board and 2 opponent boards; call `scoreBoard(player, opponents, { n: 5, seed: 42 })`; assert `result.winPct >= 0 && result.winPct <= 1` and `result.avgHpDelta` is finite — `packages/advisor/src/simScorer.test.ts` update
+- [ ] [S] `adapter` roundtrip: in `packages/sim/src/adapter.test.ts`, add a test creating a `Board` with 2 minions, calling `boardToBgsFormat(board, 'HERO_01')`, then `bgsFormatToBoard(result.board)`; assert returned minions have same `cardId`, `attack`, `health` — `packages/sim/src/adapter.test.ts` update
+- [ ] [S] `opponentPanel` update/clear: in `packages/shared/src/opponentPanel.test.ts`, add 2 tests: (1) `setOpponentPanel` with 2 opponents then `getOpponentPanel` returns length 2; (2) `clearOpponentPanel` then `getOpponentPanel` returns empty — `packages/shared/src/opponentPanel.test.ts` update
+- [ ] [S] `exportReport` markdown structure: in `apps/replay/src/exportReport.test.ts`, add a test calling `exportReport([{ state: initialState(), recs: [] }])` and asserting the output contains `## Turn` and `Phase` — `apps/replay/src/exportReport.test.ts` update
+- [ ] [S] `isBattlegroundsPool` golden card: in `packages/card-data/src/isBattlegroundsPool.test.ts`, add 2 tests: a card whose `id` is a known pool card with `_golden` suffix is still recognized as pool card; a non-BG card returns false — `packages/card-data/src/isBattlegroundsPool.test.ts` update
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
