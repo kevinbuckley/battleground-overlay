@@ -5,6 +5,7 @@ import {
   formatEntry,
   formatSessionLine,
   readSession,
+  summarizeSession,
 } from './review-session';
 
 test('formatEntry: parses kind and payload (object)', () => {
@@ -167,4 +168,37 @@ test('formatSessionLine: empty-payload entry', () => {
   const result = formatSessionLine(entry);
   expect(result).toContain('[event]');
   expect(result).not.toContain('null');
+});
+
+test('summarizeSession: counts each kind correctly', () => {
+  const entries: SessionEntry[] = [
+    { ts: 1, kind: 'event', payload: { name: 'test' } },
+    { ts: 2, kind: 'event', payload: null },
+    { ts: 3, kind: 'event', payload: { turn: 1 } },
+    { ts: 4, kind: 'recommendation', payload: { turn: 2, action: 'Buy' } },
+    { ts: 5, kind: 'recommendation', payload: { turn: 3, action: 'Sell' } },
+    { ts: 6, kind: 'state-snapshot', payload: { turn: 1 } },
+    { ts: 7, kind: 'state-snapshot', payload: { turn: 2 } },
+    { ts: 8, kind: 'state-snapshot', payload: { turn: 3 } },
+    { ts: 9, kind: 'llm', payload: { rec: 'Buy', text: 'hello' } },
+    { ts: 10, kind: 'llm-error', payload: { rec: 'Sell' } },
+    { ts: 11, kind: 'llm', payload: { rec: 'TierUp', text: 'ok' } },
+  ];
+  const result = summarizeSession(entries);
+  expect(result).toEqual({
+    events: 3,
+    recommendations: 2,
+    snapshots: 3,
+    llm: 3,
+  });
+});
+
+test('summarizeSession: empty array returns all zeros', () => {
+  const result = summarizeSession([]);
+  expect(result).toEqual({
+    events: 0,
+    recommendations: 0,
+    snapshots: 0,
+    llm: 0,
+  });
 });

@@ -115,6 +115,42 @@ export function formatSessionLine(entry: SessionEntry): string {
   return summary ? `[${entry.kind}] ${ts} ${summary}` : `[${entry.kind}] ${ts}`;
 }
 
+/** Aggregate counts of each entry kind in a session. */
+export interface SessionSummary {
+  events: number;
+  recommendations: number;
+  snapshots: number;
+  llm: number;
+}
+
+/** Count entries by kind category: 'event', 'recommendation', 'state-snapshot', 'llm', 'llm-error'. */
+export function summarizeSession(entries: SessionEntry[]): SessionSummary {
+  const result: SessionSummary = {
+    events: 0,
+    recommendations: 0,
+    snapshots: 0,
+    llm: 0,
+  };
+  for (const entry of entries) {
+    switch (entry.kind) {
+      case 'event':
+        result.events++;
+        break;
+      case 'recommendation':
+        result.recommendations++;
+        break;
+      case 'state-snapshot':
+        result.snapshots++;
+        break;
+      case 'llm':
+      case 'llm-error':
+        result.llm++;
+        break;
+    }
+  }
+  return result;
+}
+
 if (import.meta.main) {
   const filePath = process.argv[2];
   if (!filePath) {
