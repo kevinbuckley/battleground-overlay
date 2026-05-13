@@ -7,6 +7,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 23:59  [DONE]  M3: `getCardName(cardId)` — looks up card by `id` field, returns `name` or `cardId` unchanged if not found; 4 tests, exported from card-data index (commit 25d0eb3)
 
+2026-05-12 23:59  [DONE]  M5: `enumerateFreezeCandidates`, `enumerateRerollCandidates`, `enumerateTierUpCandidates` — three new candidate enumerators in `candidates.ts` with 9 tests (commit 19ad4b2)
+
 2026-05-12 23:30  [DONE]  M10: Session log `readSession` — `readSession(path)` reads a JSONL file, returns `SessionEntry[]`, skips blank lines; 3 tests (commit 83218a0)
 
 2026-05-12 23:45  [DONE]  M29: `summarizeDiff` report — `summarizeDiff(diffs: AdvisorDiff[])` returns multi-line markdown listing turns where actual ≠ recommended actions as "Turn N: did X, advisor said Y"; 5 tests (commit 48968bc)
