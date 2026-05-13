@@ -22,6 +22,7 @@ import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
+import { applyPlayerDeath } from './reducer/playerDeath';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyPoisonous } from './reducer/poisonous';
 import { applyReborn } from './reducer/reborn';
@@ -68,6 +69,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyPlayerLost(state, event);
       }
       if (event.tag === 'HEALTH') {
+        if (event.value === '0' && event.entity === String(state.player.entityId)) {
+          return applyPlayerDeath(state, event);
+        }
         return applyHeroHealth(state, event);
       }
       if (event.tag === 'ARMOR') {
