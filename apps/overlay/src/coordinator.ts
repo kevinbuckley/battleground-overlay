@@ -51,9 +51,15 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
           setBoardPanel({ recommendation: top });
         }
         if (top.needsExplanation === true) {
+          const logFn = opts?.logFn;
           explain(top, state)
-            .then((text) => setExplanation(text))
-            .catch(() => {});
+            .then((text) => {
+              setExplanation(text);
+              logFn?.('llm', { rec: top.action.type, text });
+            })
+            .catch(() => {
+              logFn?.('llm-error', { rec: top.action.type });
+            });
         }
       }
       (opts?.logFn ?? appendSessionEvent)('recommendation', {
