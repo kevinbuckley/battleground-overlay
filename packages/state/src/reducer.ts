@@ -41,6 +41,7 @@ import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
 import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
+import { applyShopSize } from './reducer/shopSize';
 import { applySilence } from './reducer/silence';
 import { applyTaunt } from './reducer/taunt';
 import { applyTierUp } from './reducer/tierUp';
@@ -219,6 +220,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CARDS_DRAWN_THIS_TURN') {
         return applyCardsDrawn(state, event);
+      }
+      if (event.tag === 'NUM_MINIONS_IN_BOB_DECK') {
+        return applyShopSize(state, event);
       }
       return applyTripleBonus(state, event);
 

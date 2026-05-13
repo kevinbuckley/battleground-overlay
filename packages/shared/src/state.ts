@@ -57,6 +57,7 @@ export interface PlayerState {
   minionsKilledThisTurn: number;
   cardsDrawnThisTurn: number;
   goldSpentThisTurn: number;
+  shopSize: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
