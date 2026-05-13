@@ -25,6 +25,7 @@ import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
+import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
@@ -202,6 +203,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_TURNS_IN_GAME') {
         return applyTurnsInGame(state, event);
+      }
+      if (event.tag === 'NUM_MINIONS_ON_BOARD') {
+        return applyMinionsOnBoard(state, event);
       }
       return applyTripleBonus(state, event);
 
