@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 23:15  [DONE]  M25: overlayState gold/tier selectors — `getGold(state)` and `getTier(state)` with 4 tests (commit 19019da)
+
 2026-05-12 22:45  [DONE]  M29: Damage forecast IPC push — `overlay:damage-update` sent with DamageForecast (minDmg, maxDmg, winPct), 1 test (commit 53e3b3a)
 
 2026-05-12 23:00  [DONE]  M25: hpBucket utility — `hpBucket(hp)` returns 'critical' (<6), 'low' (6-14), 'safe' (>=15); 4 tests, exported from shared index (commit d3e3a73)
