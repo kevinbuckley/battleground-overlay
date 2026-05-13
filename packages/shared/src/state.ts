@@ -49,6 +49,7 @@ export interface PlayerState {
   handSize: number;
   trinketUsed: boolean;
   cardsPlayedThisTurn: number;
+  cardsGivenThisTurn: number;
   deckSize: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }

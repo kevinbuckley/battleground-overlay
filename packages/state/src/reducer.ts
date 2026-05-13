@@ -4,6 +4,7 @@ import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyBuffs } from './reducer/buffs';
 import { applyCardCost } from './reducer/cardCost';
+import { applyCardsGiven } from './reducer/cardsGiven';
 import { applyCardsInDeck } from './reducer/cardsInDeck';
 import { applyCardsPlayed } from './reducer/cardsPlayed';
 import { applyCleave } from './reducer/cleave';
@@ -181,6 +182,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CARDS_PLAYED_THIS_TURN') {
         return applyCardsPlayed(state, event);
+      }
+      if (event.tag === 'NUM_CARDS_GIVEN_THIS_TURN') {
+        return applyCardsGiven(state, event);
       }
       return applyTripleBonus(state, event);
 

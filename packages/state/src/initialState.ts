@@ -22,6 +22,7 @@ export function initialState(): GameState {
       handSize: 0,
       trinketUsed: false,
       cardsPlayedThisTurn: 0,
+      cardsGivenThisTurn: 0,
       deckSize: 30,
       entityRegistry: new Map(),
     },
