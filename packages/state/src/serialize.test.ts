@@ -135,4 +135,33 @@ describe('serializeGameState', () => {
     expect(restored.player.tier).toBe(state.player.tier);
     expect(restored.player.tierUpCost).toBe(state.player.tierUpCost);
   });
+
+  it('round-trips initialState() — turn, phase, gold, tier, opponents length', () => {
+    const state = initialState();
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+
+    expect(restored.turn).toBe(state.turn);
+    expect(restored.phase).toBe(state.phase);
+    expect(restored.player.gold).toBe(state.player.gold);
+    expect(restored.player.tier).toBe(state.player.tier);
+    expect(restored.opponents.length).toBe(state.opponents.length);
+  });
+
+  it('restores entityRegistry Map entries after round-trip', () => {
+    const state = initialState();
+    state.player.entityRegistry.set(42, {
+      cardId: 'CS2_181',
+      zone: 'PLAY',
+      controller: 0,
+    });
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+
+    const entry = restored.player.entityRegistry.get(42);
+    expect(entry).toBeDefined();
+    expect(entry!.cardId).toBe('CS2_181');
+    expect(entry!.zone).toBe('PLAY');
+    expect(entry!.controller).toBe(0);
+  });
 });
