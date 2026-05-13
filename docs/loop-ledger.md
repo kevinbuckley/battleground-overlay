@@ -7,6 +7,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 14:30  [DONE]  M39: Preload expose damage + board channels — added `onDamage` and `onBoard` to `setupPreload`'s `exposeInMainWorld` call, listening on `overlay:damage-update` and `overlay:board-update`; 3 new tests (onDamage fires, onBoard fires, onOpponents undefined), 8/8 tests pass (commit 9c0ee71)
 
+2026-05-13 14:45  [DONE]  M39: Renderer wire damage display — added `onDamage` to `OverlayBridge` interface, wired `bridge.onDamage` in `initRenderer` to update `#damage-forecast` with `Win: ${pct}%` format, added `#damage-forecast` div to `renderer.html`, 3 new tests (element updated, missing element no-op, winPct=0 shows `Win: 0%`), 769/769 tests pass (commit b6be085)
+
 2026-05-13 14:30  [DONE]  M38: Wire all three new scorers into recommend() — imported `scoreTierUpWithSim`, `scoreFreezeWithSim`, `scoreRerollWithSim` from `budgetScorer`, replaced heuristic-only TierUp/Freeze/Reroll blocks with simulation-based scoring (sim rec when score > 0, heuristic fallback otherwise), 4 new tests (tier-up, freeze, reroll, fallback), 760/760 tests pass (commit ab65200)
 
 2026-05-13 15:00  [DONE]  M38: recommend edge-case tests — added 3 tests to `recommend.test.ts`: empty state with shop minion returns heuristic fallback, combat phase returns recommendations, single minion board with no opponents returns ≥1 rec; 763/763 tests pass (commit 57617f4)
