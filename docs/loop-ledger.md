@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 10:30  [DONE]  M35: LLM cache deduplication test — added 1 test to `cache.test.ts` verifying two different GameState objects with identical hash-relevant fields share a cache entry; 16/16 tests pass (commit 9f61c24)
+
 2026-05-13 10:00  [DONE]  M35: buildPrompt Buy recommendation test — added 1 test to `buildPrompt.test.ts` verifying the user message contains the cardId, action type 'Buy', and a score digit; 13/13 tests pass (commit 4c4a509)
 
 2026-05-13 09:30  [DONE]  M35: coordinator stop test — added 2 tests to `coordinator.test.ts`: (1) `stop()` is idempotent (calling twice doesn't throw), (2) `onEvent` after `stop()` does not trigger bridge polling (send count unchanged); 8/8 tests pass (commit 4adf6ea)
