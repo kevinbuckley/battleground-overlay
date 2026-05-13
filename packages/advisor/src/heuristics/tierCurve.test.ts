@@ -30,4 +30,17 @@ describe('tierCurveScore', () => {
     const late = tierCurveScore(6, 35, 10, 2, 3);
     expect(late).toBeGreaterThan(onTime);
   });
+
+  it('turn 2 low-gold returns < 0.5', () => {
+    expect(tierCurveScore(2, 30, 1, 1, 3)).toBe(0);
+  });
+
+  it('turn 5 full-gold healthy returns > 0.5', () => {
+    expect(tierCurveScore(6, 30, 10, 3, 3)).toBeGreaterThanOrEqual(0.8);
+  });
+
+  it('turn 10 desperate-hp forces low score', () => {
+    const score = tierCurveScore(10, 5, 10, 5, 5);
+    expect(score).toBeLessThan(0.5);
+  });
 });
