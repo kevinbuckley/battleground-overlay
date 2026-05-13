@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 06:00  [DONE]  M1: parseShowEntity handler — `parseShowEntity(line)` parses `SHOW_ENTITY - Updating Entity=N CardID=X` lines, returns `{ kind: 'SHOW_ENTITY', entity, cardId }`; 3 tests, wired into `parseLine` in index, exported from index (commit 31e9bc1)
+
 2026-05-13 05:30  [DONE]  M32: formatRecommendation helper — `formatRecommendation(rec: Recommendation): string` returns readable string for all 6 action types (Buy, Sell, Freeze, Reroll, TierUp, Reposition); 6 tests, exported from shared index (commit 6109a27)
 
 2026-05-13 05:00  [DONE]  M32: minionsOnBoard + opponentMinionsOnBoard helpers — `minionsOnBoard(state)` returns player board minion count, `opponentMinionsOnBoard(state, index)` returns opponent board size or 0; 4 tests, exported from shared index (commit 593186f)
