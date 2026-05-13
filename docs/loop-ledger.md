@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:15  [DONE]  M10: lobbyWeight total — added `totalLobbyWeight(opponents)` to `packages/advisor/src/lobbyWeight.ts` summing all weights from `lobbyWeights`; 3 new tests (empty=0, equal hp sums to 1, eliminated excluded); exported from index (commit 05604e2)
+
 2026-05-12 22:00  [DONE]  M28: scoreBuysWithSim n=1 smoke test — adds test calling scoreBuysWithSim with n=1, budgetMs=5000, verifies score >= 0 and action.type === 'Buy' (commit 66d8caa)
 
 2026-05-12 22:30  [DONE]  M7: Hotkeys will-quit handler — `registerHotkeys` calls `app.on('will-quit', ...)` to unregister all shortcuts; `AppInterface` extended with `on` method; 1 new test + 2 existing test mocks fixed (commit 2b0a3f7)
