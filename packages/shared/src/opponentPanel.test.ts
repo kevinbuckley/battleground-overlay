@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'bun:test';
-import { getWorstThreat } from './opponentPanel';
+import {
+  clearOpponentPanel,
+  getOpponentPanel,
+  getWorstThreat,
+  setOpponentPanel,
+} from './opponentPanel';
 import type { OpponentState } from './state';
 
 function makeOpponent(opts: Partial<OpponentState> & { boardMinions: number }): OpponentState {
@@ -67,5 +72,22 @@ describe('getWorstThreat', () => {
       throw new Error('expected non-null');
     }
     expect(result.entityId).toBe(1);
+  });
+
+  it('setOpponentPanel with 2 opponents then getOpponentPanel returns length 2', () => {
+    const opponents: OpponentState[] = [
+      makeOpponent({ entityId: 1, boardMinions: 2 }),
+      makeOpponent({ entityId: 2, boardMinions: 3 }),
+    ];
+    setOpponentPanel({ opponents });
+    const panel = getOpponentPanel();
+    expect(panel.opponents.length).toBe(2);
+  });
+
+  it('clearOpponentPanel then getOpponentPanel returns empty', () => {
+    setOpponentPanel({ opponents: [makeOpponent({ entityId: 1, boardMinions: 1 })] });
+    clearOpponentPanel();
+    const panel = getOpponentPanel();
+    expect(panel.opponents.length).toBe(0);
   });
 });
