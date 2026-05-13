@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 09:00  [DONE]  M34: applyAttackBuff — already implemented with 4 tests (player board, opponent board, no-op hero, no-op unknown) and wired into reducer (commit d787221)
+
 2026-05-13 08:00  [DONE]  M34: serializeGameState roundtrip test — added tests for initialState() roundtrip (turn, phase, gold, tier, opponents length) and entityRegistry Map restoration (entry present after roundtrip), 2 new tests (commit c077d91)
 
 2026-05-13 07:45  [DONE]  M34: Health buff handler — `applyHealthBuff` handles `TAG_CHANGE tag=HEALTH` on minion entities (not heroes), updates `minion.health: number`, wired into reducer, 4 tests (commit 1d80e88)
