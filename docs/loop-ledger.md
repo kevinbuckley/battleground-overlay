@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 23:30  [DONE]  M10: Session log `readSession` — `readSession(path)` reads a JSONL file, returns `SessionEntry[]`, skips blank lines; 3 tests (commit 83218a0)
+
 2026-05-12 22:00  [DONE]  M30: opponentPanel worst-threat selector — `getWorstThreat(opponents)` returns non-eliminated opponent with highest board minion count (ties: first), null if all eliminated or empty; 4 tests (commit 5e59570)
 
 2026-05-12 23:15  [DONE]  M25: overlayState gold/tier selectors — `getGold(state)` and `getTier(state)` with 4 tests (commit 19019da)
