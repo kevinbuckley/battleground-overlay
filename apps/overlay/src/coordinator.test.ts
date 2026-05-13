@@ -104,6 +104,42 @@ describe('coordinator', () => {
     expect(true).toBe(true);
   });
 
+  it('stop() is idempotent — calling twice does not throw', () => {
+    const mockWin = makeMockWin();
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
+    coordinator.stop();
+    expect(() => coordinator.stop()).not.toThrow();
+  });
+
+  it('onEvent after stop() does not trigger bridge polling', async () => {
+    const mockWin = makeMockWin();
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow);
+
+    // Wait for the first bridge poll
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sendsBefore = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends().length;
+
+    // Stop the coordinator
+    coordinator.stop();
+
+    // Dispatch an event through the pipeline after stop
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+
+    // Wait to see if the bridge would have polled again
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sendsAfter = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends().length;
+    expect(sendsAfter).toBe(sendsBefore);
+  });
+
   it('logFn is called with recommendation after onEvent', async () => {
     const mockWin = makeMockWin();
     const calls: { kind: string; payload: unknown }[] = [];
