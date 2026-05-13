@@ -65,6 +65,23 @@ export function scoreCandidate(
   };
 }
 
+/**
+ * Score a sell candidate: remove one minion from the board and
+ * evaluate the resulting board against all opponents.
+ *
+ * This is a thin wrapper around `scoreCandidate` that lets the
+ * advisor evaluate sell actions through the same simulation path
+ * as buy actions.
+ */
+export function scoreSellCandidate(
+  projectedBoard: Board,
+  player: PlayerState,
+  opponents: OpponentState[],
+  n: number,
+): ScoreResult {
+  return scoreCandidate(projectedBoard, player, opponents, n);
+}
+
 function hashOpponent(opp: OpponentState): number {
   let hash = 0;
   const key = `${opp.entityId}-${opp.playerId}-${opp.tier}-${opp.hero.cardId}`;

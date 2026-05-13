@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import type { Board, OpponentState, PlayerState } from '@overlay/shared';
-import { scoreCandidate } from './simScorer';
-import { scoreCandidate } from './simScorer';
+import { scoreCandidate, scoreSellCandidate } from './simScorer';
 
 function makePlayerState(boardMinions: Board['minions'], hp = 30, tier = 3): PlayerState {
   return {
@@ -127,5 +126,31 @@ describe('scoreCandidate', () => {
 
     // Strong board should have >= winPct as weak board
     expect(strongResult.winPct).toBeGreaterThanOrEqual(weakResult.winPct);
+  });
+});
+
+describe('scoreSellCandidate', () => {
+  it('returns ScoreResult shape with winPct and avgHpDelta', () => {
+    const playerBoard: Board = { minions: [makeMinion(1, 'Minion_A', 2, 2)] };
+    const playerState = makePlayerState(playerBoard.minions);
+    const opponents: OpponentState[] = [makeOpponent([makeMinion(10, 'Minion_B', 1, 1)], 30, 3)];
+
+    const result = scoreSellCandidate(playerBoard, playerState, opponents, 10);
+
+    expect(result).toHaveProperty('winPct');
+    expect(result).toHaveProperty('avgHpDelta');
+    expect(typeof result.winPct).toBe('number');
+    expect(typeof result.avgHpDelta).toBe('number');
+  });
+
+  it('returns zeroed result when n=0', () => {
+    const playerBoard: Board = { minions: [makeMinion(1, 'Minion_A', 2, 2)] };
+    const playerState = makePlayerState(playerBoard.minions);
+    const opponents: OpponentState[] = [makeOpponent([makeMinion(10, 'Minion_B', 1, 1)], 30, 3)];
+
+    const result = scoreSellCandidate(playerBoard, playerState, opponents, 0);
+
+    expect(result.winPct).toBe(0);
+    expect(result.avgHpDelta).toBe(0);
   });
 });
