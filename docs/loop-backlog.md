@@ -354,7 +354,7 @@ to `loop-ledger.md`.
 
 - [x] [S] `formatState` completeness in replay: `apps/replay/src/stateViewer.ts` already returns full multi-line state including turn/phase/hp/tier/gold/board/opponents — done ✓
 
-- [ ] [S] `hpBucket(hp: number): 'critical'|'low'|'safe'` in `packages/shared/src/utils.ts` — critical < 6, low < 15, safe otherwise; export from shared index; 4 tests — `packages/shared/src/utils.ts` + test
+- [x] [S] `hpBucket(hp: number): 'critical'|'low'|'safe'` in `packages/shared/src/utils.ts` — critical < 6, low < 15, safe otherwise; export from shared index; 4 tests — `packages/shared/src/utils.ts` + test (commit d3e3a73)
 
 - [ ] [S] Tribe filter in card-data: `packages/card-data/src/indexes.ts` — add `byTribe: Map<string, Card[]>` built lazily; `getCardsByTribe(tribe: string): Card[]` returns all cards with that race; 3 tests: known tribe returns cards, unknown tribe returns empty, lazy init works — `packages/card-data/src/indexes.ts` update + test
 - [ ] [S] `overlayState` gold/tier selectors: in `apps/overlay/src/overlayState.ts`, add `getGold(state: GameState): number` returning `state.player.gold` and `getTier(state: GameState): number` returning `state.player.tier`; export both from the file; 4 tests: getGold returns correct value, getTier returns correct value, each returns 0 for empty player — `apps/overlay/src/overlayState.ts` + test
