@@ -22,6 +22,14 @@ describe('isBattlegroundsPool', () => {
     expect(isBattlegroundsPool({ ...base, mechanics: ['TAUNT'] })).toBe(false);
     expect(isBattlegroundsPool(base)).toBe(false);
   });
+
+  it('returns true for a golden variant (id ending in _golden) of a known pool card', () => {
+    expect(isBattlegroundsPool({ ...base, id: 'TST_001_golden', techLevel: 1 })).toBe(true);
+  });
+
+  it('returns false for a non-BG card with _golden suffix', () => {
+    expect(isBattlegroundsPool({ ...base, id: 'TST_999_golden' })).toBe(false);
+  });
 });
 
 describe('getBgMinionsByTribe', () => {
