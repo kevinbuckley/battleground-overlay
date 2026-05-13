@@ -1,5 +1,6 @@
 import { parseBlockEnd, parseBlockStart } from './parseBlock';
 import { parseFullEntity } from './parseFullEntity';
+import { parseShowEntity } from './parseShowEntity';
 import { parseTagChange } from './parseTagChange';
 import { parseZoneChangeList } from './parseZoneChangeList';
 import type { HsEvent } from './types';
@@ -13,28 +14,15 @@ export function parseLine(line: string): HsEvent | null {
     parseFullEntity(trimmed) ??
     parseBlockStart(trimmed) ??
     parseBlockEnd(trimmed) ??
-    parseZoneChangeList(trimmed);
+    parseZoneChangeList(trimmed) ??
+    parseShowEntity(trimmed);
 
-  if (result) return result;
-
-  if (trimmed.startsWith('SHOW_ENTITY')) {
-    const m = /^SHOW_ENTITY cardId=(\S+)(?:\s+entity=(\S+))?$/.exec(trimmed);
-    if (m) {
-      const cardId = m[1] as string;
-      const entity = (m[2] ?? '') as string;
-      return {
-        kind: 'SHOW_ENTITY',
-        cardId,
-        entity,
-      };
-    }
-  }
-
-  return null;
+  return result;
 }
 
 export { parseBlockEnd, parseBlockStart } from './parseBlock';
 export { parseFullEntity } from './parseFullEntity';
+export { parseShowEntity } from './parseShowEntity';
 export { parseTagChange } from './parseTagChange';
 export { parseZoneChangeList } from './parseZoneChangeList';
 export { runFixtureTest } from './fixtureTest';
