@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 11:15  [DONE]  M36: applyCardId handler — handles `TAG_CHANGE tag=CARDID` on entities in PLAY zone, updates entityRegistry entry and minion cardId on player/opponent boards, 4 tests, wired into reducer (commit b252480)
+
 2026-05-13 10:45  [DONE]  M35: reviewSession lines — extracted `reviewSessionLines` returning `string[]` from `reviewSession`, added 1 test verifying 3 session entries (2 state_snapshots + 1 recommendation) format correctly with state_snapshot, recommendation, Buy, and cardId present; 8/8 tests pass (commit 542636c)
 
 2026-05-13 11:00  [DONE]  M35: Scrubber edge cases — implemented `stepBackward()` and `stepForward()` on `Scrubber` class with boundary guards (no-op at 0 / at end), added 2 tests to `scrubber.test.ts`; 11/11 tests pass (commit 0d93037)
