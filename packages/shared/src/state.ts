@@ -48,6 +48,7 @@ export interface PlayerState {
   heroPowerUsedThisTurn: boolean;
   handSize: number;
   trinketUsed: boolean;
+  cardsPlayedThisTurn: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
