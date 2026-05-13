@@ -9,6 +9,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 22:30  [DONE]  M44: formatSessionLine pretty-print helper — added `formatSessionLine(entry: SessionEntry): string` to `scripts/review-session.ts` returning `[<kind>] HH:MM:SS <payload-summary>` where ts is formatted as UTC time and payload is JSON.stringify truncated to 60 chars; 3 tests (recommendation, state-snapshot, empty-payload); 817/817 tests pass (commit 6a0af3b)
 
+2026-05-13 22:45  [DONE]  M44: summarizeSession aggregate — added `summarizeSession(entries: SessionEntry[]): SessionSummary` to `scripts/review-session.ts` counting entries by kind (event, recommendation, state-snapshot, llm/llm-error); 2 tests (counts 3 events + 2 recommendations + 3 snapshots + 3 llm, empty returns all zeros); 819/819 tests pass (commit 4f73979)
+
 2026-05-13 21:00  [DONE]  M43: Document resolveCombatPhase status — added top-of-file comment to `packages/state/src/reducer/combatPhase.ts` noting it's not wired into the reducer dispatch; 7/7 tests pass (commit 7f5b49f)
 
 2026-05-13 20:30  [DONE]  M43: Remove applyBuffs duplicate — deleted `packages/state/src/reducer/buffs.ts` and `buffs.test.ts` (identical to `applyDivineShield`), 810 tests pass (commit dec764d)
