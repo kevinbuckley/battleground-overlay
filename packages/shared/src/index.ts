@@ -25,6 +25,7 @@ export type {
   TierUpAction,
   RepositionAction,
 } from './recommendation';
+export { formatRecommendation } from './recommendation';
 export type { BoardPanelState } from './boardPanel';
 export { setBoardPanel, getBoardPanel, clearBoardPanel } from './boardPanel';
 export type { OpponentPanelState } from './opponentPanel';
