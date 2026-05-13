@@ -1,5 +1,11 @@
 import type { Recommendation } from '@overlay/shared';
 
+export interface AdvisorDiff {
+  turn: number;
+  actual: Recommendation[];
+  recommended: Recommendation[];
+}
+
 export function formatAction(rec: Recommendation): string {
   const score = rec.score.toFixed(1);
   switch (rec.action.type) {
@@ -39,4 +45,45 @@ export function advisorDiff(actual: Recommendation[], predicted: Recommendation[
   }
 
   return lines.join('\n');
+}
+
+export function summarizeDiff(diffs: AdvisorDiff[]): string {
+  const mismatchLines: string[] = [];
+
+  for (const diff of diffs) {
+    const actualSet = new Set(diff.actual.map((r) => formatAction(r)));
+    const predictedSet = new Set(diff.recommended.map((r) => formatAction(r)));
+
+    let hasMismatch = false;
+
+    for (const r of diff.actual) {
+      if (!predictedSet.has(formatAction(r))) {
+        hasMismatch = true;
+        break;
+      }
+    }
+
+    if (!hasMismatch) {
+      for (const r of diff.recommended) {
+        if (!actualSet.has(formatAction(r))) {
+          hasMismatch = true;
+          break;
+        }
+      }
+    }
+
+    if (hasMismatch) {
+      const actualAction = diff.actual[0] ? formatAction(diff.actual[0]) : 'nothing';
+      const recommendedAction = diff.recommended[0] ? formatAction(diff.recommended[0]) : 'nothing';
+      mismatchLines.push(
+        `Turn ${diff.turn}: did ${actualAction}, advisor said ${recommendedAction}`,
+      );
+    }
+  }
+
+  if (mismatchLines.length === 0) {
+    return 'No mismatches';
+  }
+
+  return mismatchLines.join('\n');
 }

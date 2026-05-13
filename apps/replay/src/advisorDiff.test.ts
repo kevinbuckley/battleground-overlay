@@ -1,5 +1,6 @@
 import type { Recommendation } from '@overlay/shared';
-import { advisorDiff, formatAction } from './advisorDiff';
+import { advisorDiff, formatAction, summarizeDiff } from './advisorDiff';
+import type { AdvisorDiff } from './advisorDiff';
 
 function makeRec(
   action: Recommendation['action'],
@@ -97,5 +98,74 @@ describe('advisorDiff', () => {
     const rec = makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.5);
     const result = advisorDiff([rec, rec], [rec]);
     expect(result).toBe('');
+  });
+});
+
+describe('summarizeDiff', () => {
+  it('returns empty string for empty input', () => {
+    expect(summarizeDiff([])).toBe('No mismatches');
+  });
+
+  it('returns "No mismatches" when all turns match', () => {
+    const diffs: AdvisorDiff[] = [
+      {
+        turn: 1,
+        actual: [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)],
+        recommended: [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)],
+      },
+      {
+        turn: 2,
+        actual: [makeRec({ type: 'TierUp' }, 0.6)],
+        recommended: [makeRec({ type: 'TierUp' }, 0.6)],
+      },
+    ];
+    expect(summarizeDiff(diffs)).toBe('No mismatches');
+  });
+
+  it('formats mismatched turns with turn number and actions', () => {
+    const diffs: AdvisorDiff[] = [
+      {
+        turn: 3,
+        actual: [makeRec({ type: 'Buy', cardId: 'OLD', shopIndex: 0 }, 0.9)],
+        recommended: [makeRec({ type: 'Sell', boardIndex: 1 }, 0.7)],
+      },
+    ];
+    const result = summarizeDiff(diffs);
+    expect(result).toBe('Turn 3: did Buy OLD (score 0.9), advisor said Sell [1] (score 0.7)');
+  });
+
+  it('handles multiple mismatches with multiple matches', () => {
+    const diffs: AdvisorDiff[] = [
+      {
+        turn: 1,
+        actual: [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)],
+        recommended: [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)],
+      },
+      {
+        turn: 4,
+        actual: [makeRec({ type: 'Reroll' }, 0.3)],
+        recommended: [makeRec({ type: 'TierUp' }, 0.6)],
+      },
+      {
+        turn: 6,
+        actual: [makeRec({ type: 'Freeze' }, 0.5)],
+        recommended: [makeRec({ type: 'Buy', cardId: 'B', shopIndex: 0 }, 0.9)],
+      },
+    ];
+    const result = summarizeDiff(diffs);
+    const lines = result.split('\n');
+    expect(lines).toContain('Turn 4: did Reroll (score 0.3), advisor said TierUp (score 0.6)');
+    expect(lines).toContain('Turn 6: did Freeze (score 0.5), advisor said Buy B (score 0.9)');
+  });
+
+  it('handles empty actual/recommended arrays in mismatch', () => {
+    const diffs: AdvisorDiff[] = [
+      {
+        turn: 5,
+        actual: [],
+        recommended: [makeRec({ type: 'TierUp' }, 0.9)],
+      },
+    ];
+    expect(summarizeDiff(diffs)).toBe('Turn 5: did nothing, advisor said TierUp (score 0.9)');
   });
 });
