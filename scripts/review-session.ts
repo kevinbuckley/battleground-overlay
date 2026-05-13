@@ -40,6 +40,50 @@ export function reviewSessionLines(filePath: string): string[] {
   return result;
 }
 
+/** A parsed session log entry. */
+export interface SessionEntry {
+  ts: number;
+  kind: string;
+  payload: unknown;
+}
+
+/** Read a session JSONL file and return parsed SessionEntry[]. */
+export function readSession(filePath: string): SessionEntry[] {
+  const content = readFileSync(filePath, 'utf8');
+  const lines = content.split('\n');
+  const result: SessionEntry[] = [];
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    try {
+      result.push(JSON.parse(trimmed) as SessionEntry);
+    } catch {
+      // skip unparseable lines
+    }
+  }
+  return result;
+}
+
+/** Filter session entries to those whose payload contains a turn in [minTurn, maxTurn]. */
+export function filterByTurnRange(
+  entries: SessionEntry[],
+  minTurn: number,
+  maxTurn: number,
+): SessionEntry[] {
+  return entries.filter((entry) => {
+    const payload = entry.payload;
+    if (payload === null || payload === undefined || typeof payload !== 'object') {
+      return false;
+    }
+    const obj = payload as Record<string, unknown>;
+    const turn = obj.turn;
+    if (typeof turn !== 'number') {
+      return false;
+    }
+    return turn >= minTurn && turn <= maxTurn;
+  });
+}
+
 /** Read a session JSONL file and print each entry as formatted text. */
 export function reviewSession(filePath: string): void {
   for (const line of reviewSessionLines(filePath)) {

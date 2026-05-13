@@ -1,5 +1,5 @@
 import { expect, test } from 'bun:test';
-import { formatEntry } from './review-session';
+import { type SessionEntry, filterByTurnRange, formatEntry, readSession } from './review-session';
 
 test('formatEntry: parses kind and payload (object)', () => {
   const line = JSON.stringify({ ts: 1000, kind: 'event', payload: { name: 'test', value: 42 } });
@@ -77,4 +77,52 @@ test('reviewSessionLines: formats turn snapshots and recommendations', () => {
   expect(combined).toContain('Buy');
   expect(combined).toContain('TB_BaconShop_1');
   require('node:fs').unlinkSync(filePath);
+});
+
+test('filterByTurnRange: entries in range are returned', () => {
+  const entries: SessionEntry[] = [
+    { ts: 1, kind: 'state_snapshot', payload: { turn: 1, phase: 'shopping' } },
+    { ts: 2, kind: 'state_snapshot', payload: { turn: 3, phase: 'combat' } },
+    { ts: 3, kind: 'state_snapshot', payload: { turn: 5, phase: 'shopping' } },
+    { ts: 4, kind: 'state_snapshot', payload: { turn: 7, phase: 'combat' } },
+  ];
+  const result = filterByTurnRange(entries, 2, 5);
+  expect(result.length).toBe(2);
+  expect(result[0].payload).toEqual({ turn: 3, phase: 'combat' });
+  expect(result[1].payload).toEqual({ turn: 5, phase: 'shopping' });
+});
+
+test('filterByTurnRange: entries outside range are excluded', () => {
+  const entries: SessionEntry[] = [
+    { ts: 1, kind: 'state_snapshot', payload: { turn: 1, phase: 'shopping' } },
+    { ts: 2, kind: 'state_snapshot', payload: { turn: 3, phase: 'combat' } },
+    { ts: 3, kind: 'state_snapshot', payload: { turn: 10, phase: 'shopping' } },
+  ];
+  const result = filterByTurnRange(entries, 2, 5);
+  expect(result.length).toBe(1);
+  expect((result[0].payload as { turn: number }).turn).toBe(3);
+});
+
+test('filterByTurnRange: empty input returns empty array', () => {
+  const result = filterByTurnRange([], 1, 10);
+  expect(result).toEqual([]);
+});
+
+test('filterByTurnRange: entries without turn field are excluded', () => {
+  const entries: SessionEntry[] = [
+    { ts: 1, kind: 'recommendation', payload: { action: 'Buy', cardId: 'TB_BaconShop_1' } },
+    { ts: 2, kind: 'state_snapshot', payload: { turn: 3, phase: 'shopping' } },
+  ];
+  const result = filterByTurnRange(entries, 1, 10);
+  expect(result.length).toBe(1);
+  expect((result[0].payload as { turn: number }).turn).toBe(3);
+});
+
+test('filterByTurnRange: boundary values included', () => {
+  const entries: SessionEntry[] = [
+    { ts: 1, kind: 'state_snapshot', payload: { turn: 2, phase: 'shopping' } },
+    { ts: 2, kind: 'state_snapshot', payload: { turn: 5, phase: 'combat' } },
+  ];
+  const result = filterByTurnRange(entries, 2, 5);
+  expect(result.length).toBe(2);
 });
