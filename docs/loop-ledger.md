@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 07:00  [DONE]  M33: TurnsInGame tracker — `applyTurnsInGame` handles `TAG_CHANGE tag=NUM_TURNS_IN_GAME` on player controller, sets `state.player.turnsInGame: number`, adds field to PlayerState, 4 tests, wired into reducer (commit 533ac8f)
 
+2026-05-13 07:15  [DONE]  M33: MinionsOnBoard tracker — `applyMinionsOnBoard` handles `TAG_CHANGE tag=NUM_MINIONS_ON_BOARD` on player controller, sets `state.player.minionsOnBoard: number`, adds field to PlayerState, 4 tests, wired into reducer (commit c5628bf)
+
 2026-05-13 06:30  [DONE]  M31: Frozen minion handler — wire `applyFrozenMinion` into reducer — import from `./reducer/frozenMinion`, add `case 'FROZEN':` branch that calls `applyFrozenMinion` when the FROZEN tag is on a minion entity (not the player controller); 4 tests (frozen on player minion, frozen on opponent minion, no-op on player controller, no-op on non-play entity) (commit 5caa0ab)
 
 2026-05-13 06:00  [DONE]  M1: parseShowEntity handler — `parseShowEntity(line)` parses `SHOW_ENTITY - Updating Entity=N CardID=X` lines, returns `{ kind: 'SHOW_ENTITY', entity, cardId }`; 3 tests, wired into `parseLine` in index, exported from index (commit 31e9bc1)
