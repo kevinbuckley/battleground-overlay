@@ -54,6 +54,7 @@ export interface PlayerState {
   heroPowerCardId: string | null;
   turnsInGame: number;
   minionsOnBoard: number;
+  minionsKilledThisTurn: number;
   cardsDrawnThisTurn: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }

@@ -26,6 +26,7 @@ import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
+import { applyMinionsKilled } from './reducer/minionsKilled';
 import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
@@ -207,6 +208,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_MINIONS_ON_BOARD') {
         return applyMinionsOnBoard(state, event);
+      }
+      if (event.tag === 'NUM_MINIONS_KILLED_THIS_TURN') {
+        return applyMinionsKilled(state, event);
       }
       if (event.tag === 'NUM_CARDS_DRAWN_THIS_TURN') {
         return applyCardsDrawn(state, event);

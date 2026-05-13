@@ -27,6 +27,7 @@ export function initialState(): GameState {
       heroPowerCardId: null,
       turnsInGame: 0,
       minionsOnBoard: 0,
+      minionsKilledThisTurn: 0,
       cardsDrawnThisTurn: 0,
       entityRegistry: new Map(),
     },
