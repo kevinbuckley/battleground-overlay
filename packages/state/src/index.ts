@@ -12,3 +12,4 @@ export { createPipeline } from './pipeline';
 export type { Pipeline } from './pipeline';
 export { replayFixture } from './replayFixture';
 export { serializeGameState, deserializeGameState } from './serialize';
+export { resolveCardId } from './entityCardId';
