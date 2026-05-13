@@ -472,4 +472,24 @@ describe('recommend', () => {
     const sellRecs = recs.filter((r) => r.action.type === 'Sell');
     expect(sellRecs).toEqual([]);
   });
+
+  it('returns at least 1 Buy rec when shop has 2 minions, gold=3, phase=shopping', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      turn: 1,
+      phase: 'shopping' as const,
+      player: {
+        ...base.player,
+        gold: 3,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A'), minion('SHOP_B')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const buyRecs = recs.filter((r) => r.action.type === 'Buy');
+    expect(buyRecs.length).toBeGreaterThanOrEqual(1);
+  });
 });
