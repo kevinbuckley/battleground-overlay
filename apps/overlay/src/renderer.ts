@@ -5,6 +5,7 @@ export interface OverlayBridge {
   onExplanation(cb: (t: string) => void): void;
   onDamage(cb: (f: unknown) => void);
   onBoard(cb: (b: unknown) => void);
+  onOpponents(cb: (o: unknown[]) => void);
 }
 
 export function getActionText(rec: Recommendation): string {
@@ -67,5 +68,12 @@ export function initRenderer(bridge: OverlayBridge): void {
     if (!el) return;
     const b = boardData as { minions: unknown[] };
     el.textContent = `Minions: ${b.minions.length}`;
+  });
+
+  bridge.onOpponents((opponentsData: unknown) => {
+    const el = document.getElementById('opponent-count');
+    if (!el) return;
+    const o = opponentsData as unknown[];
+    el.textContent = `Opponents: ${o.length}`;
   });
 }
