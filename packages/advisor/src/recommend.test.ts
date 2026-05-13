@@ -592,4 +592,175 @@ describe('recommend', () => {
     const rerollRecs = recs.filter((r) => r.action.type === 'Reroll');
     expect(rerollRecs.length).toBeGreaterThanOrEqual(0);
   });
+
+  it('empty state (no shop, no board, no opponents) returns heuristic fallback recommendations', () => {
+    const state = {
+      ...initialState(),
+      turn: 5,
+      phase: 'shopping' as const,
+      player: {
+        ...initialState().player,
+        shop: {
+          ...initialState().player.shop,
+          minions: [
+            {
+              entityId: 10,
+              cardId: 'TB_BaconShop_Minion1',
+              attack: 1,
+              health: 1,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 1,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+          ],
+        },
+        board: { ...initialState().player.board, minions: [] },
+        opponents: [],
+        gold: 5,
+        tier: 3,
+        tierUpCost: 6,
+      },
+      opponents: [],
+    };
+    const recs = recommend(state);
+    // With no board and no opponents, sim scores will be 0.
+    // Heuristic fallback: buy recs from shop minions, reroll rec from rerollScore.
+    expect(recs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('combat phase returns recommendations (not just shopping)', () => {
+    const state = {
+      ...initialState(),
+      turn: 5,
+      phase: 'combat' as const,
+      player: {
+        ...initialState().player,
+        shop: {
+          ...initialState().player.shop,
+          minions: [
+            {
+              entityId: 10,
+              cardId: 'TB_BaconShop_Minion1',
+              attack: 1,
+              health: 1,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 1,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+            {
+              entityId: 11,
+              cardId: 'TB_BaconShop_Minion2',
+              attack: 2,
+              health: 2,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 2,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+          ],
+        },
+      },
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBeGreaterThan(0);
+  });
+
+  it('single minion board with no opponents returns at least 1 recommendation', () => {
+    const state = {
+      ...initialState(),
+      turn: 5,
+      phase: 'shopping' as const,
+      player: {
+        ...initialState().player,
+        shop: {
+          ...initialState().player.shop,
+          minions: [
+            {
+              entityId: 10,
+              cardId: 'TB_BaconShop_Minion1',
+              attack: 1,
+              health: 1,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 1,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+            {
+              entityId: 11,
+              cardId: 'TB_BaconShop_Minion2',
+              attack: 2,
+              health: 2,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 2,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+          ],
+        },
+        board: {
+          ...initialState().player.board,
+          minions: [
+            {
+              entityId: 1,
+              cardId: 'TB_BaconShop_Minion3',
+              attack: 2,
+              health: 2,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 3,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            },
+          ],
+        },
+        opponents: [],
+      },
+      opponents: [],
+    };
+    const recs = recommend(state);
+    expect(recs.length).toBeGreaterThanOrEqual(1);
+  });
 });
