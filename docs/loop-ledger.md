@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 07:45  [DONE]  M34: Health buff handler — `applyHealthBuff` handles `TAG_CHANGE tag=HEALTH` on minion entities (not heroes), updates `minion.health: number`, wired into reducer, 4 tests (commit 1d80e88)
+
 2026-05-13 07:15  [DONE]  M33: Gold spent tracker — `applyGoldSpent` handles `TAG_CHANGE tag=RESOURCES_USED` on player controller, sets `state.player.goldSpentThisTurn: number`, adds field to PlayerState, 4 tests, wired into reducer (commit 6ecbf78)
 
 2026-05-13 07:30  [DONE]  M34: Shop size tracker — `applyShopSize` handles `TAG_CHANGE tag=NUM_MINIONS_IN_BOB_DECK` on player controller, sets `state.player.shopSize: number`, adds field to PlayerState, 4 tests, wired into reducer (commit 6bdad14)
