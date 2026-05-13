@@ -520,6 +520,10 @@ to `loop-ledger.md`.
 
 - [x] [S] RECOVERY: `clamp` already in `packages/shared/src/utils.ts` ✓
 
+## M42 — Missing tag handlers
+
+- [x] [S] Hero power cost tracker: `packages/state/src/reducer/heroPowerCost.ts` — `applyHeroPowerCost(state, event)` handles `TAG_CHANGE tag=HERO_POWER_COST` on player controller → sets `state.player.heroPowerCost: number` (add field to PlayerState); wire into reducer; 4 tests (initial=1, updates to 2 on turn 5, no-op on opponent, persisted across turns) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/heroPowerCost.ts` + test (commit 9864070)
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)

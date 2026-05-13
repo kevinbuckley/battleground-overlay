@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 19:30  [DONE]  M41: compareBenchmarks degraded winPct test — added 1 test to `bench.test.ts`: baseline winPct 0.6, current 0.4, assert string contains '↓'; 7/7 tests pass (commit f1373ae)
 
+2026-05-13 20:00  [DONE]  M42: Hero power cost tracker — `applyHeroPowerCost` handles `TAG_CHANGE tag=HERO_POWER_COST` on player controller, sets `state.player.heroPowerCost: number`, 4 tests, wired into reducer (commit 9864070)
+
 2026-05-13 19:00  [DONE]  M41: check-patch CI script — `scripts/check-patch.ts` imports `patchVersion`, reads `process.argv[2]`, prints "OK" (exit 0) on match, "Patch mismatch" (exit 1) on mismatch, usage (exit 1) with no arg; 3 tests (commit f4bf812)
 
 2026-05-13 19:30  [DONE]  M41: parseLine roundtrip tests — added 2 tests to `packages/log-parser/src/index.test.ts`: ZONE_CHANGE_LIST ID=99 returns correct shape, SHOW_ENTITY line returns correct shape with entity string and cardId; 813/813 tests pass (commit b2f02ca)
