@@ -43,4 +43,25 @@ describe('tierCurveScore', () => {
     const score = tierCurveScore(10, 5, 10, 5, 5);
     expect(score).toBeLessThan(0.5);
   });
+
+  it('turn=0/hp=40/gold=0/tier=1 returns finite score in [0,1]', () => {
+    const score = tierCurveScore(0, 40, 0, 1, 3);
+    expect(Number.isFinite(score)).toBe(true);
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(1);
+  });
+
+  it('turn=20/hp=1/gold=10/tier=6 returns finite score in [0,1]', () => {
+    const score = tierCurveScore(20, 1, 10, 6, 0);
+    expect(Number.isFinite(score)).toBe(true);
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(1);
+  });
+
+  it('turn=10/hp=20/gold=5/tier=3 returns finite score in [0,1]', () => {
+    const score = tierCurveScore(10, 20, 5, 3, 4);
+    expect(Number.isFinite(score)).toBe(true);
+    expect(score).toBeGreaterThanOrEqual(0);
+    expect(score).toBeLessThanOrEqual(1);
+  });
 });
