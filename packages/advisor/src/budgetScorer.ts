@@ -1,6 +1,8 @@
 import type { GameState, Recommendation } from '@overlay/shared';
 import {
   enumerateBuyCandidates,
+  enumerateFreezeCandidates,
+  enumerateRerollCandidates,
   enumerateSellCandidates,
   enumerateTierUpCandidates,
 } from './candidates';
@@ -138,6 +140,102 @@ export function scoreTierUpWithSim(
           : result.winPct > 0
             ? 'can tier up, evaluating win rate'
             : 'can tier up, no simulation data',
+    },
+  ];
+}
+
+/**
+ * Score a freeze candidate via simulation with a time budget.
+ *
+ * When the shop is not frozen, evaluates the current board against all
+ * opponents and returns a single freeze recommendation with the
+ * simulated win rate.
+ *
+ * When n=0 (no simulations), returns a recommendation with score 0
+ * so the heuristic path can still produce output.
+ */
+export function scoreFreezeWithSim(
+  state: GameState,
+  n: number,
+  budgetMs: number,
+): Recommendation[] {
+  const candidates = enumerateFreezeCandidates(state);
+  const { player, opponents, turn } = state;
+
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  const projectedOpponents = opponents.map((o) => ({
+    ...o,
+    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+  }));
+
+  const result = withBudget(
+    () => scoreCandidate(player.board, player, projectedOpponents, n),
+    budgetMs,
+    { winPct: 0, avgHpDelta: 0 },
+  );
+
+  return [
+    {
+      action: { type: 'Freeze' },
+      score: result.winPct,
+      confidence: Math.min(1, result.winPct + 0.05),
+      reason:
+        result.winPct > 0.5
+          ? 'freezing shop preserves strong board for future turns'
+          : result.winPct > 0
+            ? 'freezing shop to evaluate future options'
+            : 'freezing shop, no simulation data',
+    },
+  ];
+}
+
+/**
+ * Score a reroll candidate via simulation with a time budget.
+ *
+ * When the player can afford to reroll, evaluates the current board
+ * against all opponents and returns a single reroll recommendation with
+ * the simulated win rate.
+ *
+ * When n=0 (no simulations), returns a recommendation with score 0
+ * so the heuristic path can still produce output.
+ */
+export function scoreRerollWithSim(
+  state: GameState,
+  n: number,
+  budgetMs: number,
+): Recommendation[] {
+  const candidates = enumerateRerollCandidates(state);
+  const { player, opponents, turn } = state;
+
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  const projectedOpponents = opponents.map((o) => ({
+    ...o,
+    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+  }));
+
+  const result = withBudget(
+    () => scoreCandidate(player.board, player, projectedOpponents, n),
+    budgetMs,
+    { winPct: 0, avgHpDelta: 0 },
+  );
+
+  return [
+    {
+      action: { type: 'Reroll' },
+      score: result.winPct,
+      confidence: Math.min(1, result.winPct + 0.05),
+      reason:
+        result.winPct > 0.5
+          ? 'rerolling shop preserves strong board for better options'
+          : result.winPct > 0
+            ? 'rerolling shop to find better options'
+            : 'rerolling shop, no simulation data',
     },
   ];
 }

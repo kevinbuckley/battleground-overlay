@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'bun:test';
 import type { GameState, PlayerState } from '@overlay/shared';
 import { initialState } from '@overlay/state';
-import { scoreBuysWithSim, scoreTierUpWithSim } from './budgetScorer';
+import {
+  scoreBuysWithSim,
+  scoreFreezeWithSim,
+  scoreRerollWithSim,
+  scoreTierUpWithSim,
+} from './budgetScorer';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -339,5 +344,124 @@ describe('scoreTierUpWithSim', () => {
     const result = scoreTierUpWithSim(state, 0, 1000);
 
     expect(result).toEqual([]);
+  });
+});
+
+describe('scoreFreezeWithSim', () => {
+  it('returns a recommendation when shop is not frozen', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        shop: {
+          minions: [],
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreFreezeWithSim(state, 0, 1000);
+
+    expect(result.length).toBe(1);
+    expect(result[0].action.type).toBe('Freeze');
+    expect(result[0].score).toBe(0);
+  });
+
+  it('returns empty array when shop is already frozen', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        shop: {
+          minions: [],
+          frozen: true,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreFreezeWithSim(state, 0, 1000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns a recommendation with score reflecting current board strength', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        shop: {
+          minions: [],
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreFreezeWithSim(state, 0, 1000);
+
+    expect(result.length).toBe(1);
+    expect(result[0].score).toBeGreaterThanOrEqual(0);
+    expect(result[0].score).toBeLessThanOrEqual(1);
+    expect(result[0].reason).toBeTruthy();
+  });
+});
+
+describe('scoreRerollWithSim', () => {
+  it('returns a recommendation when player can afford to reroll', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        gold: 3,
+        shop: {
+          minions: [],
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreRerollWithSim(state, 0, 1000);
+
+    expect(result.length).toBe(1);
+    expect(result[0].action.type).toBe('Reroll');
+    expect(result[0].score).toBe(0);
+  });
+
+  it('returns empty array when player cannot afford to reroll', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        gold: 1,
+        shop: {
+          minions: [],
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreRerollWithSim(state, 0, 1000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns a recommendation with score reflecting current board strength', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        gold: 3,
+        shop: {
+          minions: [],
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreRerollWithSim(state, 0, 1000);
+
+    expect(result.length).toBe(1);
+    expect(result[0].score).toBeGreaterThanOrEqual(0);
+    expect(result[0].score).toBeLessThanOrEqual(1);
+    expect(result[0].reason).toBeTruthy();
   });
 });
