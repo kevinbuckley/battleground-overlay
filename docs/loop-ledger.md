@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 09:30  [DONE]  M35: coordinator stop test — added 2 tests to `coordinator.test.ts`: (1) `stop()` is idempotent (calling twice doesn't throw), (2) `onEvent` after `stop()` does not trigger bridge polling (send count unchanged); 8/8 tests pass (commit 4adf6ea)
+
 2026-05-13 09:15  [DONE]  M34: diffRecs structured diff — `diffRecs(actual, expected)` pairs recs by action type (score-independent key), returns `{ action, actualScore, expectedScore }[]`; 3 tests (identical=[], different actions=2 diffs, same action different scores=1 entry), 21/21 tests pass (commit 7bc75e7)
 
 2026-05-13 09:00  [DONE]  M34: applyAttackBuff — already implemented with 4 tests (player board, opponent board, no-op hero, no-op unknown) and wired into reducer (commit d787221)
