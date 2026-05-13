@@ -136,4 +136,81 @@ describe('preload', () => {
     expect(recsArg).toEqual([{ action: { type: 'Buy' }, score: 0.5 }]);
     expect(textArg).toBe('This is a good play');
   });
+
+  it('onDamage callback fires with payload when overlay:damage-update channel fires', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onDamage: (cb: (f: unknown) => void) => void;
+    };
+
+    let damageArg: unknown = null;
+    bridge.onDamage((f) => {
+      damageArg = f;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const damageListener = listeners['overlay:damage-update']?.[0];
+
+    const forecast = { minDmg: 5, maxDmg: 15, winPct: 0.7 };
+    damageListener?.(null, forecast);
+
+    expect(damageArg).toEqual(forecast);
+  });
+
+  it('onBoard callback fires with payload when overlay:board-update channel fires', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onBoard: (cb: (b: unknown) => void) => void;
+    };
+
+    let boardArg: unknown = null;
+    bridge.onBoard((b) => {
+      boardArg = b;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const boardListener = listeners['overlay:board-update']?.[0];
+
+    const boardData = [
+      { cardId: 'TB_GolBozhi_01', attack: 3, health: 2, taunt: false, divineShield: false },
+    ];
+    boardListener?.(null, boardData);
+
+    expect(boardArg).toEqual(boardData);
+  });
+
+  it('onOpponents is not yet exposed (still only recs+explanation+damage+board after change)', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as Record<string, unknown>;
+
+    expect(typeof bridge.onRecs).toBe('function');
+    expect(typeof bridge.onExplanation).toBe('function');
+    expect(typeof bridge.onDamage).toBe('function');
+    expect(typeof bridge.onBoard).toBe('function');
+    expect(bridge.onOpponents).toBeUndefined();
+  });
 });

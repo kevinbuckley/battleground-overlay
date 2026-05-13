@@ -12,5 +12,15 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(text);
       });
     },
+    onDamage(cb: (f: unknown) => void): void {
+      ipc.on('overlay:damage-update', (_event, forecast) => {
+        cb(forecast);
+      });
+    },
+    onBoard(cb: (b: unknown) => void): void {
+      ipc.on('overlay:board-update', (_event, board) => {
+        cb(board);
+      });
+    },
   });
 }
