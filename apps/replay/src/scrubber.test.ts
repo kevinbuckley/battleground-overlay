@@ -148,4 +148,38 @@ describe('Scrubber', () => {
       cleanup(path);
     }
   });
+
+  it('stepBackward() at tick 0 does not throw and returns 0', () => {
+    const path = makeFixture([
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30',
+      'TAG_CHANGE Entity=0 tag=RESOURCES value=3',
+    ]);
+    try {
+      const events = loadFixture(path);
+      const s = new Scrubber(events);
+      const result = s.stepBackward();
+      expect(result).toBe(0);
+      expect(s.currentIndex).toBe(0);
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it('stepForward() past the last event returns the final state without throwing', () => {
+    const path = makeFixture([
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30',
+      'TAG_CHANGE Entity=0 tag=RESOURCES value=3',
+    ]);
+    try {
+      const events = loadFixture(path);
+      const s = new Scrubber(events);
+      s.seek(2);
+      expect(s.currentIndex).toBe(2);
+      const result = s.stepForward();
+      expect(result).toBe(2);
+      expect(s.currentIndex).toBe(2);
+    } finally {
+      cleanup(path);
+    }
+  });
 });

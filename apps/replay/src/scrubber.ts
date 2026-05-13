@@ -51,4 +51,16 @@ export class Scrubber {
   jump(n: number): GameState {
     return this.seek(n);
   }
+
+  stepBackward(): number {
+    if (this._currentIndex <= 0) return 0;
+    this._currentIndex--;
+    return this._currentIndex;
+  }
+
+  stepForward(): number {
+    if (this._currentIndex >= this.events.length) return this._currentIndex;
+    this._currentIndex++;
+    return this._currentIndex;
+  }
 }
