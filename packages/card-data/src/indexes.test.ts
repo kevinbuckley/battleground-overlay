@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'bun:test';
 import {
   getByDbfId,
+  getByDbfIdStr,
   getCard,
+  getCardName,
   getCardsByTechLevel,
   getCardsByTier,
   getCardsByTribe,
 } from './indexes';
+import { loadCards } from './loadCards';
 
 describe('getCard', () => {
   it('returns null for unknown dbfId', () => {
@@ -56,5 +59,31 @@ describe('getCardsByTechLevel', () => {
     const before = getCardsByTechLevel(7);
     const after = getCardsByTechLevel(7);
     expect(before).toBe(after);
+  });
+});
+
+describe('getCardName', () => {
+  it('returns the input for an unknown id', () => {
+    expect(getCardName('nonexistent_card_id')).toBe('nonexistent_card_id');
+  });
+
+  it('returns empty string for empty string input', () => {
+    expect(getCardName('')).toBe('');
+  });
+
+  it('index is built lazily', () => {
+    const before = getByDbfIdStr();
+    getCardName('TB_BaconShop_OvergrownMinion');
+    const after = getByDbfIdStr();
+    expect(before).toBe(after);
+  });
+
+  it('returns the card name when a card exists in the loaded data', () => {
+    const cards = loadCards();
+    const card = cards[0];
+    if (card) {
+      const name = getCardName(card.id);
+      expect(name).toBe(card.name);
+    }
   });
 });

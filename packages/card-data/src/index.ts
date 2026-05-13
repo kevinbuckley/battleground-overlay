@@ -1,6 +1,13 @@
 export type { Card } from './types';
 export { loadCards } from './loadCards';
-export { getCard, getByDbfId, getCardById, getCardsByTribe, getCardsByTier } from './indexes';
+export {
+  getCard,
+  getByDbfId,
+  getCardById,
+  getCardName,
+  getCardsByTribe,
+  getCardsByTier,
+} from './indexes';
 export {
   getBgMinionsByTribe,
   isBattlegroundsPool,

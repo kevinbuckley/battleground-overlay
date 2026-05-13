@@ -94,3 +94,8 @@ export function getCardsByTechLevel(level: number): Card[] {
 export function getCardById(cardId: string): Card | null {
   return getByDbfIdStr().get(cardId) ?? null;
 }
+
+export function getCardName(cardId: string): string {
+  const card = getCardById(cardId);
+  return card?.name ?? cardId;
+}
