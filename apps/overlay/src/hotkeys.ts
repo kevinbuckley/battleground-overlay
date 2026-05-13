@@ -10,6 +10,7 @@ export type AppInterface = {
     register(key: string, callback: () => void): boolean;
     unregisterAll(): void;
   };
+  on(event: string, callback: () => void): void;
 };
 
 export type WindowInterface = {
@@ -35,6 +36,10 @@ export function registerHotkeys(win: WindowInterface, cfg: HotkeyConfig, app: Ap
     app.globalShortcut.register(cfg.hide, () => {
       win.hide();
     });
+  });
+
+  app.on('will-quit', () => {
+    app.globalShortcut.unregisterAll();
   });
 }
 

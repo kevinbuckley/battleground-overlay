@@ -79,6 +79,7 @@ describe('settings apply on load', () => {
     const mockApp = {
       whenReady: () => Promise.resolve(),
       globalShortcut: { register: () => true, unregisterAll: () => {} },
+      on: (() => {}) as (event: string, cb: () => void) => void,
     };
     const Ctor = (() => mockWin) as unknown as typeof electron.BrowserWindow;
     createOverlayWindow(Ctor, '/tmp/settings-for-test', mockApp);
@@ -103,6 +104,7 @@ describe('settings apply on load', () => {
     const mockApp = {
       whenReady: () => Promise.resolve(),
       globalShortcut: { register: () => true, unregisterAll: () => {} },
+      on: (() => {}) as (event: string, cb: () => void) => void,
     };
     const Ctor = (() => mockWin) as unknown as typeof electron.BrowserWindow;
     createOverlayWindow(Ctor, '/tmp/settings-for-test', mockApp);

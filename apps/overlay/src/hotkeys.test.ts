@@ -26,6 +26,7 @@ describe('hotkeys', () => {
           registered = [];
         },
       },
+      on: (() => {}) as unknown as AppInterface['on'],
     } as unknown as AppInterface;
     winMock = {
       isVisible: () => true,
@@ -144,5 +145,23 @@ describe('hotkeys', () => {
 
     unregisterAllHotkeys(appMock);
     expect(registered).toHaveLength(0);
+  });
+
+  it('registerHotkeys registers will-quit handler', async () => {
+    let onEvent = '';
+    const onSpy = ((event: string, _callback: () => void) => {
+      onEvent = event;
+    }) as unknown as AppInterface['on'];
+
+    const appWithOn = {
+      ...appMock,
+      on: onSpy,
+    } as unknown as AppInterface;
+
+    const cfg = defaultHotkeyConfig();
+    registerHotkeys(winMock, cfg, appWithOn);
+    await Promise.resolve();
+
+    expect(onEvent).toBe('will-quit');
   });
 });
