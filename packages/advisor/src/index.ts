@@ -14,6 +14,6 @@ export { hillClimbPosition } from './positionHillClimb';
 export type { PositionResult } from './positionHillClimb';
 export { withBudget } from './withBudget';
 export { rerollScore } from './heuristics/rerollScore';
-export { lobbyWeights } from './lobbyWeight';
+export { lobbyWeights, totalLobbyWeight } from './lobbyWeight';
 export { scoreBuysWithSim, scoreSellsWithSim } from './budgetScorer';
 export { weightedWinScore } from './weightedScore';

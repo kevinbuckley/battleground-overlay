@@ -12,3 +12,11 @@ export function lobbyWeights(opponents: OpponentState[]): number[] {
     return opp.hero.hp / totalAliveHp;
   });
 }
+
+/**
+ * Sum all per-opponent lobby weights.
+ * Returns 0 for empty input.
+ */
+export function totalLobbyWeight(opponents: OpponentState[]): number {
+  return lobbyWeights(opponents).reduce((sum, w) => sum + w, 0);
+}

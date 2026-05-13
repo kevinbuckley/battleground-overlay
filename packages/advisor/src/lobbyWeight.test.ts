@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { lobbyWeights } from './lobbyWeight';
+import { lobbyWeights, totalLobbyWeight } from './lobbyWeight';
 
 describe('lobbyWeights', () => {
   it('returns 0 for eliminated opponents', () => {
@@ -125,5 +125,63 @@ describe('lobbyWeights', () => {
 
   it('returns empty array for empty opponents list', () => {
     expect(lobbyWeights([])).toEqual([]);
+  });
+
+  it('returns 0 for empty opponents list', () => {
+    expect(totalLobbyWeight([])).toBe(0);
+  });
+
+  it('sums all weights when all opponents are alive with equal hp', () => {
+    const opponents = [
+      {
+        entityId: 1,
+        playerId: 1,
+        hero: { entityId: 10, cardId: 'HERO1', hp: 20, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: false,
+      },
+      {
+        entityId: 2,
+        playerId: 2,
+        hero: { entityId: 20, cardId: 'HERO2', hp: 20, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: false,
+      },
+    ];
+
+    expect(totalLobbyWeight(opponents)).toBeCloseTo(1.0);
+  });
+
+  it('excludes eliminated opponents from total', () => {
+    const opponents = [
+      {
+        entityId: 1,
+        playerId: 1,
+        hero: { entityId: 10, cardId: 'HERO1', hp: 30, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: true,
+      },
+      {
+        entityId: 2,
+        playerId: 2,
+        hero: { entityId: 20, cardId: 'HERO2', hp: 15, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: false,
+      },
+      {
+        entityId: 3,
+        playerId: 3,
+        hero: { entityId: 30, cardId: 'HERO3', hp: 15, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: false,
+      },
+    ];
+
+    expect(totalLobbyWeight(opponents)).toBeCloseTo(1.0);
   });
 });
