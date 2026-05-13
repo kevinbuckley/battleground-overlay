@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 10:00  [DONE]  M35: buildPrompt Buy recommendation test — added 1 test to `buildPrompt.test.ts` verifying the user message contains the cardId, action type 'Buy', and a score digit; 13/13 tests pass (commit 4c4a509)
+
 2026-05-13 09:30  [DONE]  M35: coordinator stop test — added 2 tests to `coordinator.test.ts`: (1) `stop()` is idempotent (calling twice doesn't throw), (2) `onEvent` after `stop()` does not trigger bridge polling (send count unchanged); 8/8 tests pass (commit 4adf6ea)
 
 2026-05-13 09:45  [DONE]  M35: withBudget time-cap test — added 1 test to `withBudget.test.ts` verifying fast functions return within 200ms and result score >= 0; 6/6 tests pass (commit 1db4adf)
