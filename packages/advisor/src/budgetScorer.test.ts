@@ -198,6 +198,41 @@ describe('scoreBuysWithSim', () => {
     }
   });
 
+  it('n=1 smoke test: real sim path executes without error', () => {
+    const shopMinions = [
+      {
+        entityId: 1,
+        cardId: 'CS3_001',
+        attack: 3,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+    ];
+
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        shop: {
+          minions: shopMinions,
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreBuysWithSim(state, 1, 5000);
+
+    expect(result.length).toBeGreaterThan(0);
+    const first = result[0];
+    expect(first.score).toBeGreaterThanOrEqual(0);
+    expect(first.action.type).toBe('Buy');
+  });
+
   it('projects non-empty opponent board via predictOpponentBoard', () => {
     const shopMinions = [
       {
