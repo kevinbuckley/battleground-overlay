@@ -117,3 +117,113 @@ describe('reducer FULL_ENTITY', () => {
     expect(s3.player.board.minions.length).toBe(0);
   });
 });
+
+describe('reducer TAG_CHANGE DIVINE_SHIELD via applyBuffs', () => {
+  it('sets divine shield on player minion', () => {
+    const state = {
+      ...initialState(),
+      player: {
+        ...initialState().player,
+        board: {
+          ...initialState().player.board,
+          minions: [
+            {
+              entityId: 1,
+              cardId: 'TestMinion',
+              attack: 2,
+              health: 3,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              reborn: false,
+              frozen: false,
+              golden: false,
+              windfury: false,
+              cleave: false,
+              elite: false,
+              cost: 0,
+              tribes: [],
+            },
+          ],
+        },
+      },
+    };
+    const event: TagChange = {
+      kind: 'TAG_CHANGE',
+      entity: '1',
+      tag: 'DIVINE_SHIELD',
+      value: '1',
+    };
+    const next = reducer(state, event);
+    expect(next.player.board.minions[0]?.divineShield).toBe(true);
+  });
+
+  it('sets divine shield on opponent minion', () => {
+    const state = {
+      ...initialState(),
+      opponents: [
+        {
+          entityId: 100,
+          playerId: 1,
+          hero: { entityId: 100, cardId: 'TestHero', hp: 40, armor: 0 },
+          board: {
+            minions: [
+              {
+                entityId: 10,
+                cardId: 'TestMinion',
+                attack: 2,
+                health: 3,
+                taunt: false,
+                divineShield: false,
+                poisonous: false,
+                reborn: false,
+                frozen: false,
+                golden: false,
+                windfury: false,
+                cleave: false,
+                elite: false,
+                cost: 0,
+                tribes: [],
+              },
+            ],
+          },
+          tier: 3,
+          eliminated: false,
+        },
+      ],
+    };
+    const event: TagChange = {
+      kind: 'TAG_CHANGE',
+      entity: '10',
+      tag: 'DIVINE_SHIELD',
+      value: '1',
+    };
+    const next = reducer(state, event);
+    const oppMinion = next.opponents[0]?.board.minions[0];
+    expect(oppMinion?.divineShield).toBe(true);
+  });
+
+  it('no-op on player controller (hero)', () => {
+    const state = initialState();
+    const event: TagChange = {
+      kind: 'TAG_CHANGE',
+      entity: String(state.player.hero.entityId),
+      tag: 'DIVINE_SHIELD',
+      value: '1',
+    };
+    const next = reducer(state, event);
+    expect(next).toBe(state);
+  });
+
+  it('no-op on non-play entity', () => {
+    const state = initialState();
+    const event: TagChange = {
+      kind: 'TAG_CHANGE',
+      entity: '999',
+      tag: 'DIVINE_SHIELD',
+      value: '1',
+    };
+    const next = reducer(state, event);
+    expect(next).toBe(state);
+  });
+});
