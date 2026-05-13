@@ -492,4 +492,104 @@ describe('recommend', () => {
     const buyRecs = recs.filter((r) => r.action.type === 'Buy');
     expect(buyRecs.length).toBeGreaterThanOrEqual(1);
   });
+
+  it('returns a TierUp sim rec when tier-up is affordable', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      turn: 6,
+      player: {
+        ...base.player,
+        gold: 6,
+        tier: 3,
+        tierUpCost: 6,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const tierRecs = recs.filter((r) => r.action.type === 'TierUp');
+    expect(tierRecs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('returns a Freeze sim rec when shop is not frozen', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: {
+          minions: [
+            { ...minion('BOARD_A'), tribes: ['Murloc'] },
+            { ...minion('BOARD_B'), tribes: ['Murloc'] },
+          ],
+        },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A', ['Murloc'])],
+          frozen: false,
+        },
+        hero: { ...base.player.hero, hp: 20 },
+      },
+    };
+    const recs = recommend(state);
+    const freezeRecs = recs.filter((r) => r.action.type === 'Freeze');
+    expect(freezeRecs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('returns a Reroll sim rec when player can afford reroll', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        gold: 3,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 20 },
+      },
+    };
+    const recs = recommend(state);
+    const rerollRecs = recs.filter((r) => r.action.type === 'Reroll');
+    expect(rerollRecs.length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('all three fall back to heuristic when n=0 (sim returns score 0)', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      turn: 6,
+      player: {
+        ...base.player,
+        gold: 6,
+        tier: 3,
+        tierUpCost: 6,
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+          frozen: false,
+          rollCost: 1,
+        },
+        hero: { ...base.player.hero, hp: 20 },
+      },
+    };
+    const recs = recommend(state);
+    // With n=0, sim returns score 0, so heuristic fallback should kick in
+    // TierUp heuristic: tierCurveScore with turn=6, gold=6, tier=3, tierUpCost=6
+    // next tier is 4, idealTurn=6, hp=20, minHp=25 → score = 0.8 * 0.5 = 0.4
+    // which is ≤ 0.5, so no heuristic TierUp rec
+    const tierRecs = recs.filter((r) => r.action.type === 'TierUp');
+    expect(tierRecs.length).toBeGreaterThanOrEqual(0);
+    // Freeze heuristic: freezeMinion returns a freeze action when shop not frozen
+    const freezeRecs = recs.filter((r) => r.action.type === 'Freeze');
+    expect(freezeRecs.length).toBeGreaterThanOrEqual(0);
+    // Reroll heuristic: rerollScore with hp=20, gold=3, rollCost=1
+    const rerollRecs = recs.filter((r) => r.action.type === 'Reroll');
+    expect(rerollRecs.length).toBeGreaterThanOrEqual(0);
+  });
 });

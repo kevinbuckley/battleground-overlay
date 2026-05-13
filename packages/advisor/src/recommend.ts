@@ -1,5 +1,11 @@
 import type { GameState, Recommendation } from '@overlay/shared';
-import { scoreBuysWithSim, scoreSellsWithSim } from './budgetScorer';
+import {
+  scoreBuysWithSim,
+  scoreFreezeWithSim,
+  scoreRerollWithSim,
+  scoreSellsWithSim,
+  scoreTierUpWithSim,
+} from './budgetScorer';
 import { freezeMinion } from './heuristics/freezeMinion';
 import { rerollScore } from './heuristics/rerollScore';
 import { sellScore } from './heuristics/sellScore';
@@ -50,6 +56,8 @@ export function recommend(state: GameState): Recommendation[] {
   // otherwise fall back to heuristics so existing behavior is preserved.
   const buyRecs: Recommendation[] = simRecs.some((r) => r.score > 0) ? simRecs : heuristicBuyRecs;
 
+  // Simulation-based tier-up scoring
+  const simTierRecs = scoreTierUpWithSim(state, 50, 2000);
   const tierScore = tierCurveScore(
     state.turn,
     player.hero.hp,
@@ -57,8 +65,7 @@ export function recommend(state: GameState): Recommendation[] {
     player.tier,
     player.tierUpCost,
   );
-
-  const tierRec: Recommendation | null =
+  const heuristicTierRec: Recommendation | null =
     tierScore > 0.5
       ? {
           action: { type: 'TierUp' },
@@ -67,7 +74,9 @@ export function recommend(state: GameState): Recommendation[] {
           reason: 'on curve to tier up',
         }
       : null;
-
+  const tierRec: Recommendation | null = simTierRecs.some((r) => r.score > 0)
+    ? (simTierRecs[0] ?? null)
+    : heuristicTierRec;
   // Simulation-based sell scores (primary source)
   const simSellRecs = scoreSellsWithSim(state, 50, 2000);
 
@@ -91,7 +100,9 @@ export function recommend(state: GameState): Recommendation[] {
     ? simSellRecs
     : heuristicSellRecs;
 
-  const freezeRec: Recommendation | null = (() => {
+  // Simulation-based freeze scoring
+  const simFreezeRecs = scoreFreezeWithSim(state, 50, 2000);
+  const heuristicFreezeRec: Recommendation | null = (() => {
     const freezeAction = freezeMinion(state);
     if (!freezeAction) return null;
     const overallScore = 0.5;
@@ -102,8 +113,13 @@ export function recommend(state: GameState): Recommendation[] {
       reason: 'freeze shop for better reroll',
     };
   })();
+  const freezeRec: Recommendation | null = simFreezeRecs.some((r) => r.score > 0)
+    ? (simFreezeRecs[0] ?? null)
+    : heuristicFreezeRec;
 
-  const rerollRec: Recommendation | null = (() => {
+  // Simulation-based reroll scoring
+  const simRerollRecs = scoreRerollWithSim(state, 50, 2000);
+  const heuristicRerollRec: Recommendation | null = (() => {
     const score = rerollScore(state);
     if (score < 0.5) return null;
     return {
@@ -113,6 +129,9 @@ export function recommend(state: GameState): Recommendation[] {
       reason: 'no good buys, safe to reroll',
     };
   })();
+  const rerollRec: Recommendation | null = simRerollRecs.some((r) => r.score > 0)
+    ? (simRerollRecs[0] ?? null)
+    : heuristicRerollRec;
 
   // Position hill-climb: check if repositioning improves win rate
   const positionResult = hillClimbPosition(state.player.board, state.player, state.opponents, 50);
