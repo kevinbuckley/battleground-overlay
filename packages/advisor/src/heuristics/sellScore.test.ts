@@ -86,4 +86,10 @@ describe('sellScore', () => {
     // weakest (0.4) + no synergy (0.4) + not triple (0.2) = 1.0
     expect(score).toBe(1.0);
   });
+
+  it('returns a finite number for empty board', () => {
+    const minion = makeMinion(1, 'CS2_168', 3, 3);
+    const score = sellScore(minion, [], makeState());
+    expect(Number.isFinite(score)).toBe(true);
+  });
 });
