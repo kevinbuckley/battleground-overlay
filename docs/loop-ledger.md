@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 21:30  [DONE]  M44: Coordinator logs parsed events — added `(opts?.logFn ?? appendSessionEvent)('event', { kind: event.kind })` call at the top of the wrapped `pipeline.onEvent` in `coordinator.ts`, plus 2 tests (single event → 1 entry, 3 events → 3 entries); also fixed existing test to filter by `kind === 'recommendation'` since event entries now come first; 812/812 tests pass (commit 5fce638)
+
 2026-05-13 21:00  [DONE]  M43: Document resolveCombatPhase status — added top-of-file comment to `packages/state/src/reducer/combatPhase.ts` noting it's not wired into the reducer dispatch; 7/7 tests pass (commit 7f5b49f)
 
 2026-05-13 20:30  [DONE]  M43: Remove applyBuffs duplicate — deleted `packages/state/src/reducer/buffs.ts` and `buffs.test.ts` (identical to `applyDivineShield`), 810 tests pass (commit dec764d)
