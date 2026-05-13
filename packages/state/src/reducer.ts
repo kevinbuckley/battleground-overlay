@@ -12,6 +12,7 @@ import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyDivineShield } from './reducer/divineShield';
 import { applyElite } from './reducer/elite';
+import { applyFrozenMinion } from './reducer/frozenMinion';
 import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
@@ -129,7 +130,11 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyCombatDamage(state, event);
       }
       if (event.tag === 'FROZEN') {
-        return applyShopFreeze(state, event);
+        const afterShopFreeze = applyShopFreeze(state, event);
+        if (afterShopFreeze !== state) {
+          return afterShopFreeze;
+        }
+        return applyFrozenMinion(state, event);
       }
       if (event.tag === 'RESOURCES_USED') {
         return applyShopReroll(state, event);
