@@ -38,4 +38,19 @@ describe('weightedWinScore', () => {
     const r2 = weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, [1, 1]);
     expect(r2).toBeCloseTo(r1 * 2);
   });
+
+  it('returns 0 when weights array is empty', () => {
+    const result = weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, []);
+    expect(result).toBe(0);
+  });
+
+  it('single weight returns winPct * that weight', () => {
+    const result = weightedWinScore({ winPct: 0.7, avgHpDelta: 0 }, [0.3]);
+    expect(result).toBeCloseTo(0.7 * 0.3);
+  });
+
+  it('weight array longer than opponents uses all weights (aggregated result)', () => {
+    const result = weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, [0.1, 0.2, 0.3, 0.4]);
+    expect(result).toBeCloseTo(0.5 * 1.0);
+  });
 });
