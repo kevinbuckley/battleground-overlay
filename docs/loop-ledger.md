@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 18:00  [DONE]  M40: review-session filterByTurnRange + readSession — added `filterByTurnRange(entries, minTurn, maxTurn)` filtering entries by payload.turn field, plus `readSession(filePath)` returning `SessionEntry[]`; 5 new tests (in-range, out-of-range, empty, no-turn-field, boundary), 794/794 tests pass (commit 93b4831)
+
 2026-05-13 17:30  [DONE]  M40: settings:apply IPC handler — added `ipcMain.handle('settings:apply', ...)` to `main.ts` importing `loadSettings` + `getOverlayWin`, calls `setOpacity`/`setPosition` on the window; 2 tests in `main.test.ts` (handler exists, non-existent path returns default opacity), 789/789 tests pass (commit 3d2d41f)
 
 2026-05-13 17:00  [DONE]  M40: Renderer onBoard handler — added `onBoard(cb)` to `OverlayBridge` interface, wired `bridge.onBoard(...)` in `initRenderer` to update `#board-count` with `Minions: N` format, added `<div id="board-count"></div>` to `renderer.html`, 3 new tests (count shows correct N, missing element no-op, empty minions shows `Minions: 0`), 784/784 tests pass (commit c2db361)
