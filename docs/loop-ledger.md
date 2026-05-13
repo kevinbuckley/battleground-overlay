@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 14:00  [DONE]  M38: scoreFreezeWithSim + scoreRerollWithSim — added both functions to `budgetScorer.ts` following the existing `scoreTierUpWithSim` pattern (enumerate candidates, project opponents, score via `scoreCandidate` wrapped in `withBudget`), 6 new tests (3 per function), 756/756 tests pass (commit 64b1687)
 
+2026-05-13 14:30  [DONE]  M39: Preload expose damage + board channels — added `onDamage` and `onBoard` to `setupPreload`'s `exposeInMainWorld` call, listening on `overlay:damage-update` and `overlay:board-update`; 3 new tests (onDamage fires, onBoard fires, onOpponents undefined), 8/8 tests pass (commit 9c0ee71)
+
 2026-05-13 14:30  [DONE]  M38: Wire all three new scorers into recommend() — imported `scoreTierUpWithSim`, `scoreFreezeWithSim`, `scoreRerollWithSim` from `budgetScorer`, replaced heuristic-only TierUp/Freeze/Reroll blocks with simulation-based scoring (sim rec when score > 0, heuristic fallback otherwise), 4 new tests (tier-up, freeze, reroll, fallback), 760/760 tests pass (commit ab65200)
 
 2026-05-13 15:00  [DONE]  M38: recommend edge-case tests — added 3 tests to `recommend.test.ts`: empty state with shop minion returns heuristic fallback, combat phase returns recommendations, single minion board with no opponents returns ≥1 rec; 763/763 tests pass (commit 57617f4)
