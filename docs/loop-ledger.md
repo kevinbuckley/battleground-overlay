@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 15:00  [DONE]  M39: Coordinator snapshot logging — added `previousTurn` tracking to `startCoordinator`, logs `state-snapshot` with `{ turn, phase, gold, tier }` when turn increments, 2 new tests (turn increment logs snapshot, no turn change skips snapshot), 771/771 tests pass (commit 93911a8)
 
+2026-05-13 15:30  [DONE]  M39: hillClimbPosition no-opponents tests — added 2 tests to `positionHillClimb.test.ts`: no-opp array returns scoreDelta=0/fromIndex=null, single-minion board returns bestOrder.length=1; 773/773 tests pass (commit d6db30c)
+
 2026-05-13 14:00  [DONE]  M38: scoreFreezeWithSim + scoreRerollWithSim — added both functions to `budgetScorer.ts` following the existing `scoreTierUpWithSim` pattern (enumerate candidates, project opponents, score via `scoreCandidate` wrapped in `withBudget`), 6 new tests (3 per function), 756/756 tests pass (commit 64b1687)
 
 2026-05-13 14:30  [DONE]  M39: Preload expose damage + board channels — added `onDamage` and `onBoard` to `setupPreload`'s `exposeInMainWorld` call, listening on `overlay:damage-update` and `overlay:board-update`; 3 new tests (onDamage fires, onBoard fires, onOpponents undefined), 8/8 tests pass (commit 9c0ee71)
