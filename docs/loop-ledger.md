@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 20:30  [DONE]  M43: Remove applyBuffs duplicate — deleted `packages/state/src/reducer/buffs.ts` and `buffs.test.ts` (identical to `applyDivineShield`), 810 tests pass (commit dec764d)
+
 2026-05-13 20:00  [DONE]  M43: Remove applyTier duplicate — deleted `packages/state/src/reducer/tier.ts` and `tier.test.ts` (redundant with `applyTierUp`), 816 tests pass (commit 8e916e2)
 
 2026-05-13 19:30  [DONE]  M41: compareBenchmarks degraded winPct test — added 1 test to `bench.test.ts`: baseline winPct 0.6, current 0.4, assert string contains '↓'; 7/7 tests pass (commit f1373ae)
