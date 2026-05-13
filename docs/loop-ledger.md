@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 23:30  [DONE]  M45: tribeSynergyScore no-tribe + 3-match tests — added 2 tests to `tribeSynergy.test.ts`: empty tribes returns 0 (already existed, helper fixed to include new Minion fields), 3 matching board minions returns score ≥ 0.449; 825/825 tests pass (commit 6261b17)
+
 2026-05-13 23:15  [DONE]  M45: tierCurveScore clamp tests — added 3 tests to `tierCurve.test.ts` asserting score is finite and within [0,1] for extreme inputs: turn=0/hp=40/gold=0/tier=1, turn=20/hp=1/gold=10/tier=6, turn=10/hp=20/gold=5/tier=3; 824/824 tests pass (commit c60c791)
 
 2026-05-13 21:30  [DONE]  M44: Coordinator logs parsed events — added `(opts?.logFn ?? appendSessionEvent)('event', { kind: event.kind })` call at the top of the wrapped `pipeline.onEvent` in `coordinator.ts`, plus 2 tests (single event → 1 entry, 3 events → 3 entries); also fixed existing test to filter by `kind === 'recommendation'` since event entries now come first; 812/812 tests pass (commit 5fce638)
