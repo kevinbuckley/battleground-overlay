@@ -51,4 +51,15 @@ describe('withBudget', () => {
     const result = withBudget(() => 'ok', 0, 'fallback');
     expect(result).toBe('ok');
   });
+
+  it('returns within budgetMs for fast functions', () => {
+    const start = Date.now();
+    const result = withBudget(() => ({ score: 0.5, confidence: 0.5 }), 100, {
+      score: 0,
+      confidence: 0,
+    });
+    const elapsed = Date.now() - start;
+    expect(elapsed).toBeLessThan(200);
+    expect(result.score).toBeGreaterThanOrEqual(0);
+  });
 });
