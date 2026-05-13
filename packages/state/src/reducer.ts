@@ -43,6 +43,7 @@ import { applyTierUp } from './reducer/tierUp';
 import { applyTrinket } from './reducer/trinket';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
+import { applyTurnsInGame } from './reducer/turnsInGame';
 import { applyWindfury } from './reducer/windfury';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -198,6 +199,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CARDS_GIVEN_THIS_TURN') {
         return applyCardsGiven(state, event);
+      }
+      if (event.tag === 'NUM_TURNS_IN_GAME') {
+        return applyTurnsInGame(state, event);
       }
       return applyTripleBonus(state, event);
 

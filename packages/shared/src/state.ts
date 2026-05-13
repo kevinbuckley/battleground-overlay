@@ -52,6 +52,7 @@ export interface PlayerState {
   cardsGivenThisTurn: number;
   deckSize: number;
   heroPowerCardId: string | null;
+  turnsInGame: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

@@ -25,6 +25,7 @@ export function initialState(): GameState {
       cardsGivenThisTurn: 0,
       deckSize: 30,
       heroPowerCardId: null,
+      turnsInGame: 0,
       entityRegistry: new Map(),
     },
     opponents: [],
