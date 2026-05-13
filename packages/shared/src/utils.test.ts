@@ -7,6 +7,7 @@ import {
   minionsOnBoard,
   opponentMinionsOnBoard,
   round2,
+  shopMinionCount,
 } from './utils';
 
 describe('clamp', () => {
@@ -102,5 +103,21 @@ describe('opponentMinionsOnBoard', () => {
   test('returns 0 when index is out of range', () => {
     const state = initialState();
     expect(opponentMinionsOnBoard(state, 5)).toBe(0);
+  });
+});
+
+describe('shopMinionCount', () => {
+  test('returns 0 when shop is empty', () => {
+    expect(shopMinionCount(initialState())).toBe(0);
+  });
+
+  test('returns correct count for 3 shop minions', () => {
+    const state = initialState();
+    state.player.shop.minions = [
+      { entityId: 10, cardId: 'test1' },
+      { entityId: 11, cardId: 'test2' },
+      { entityId: 12, cardId: 'test3' },
+    ];
+    expect(shopMinionCount(state)).toBe(3);
   });
 });

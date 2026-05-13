@@ -30,3 +30,7 @@ export function opponentMinionsOnBoard(state: GameState, index: number): number 
   if (index < 0 || index >= state.opponents.length) return 0;
   return state.opponents[index].board.minions.length;
 }
+
+export function shopMinionCount(state: GameState): number {
+  return state.player.shop.minions.length;
+}
