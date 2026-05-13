@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 04:00  [DONE]  M32: Cards played tracker — `applyCardsPlayed` handles `TAG_CHANGE tag=NUM_CARDS_PLAYED_THIS_TURN` on player controller, sets `state.player.cardsPlayedThisTurn: number`, wired into reducer, 4 tests (commit 27596db)
+
 2026-05-13 03:30  [DONE]  M32: Player death handler — `applyPlayerDeath` handles `TAG_CHANGE tag=HEALTH value=0` on player controller, sets `state.player.eliminated = true`, wired into reducer, 3 tests (commit 7512eb4)
 
 2026-05-12 22:00  [DONE]  M32: Card cost tracker — `applyCardCost` handles `TAG_CHANGE tag=COST` on PLAY/SHOP entities, adds `cost: number` to Minion, wired into reducer, 5 tests (commit 65aab57)

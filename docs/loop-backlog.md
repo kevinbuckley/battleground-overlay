@@ -415,6 +415,7 @@ to `loop-ledger.md`.
 - [x] [S] Elite status handler: `packages/state/src/reducer/elite.ts` — `applyElite(state, event)` handles `TAG_CHANGE tag=ELITE value=1/0` on entities in PLAY zone → sets `minion.elite = true/false` (add `elite: boolean` to Minion); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity)
 - [x] [S] Card cost tracker: `packages/state/src/reducer/cardCost.ts` — `applyCardCost(state, event)` handles `TAG_CHANGE tag=COST` on entities in PLAY/SHOP zones → updates `minion.cost` field (add `cost: number` to Minion); wire into reducer; 4 tests (update cost on player minion, update cost on shop minion, no-op on hero, no-op on non-play entity)
 - [x] [S] Player death handler: `packages/state/src/reducer/playerDeath.ts` — `applyPlayerDeath(state, event)` handles `TAG_CHANGE tag=HEALTH value=0` on player controller → sets `state.player.eliminated = true`; wire into reducer; 3 tests (HP=0 sets eliminated, HP>0 is no-op, already eliminated stays eliminated)
+- [x] [S] Cards played tracker: `packages/state/src/reducer/cardsPlayed.ts` — `applyCardsPlayed(state, event)` handles `TAG_CHANGE tag=NUM_CARDS_PLAYED_THIS_TURN` on player controller → sets `state.player.cardsPlayedThisTurn: number`; wire into reducer; 4 tests (initial=0, increments on card play, no-op on opponent, no-op on non-player controller)
 
 ## Quarantined
 
