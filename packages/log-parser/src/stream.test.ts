@@ -84,4 +84,22 @@ describe('streamEvents', () => {
 
     rmSync(dir, { recursive: true });
   });
+
+  it('close stops watcher — appended lines after close are ignored', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, '');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+    handle.close();
+
+    appendFileSync(file, 'TAG_CHANGE Entity=99 tag=HEALTH value=10\n');
+
+    await new Promise((r) => setTimeout(r, 400));
+
+    expect(events).toHaveLength(0);
+
+    rmSync(dir, { recursive: true });
+  });
 });
