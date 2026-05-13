@@ -6,7 +6,7 @@ export interface BatchResult {
 
 export type { BenchResult } from './bench';
 export { Benchmark, compareBenchmarks } from './bench';
-export { toFirestoneBoard } from './adapter';
+export { toFirestoneBoard, bgsFormatToBoard } from './adapter';
 export { fromFirestoneTranscript } from './fromTranscript';
 export type { Transcript } from './fromTranscript';
 export { simulateBatch } from './simulateBatch';
