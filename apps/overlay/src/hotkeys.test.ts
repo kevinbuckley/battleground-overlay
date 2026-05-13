@@ -164,4 +164,28 @@ describe('hotkeys', () => {
 
     expect(onEvent).toBe('will-quit');
   });
+
+  it('registerHotkeys calls unregisterAll before re-registering', async () => {
+    let unregisterCount = 0;
+    const appWithUnregister = {
+      ...appMock,
+      globalShortcut: {
+        ...appMock.globalShortcut,
+        unregisterAll: () => {
+          unregisterCount++;
+          registered = [];
+        },
+      },
+    } as unknown as AppInterface;
+
+    const cfg = defaultHotkeyConfig();
+    registerHotkeys(winMock, cfg, appWithUnregister);
+    await Promise.resolve();
+    expect(registered).toHaveLength(3);
+    expect(unregisterCount).toBe(1);
+
+    registerHotkeys(winMock, cfg, appWithUnregister);
+    await Promise.resolve();
+    expect(unregisterCount).toBe(2);
+  });
 });

@@ -25,6 +25,8 @@ export function defaultHotkeyConfig(): HotkeyConfig {
 }
 
 export function registerHotkeys(win: WindowInterface, cfg: HotkeyConfig, app: AppInterface): void {
+  app.globalShortcut.unregisterAll();
+
   app.whenReady().then(() => {
     app.globalShortcut.register(cfg.toggle, () => {
       const isVisible = win.isVisible();
