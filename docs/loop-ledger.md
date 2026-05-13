@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 06:30  [DONE]  M31: Frozen minion handler — wire `applyFrozenMinion` into reducer — import from `./reducer/frozenMinion`, add `case 'FROZEN':` branch that calls `applyFrozenMinion` when the FROZEN tag is on a minion entity (not the player controller); 4 tests (frozen on player minion, frozen on opponent minion, no-op on player controller, no-op on non-play entity) (commit 5caa0ab)
+
 2026-05-13 06:00  [DONE]  M1: parseShowEntity handler — `parseShowEntity(line)` parses `SHOW_ENTITY - Updating Entity=N CardID=X` lines, returns `{ kind: 'SHOW_ENTITY', entity, cardId }`; 3 tests, wired into `parseLine` in index, exported from index (commit 31e9bc1)
 
 2026-05-13 05:30  [DONE]  M32: formatRecommendation helper — `formatRecommendation(rec: Recommendation): string` returns readable string for all 6 action types (Buy, Sell, Freeze, Reroll, TierUp, Reposition); 6 tests, exported from shared index (commit 6109a27)
