@@ -74,4 +74,23 @@ describe('predictOpponentBoard', () => {
     expect(stats(t5.minions)).toBeLessThanOrEqual(stats(t8.minions));
     expect(stats(t8.minions)).toBeLessThanOrEqual(stats(t12.minions));
   });
+
+  it('caps scaled stats at 1.5× original at turn 20', () => {
+    const opp = makeOpponent(['Squire']);
+    const original = opp.board.minions[0]!;
+    const result = predictOpponentBoard(opp, 20);
+    const scaled = result.minions[0]!;
+    expect(scaled.attack).toBeLessThanOrEqual(Math.ceil(original.attack * 1.5));
+    expect(scaled.health).toBeLessThanOrEqual(Math.ceil(original.health * 1.5));
+  });
+
+  it('returns unscaled board at turn 4 (boundary)', () => {
+    const opp = makeOpponent(['Squire', 'Kobold Geomancer']);
+    const result = predictOpponentBoard(opp, 4);
+    expect(result.minions.length).toBe(2);
+    expect(result.minions[0]?.attack).toBe(1);
+    expect(result.minions[0]?.health).toBe(1);
+    expect(result.minions[1]?.attack).toBe(1);
+    expect(result.minions[1]?.health).toBe(1);
+  });
 });
