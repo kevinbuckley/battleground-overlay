@@ -114,7 +114,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         }
       }
       // HEALTH on a minion entity (not a hero)
-      {
+      if (event.tag === 'HEALTH') {
         const entityId = Number.parseInt(event.entity, 10);
         if (!Number.isNaN(entityId)) {
           const playerMinion = state.player.board.minions.find((m) => m.entityId === entityId);
