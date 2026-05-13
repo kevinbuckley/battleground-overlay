@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 02:45  [DONE]  M31: Entity cardId resolver — `resolveCardId(entityId, state)` looks up entity in `state.player.entityRegistry`, returns cardId string or null; 3 tests, exported from state index (commit 4dc62c1)
+
 2026-05-13 02:45  [DONE]  M31: Game over handler — `applyGameOver` handles `TAG_CHANGE tag=PLAYSTATE value=FINISHED` → sets `state.phase = 'end'`, 3 tests, wired into reducer (commit 4f8b653)
 
 2026-05-13 02:45  [DONE]  M31: Trinket handler — `applyTrinket` handles `TAG_CHANGE tag=TRINKET value=1` on player controller, adds entity to hand, sets `trinketUsed` flag, 4 tests, wired into reducer (commit 63f1235)
