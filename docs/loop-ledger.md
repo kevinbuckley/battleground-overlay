@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M32: Elite status handler — `applyElite` handles `TAG_CHANGE tag=ELITE value=1/0` on entities in PLAY zone, adds `elite: boolean` to Minion, 5 tests, wired into reducer (commit 7a8dce8)
+
 2026-05-13 03:00  [DONE]  M32: Divine Shield handler — `applyDivineShield` handles `TAG_CHANGE tag=DIVINE_SHIELD value=1/0` on PLAY zone entities, sets `minion.divineShield`, extracted from `applyBuffs`, wired into reducer, 4 tests (commit 9d3f3b4)
 
 2026-05-13 02:45  [DONE]  M31: Entity cardId resolver — `resolveCardId(entityId, state)` looks up entity in `state.player.entityRegistry`, returns cardId string or null; 3 tests, exported from state index (commit 4dc62c1)
