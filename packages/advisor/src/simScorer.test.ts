@@ -154,3 +154,22 @@ describe('scoreSellCandidate', () => {
     expect(result.avgHpDelta).toBe(0);
   });
 });
+
+describe('scoreCandidate with 2 opponents', () => {
+  it('returns valid winPct and finite avgHpDelta with 2 opponents', () => {
+    const playerBoard: Board = {
+      minions: [makeMinion(1, 'Minion_A', 3, 3), makeMinion(2, 'Minion_B', 2, 2)],
+    };
+    const playerState = makePlayerState(playerBoard.minions);
+    const opponents: OpponentState[] = [
+      makeOpponent([makeMinion(10, 'Minion_C', 2, 2)], 30, 3),
+      makeOpponent([makeMinion(11, 'Minion_D', 4, 4)], 30, 5),
+    ];
+
+    const result = scoreCandidate(playerBoard, playerState, opponents, 5);
+
+    expect(result.winPct).toBeGreaterThanOrEqual(0);
+    expect(result.winPct).toBeLessThanOrEqual(1);
+    expect(Number.isFinite(result.avgHpDelta)).toBe(true);
+  });
+});
