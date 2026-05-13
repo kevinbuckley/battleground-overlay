@@ -1,3 +1,4 @@
+import type { GameState } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 
 let overlayWin: BrowserWindow | null = null;
@@ -14,4 +15,12 @@ export function setInteractive(interactive: boolean): void {
 
 export function getOverlayWin(): BrowserWindow | null {
   return overlayWin;
+}
+
+export function getGold(state: GameState): number {
+  return state.player?.gold ?? 0;
+}
+
+export function getTier(state: GameState): number {
+  return state.player?.tier ?? 0;
 }
