@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'bun:test';
 import type { GameState } from '@overlay/shared';
-import { enumerateBuyCandidates, enumerateSellCandidates } from './candidates';
+import {
+  enumerateBuyCandidates,
+  enumerateFreezeCandidates,
+  enumerateRerollCandidates,
+  enumerateSellCandidates,
+  enumerateTierUpCandidates,
+} from './candidates';
 
 function makeState(
   shopMinions: GameState['player']['shop']['minions'],
@@ -274,6 +280,114 @@ describe('enumerateBuyCandidates', () => {
   it('returns empty array when board is empty', () => {
     const state = makeState([], []);
     const candidates = enumerateSellCandidates(state);
+    expect(candidates).toHaveLength(0);
+  });
+});
+
+describe('enumerateFreezeCandidates', () => {
+  it('returns 1 candidate when shop is not frozen', () => {
+    const state = makeState([], []);
+    const candidates = enumerateFreezeCandidates(state);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].action).toEqual({ type: 'Freeze' });
+  });
+
+  it('returns empty array when shop is already frozen', () => {
+    const state = makeState([], []);
+    state.player.shop.frozen = true;
+    const candidates = enumerateFreezeCandidates(state);
+    expect(candidates).toHaveLength(0);
+  });
+
+  it('projectedBoard is the current board', () => {
+    const boardMinions: GameState['player']['board']['minions'] = [
+      {
+        entityId: 100,
+        cardId: 'Minion_1',
+        attack: 2,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+        golden: false,
+        windfury: false,
+        cleave: false,
+      },
+    ];
+    const state = makeState([], boardMinions);
+    const candidates = enumerateFreezeCandidates(state);
+    expect(candidates[0].projectedBoard.minions).toHaveLength(1);
+  });
+});
+
+describe('enumerateRerollCandidates', () => {
+  it('returns 1 candidate when player can afford reroll', () => {
+    const state = makeState([], []);
+    const candidates = enumerateRerollCandidates(state);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].action).toEqual({ type: 'Reroll' });
+  });
+
+  it('returns empty array when player cannot afford reroll', () => {
+    const state = makeState([], []);
+    state.player.gold = 1;
+    state.player.shop.rollCost = 2;
+    const candidates = enumerateRerollCandidates(state);
+    expect(candidates).toHaveLength(0);
+  });
+
+  it('projectedBoard is the current board', () => {
+    const boardMinions: GameState['player']['board']['minions'] = [
+      {
+        entityId: 100,
+        cardId: 'Minion_1',
+        attack: 2,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+        golden: false,
+        windfury: false,
+        cleave: false,
+      },
+    ];
+    const state = makeState([], boardMinions);
+    const candidates = enumerateRerollCandidates(state);
+    expect(candidates[0].projectedBoard.minions).toHaveLength(1);
+  });
+});
+
+describe('enumerateTierUpCandidates', () => {
+  it('returns 1 candidate when tier-3 player can afford tier-up', () => {
+    const state = makeState([], []);
+    state.player.tier = 3;
+    state.player.tierUpCost = 4;
+    state.player.gold = 4;
+    const candidates = enumerateTierUpCandidates(state);
+    expect(candidates).toHaveLength(1);
+    expect(candidates[0].action).toEqual({ type: 'TierUp' });
+  });
+
+  it('returns empty array when player is tier 6', () => {
+    const state = makeState([], []);
+    state.player.tier = 6;
+    state.player.gold = 10;
+    const candidates = enumerateTierUpCandidates(state);
+    expect(candidates).toHaveLength(0);
+  });
+
+  it('returns empty array when player cannot afford tier-up', () => {
+    const state = makeState([], []);
+    state.player.tier = 3;
+    state.player.tierUpCost = 4;
+    state.player.gold = 3;
+    const candidates = enumerateTierUpCandidates(state);
     expect(candidates).toHaveLength(0);
   });
 });

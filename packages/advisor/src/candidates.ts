@@ -1,4 +1,13 @@
-import type { Board, BuyAction, GameState, Minion, SellAction } from '@overlay/shared';
+import type {
+  Board,
+  BuyAction,
+  FreezeAction,
+  GameState,
+  Minion,
+  RerollAction,
+  SellAction,
+  TierUpAction,
+} from '@overlay/shared';
 
 export interface BuyCandidate {
   action: BuyAction;
@@ -7,6 +16,21 @@ export interface BuyCandidate {
 
 export interface SellCandidate {
   action: SellAction;
+  projectedBoard: Board;
+}
+
+export interface FreezeCandidate {
+  action: FreezeAction;
+  projectedBoard: Board;
+}
+
+export interface RerollCandidate {
+  action: RerollAction;
+  projectedBoard: Board;
+}
+
+export interface TierUpCandidate {
+  action: TierUpAction;
   projectedBoard: Board;
 }
 
@@ -62,4 +86,50 @@ export function enumerateSellCandidates(state: GameState): SellCandidate[] {
   }
 
   return candidates;
+}
+
+/**
+ * Enumerate a single freeze candidate when the shop is not frozen.
+ * Freezing already-frozen shop provides no benefit.
+ */
+export function enumerateFreezeCandidates(state: GameState): FreezeCandidate[] {
+  if (state.player.shop.frozen) {
+    return [];
+  }
+  return [
+    {
+      action: { type: 'Freeze' },
+      projectedBoard: state.player.board,
+    },
+  ];
+}
+
+/**
+ * Enumerate a single reroll candidate when the player can afford it.
+ */
+export function enumerateRerollCandidates(state: GameState): RerollCandidate[] {
+  if (state.player.gold < state.player.shop.rollCost) {
+    return [];
+  }
+  return [
+    {
+      action: { type: 'Reroll' },
+      projectedBoard: state.player.board,
+    },
+  ];
+}
+
+/**
+ * Enumerate a single tier-up candidate when affordable and not max tier.
+ */
+export function enumerateTierUpCandidates(state: GameState): TierUpCandidate[] {
+  if (state.player.gold < state.player.tierUpCost || state.player.tier >= 6) {
+    return [];
+  }
+  return [
+    {
+      action: { type: 'TierUp' },
+      projectedBoard: state.player.board,
+    },
+  ];
 }
