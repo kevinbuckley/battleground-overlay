@@ -15,6 +15,7 @@ import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyDivineShield } from './reducer/divineShield';
 import { applyElite } from './reducer/elite';
+import { applyFatigue } from './reducer/fatigue';
 import { applyFrozenMinion } from './reducer/frozenMinion';
 import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
@@ -210,6 +211,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'RACE') {
         return applyRace(state, event);
+      }
+      if (event.tag === 'FATIGUE' || event.tag === 'FATIGUE_COST') {
+        return applyFatigue(state, event);
       }
       if (event.tag === 'CARDID') {
         return applyCardId(state, event);

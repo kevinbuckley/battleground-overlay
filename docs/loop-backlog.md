@@ -461,9 +461,8 @@ to `loop-ledger.md`.
 
 ## M36 — Missing tag handlers
 
-- [ ] [S] `applyRace` — handles `TAG_CHANGE tag=RACE` on entities in PLAY zone → updates `minion.tribes: string[]` (already on Minion interface); wire into reducer; 4 tests (race set on player minion, race set on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/race.ts` + test
-- [x] [S] `applyCardId` — handles `TAG_CHANGE tag=CARDID` on entities in PLAY zone → updates `entityRegistry` entry for that entityId with new cardId; wire into reducer; 4 tests (cardId update on player minion, cardId update on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/cardId.ts` + test (commit b252480)
-- [ ] [S] `applyFatigue` — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller → reduces player hero HP by fatigue cost; wire into reducer; 4 tests (fatigue damage on player hero, no-op on opponent, no-op when not fatigue tag, no-op on non-player entity) — `packages/state/src/reducer/fatigue.ts` + test
+- [x] [S] `applyRace` — handles `TAG_CHANGE tag=RACE` on entities in PLAY zone → updates `minion.tribes: string[]` (already on Minion interface); wire into reducer; 4 tests (race set on player minion, race set on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/race.ts` + test
+- [x] [S] `applyFatigue` — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller → reduces player hero HP by fatigue cost; wire into reducer; 5 tests (fatigue damage on player hero, fatigue_cost tag, no-op on opponent, no-op when not fatigue tag, no-op on non-player entity) — `packages/state/src/reducer/fatigue.ts` + test
 - [ ] [S] `applyBuffs` wiring — import `applyBuffs` from `./reducer/buffs` in `packages/state/src/reducer.ts`, add `case 'DIVINE_SHIELD':` branch that calls `applyBuffs` when the DIVINE_SHIELD tag is on a minion entity (not the player controller); 4 tests (divine shield on player minion, divine shield on opponent minion, no-op on player controller, no-op on non-play entity) — `packages/state/src/reducer.ts` update + test
 
 ## Quarantined
