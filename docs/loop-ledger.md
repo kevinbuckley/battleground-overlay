@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 15:30  [DONE]  M39: predictOpponentBoard scale cap + boundary tests — added 2 tests to `opponentPredictor.test.ts`: turn 20 cap at 1.5× original stats, turn 4 boundary returns unscaled board; 777/777 tests pass (commit d3b010e)
+
 2026-05-13 15:00  [DONE]  M39: Coordinator snapshot logging — added `previousTurn` tracking to `startCoordinator`, logs `state-snapshot` with `{ turn, phase, gold, tier }` when turn increments, 2 new tests (turn increment logs snapshot, no turn change skips snapshot), 771/771 tests pass (commit 93911a8)
 
 2026-05-13 15:30  [DONE]  M39: Auto-prune on resetSession — modified `resetSession()` in `packages/shared/src/sessionLog.ts` to call `pruneOldSessions(50)` after clearing `sessionFile`; 2 new tests (prunes to 50 when >50 exist, no-op when ≤50), 775/775 tests pass (commit fe6c7fd)
