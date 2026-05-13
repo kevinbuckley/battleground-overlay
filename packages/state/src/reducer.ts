@@ -22,6 +22,7 @@ import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandSize } from './reducer/handSize';
 import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
+import { applyHealthBuff } from './reducer/healthBuff';
 import { applyHeroIdentify } from './reducer/heroIdentify';
 import { applyHeroPower } from './reducer/heroPower';
 import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
@@ -107,6 +108,19 @@ export function reducer(state: GameState, event: HsEvent): GameState {
             return applyOpponentTier(state, event);
           }
           return applyOpponentHealth(state, event);
+        }
+      }
+      // HEALTH on a minion entity (not a hero)
+      {
+        const entityId = Number.parseInt(event.entity, 10);
+        if (!Number.isNaN(entityId)) {
+          const playerMinion = state.player.board.minions.find((m) => m.entityId === entityId);
+          const opponentMinion = state.opponents.some((o) =>
+            o.board.minions.some((m) => m.entityId === entityId),
+          );
+          if (playerMinion || opponentMinion) {
+            return applyHealthBuff(state, event);
+          }
         }
       }
       if (
