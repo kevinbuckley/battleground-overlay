@@ -26,6 +26,7 @@ import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHealthBuff } from './reducer/healthBuff';
 import { applyHeroIdentify } from './reducer/heroIdentify';
+import { applyLifesteal } from './reducer/lifesteal';
 import { applyHeroPower } from './reducer/heroPower';
 import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
 import { applyLobbySize } from './reducer/lobbySize';
@@ -199,6 +200,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'POISONOUS') {
         return applyPoisonous(state, event);
+      }
+      if (event.tag === 'LIFESTEAL') {
+        return applyLifesteal(state, event);
       }
       if (event.tag === 'WINDFURY') {
         return applyWindfury(state, event);
