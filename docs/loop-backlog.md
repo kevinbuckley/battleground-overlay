@@ -399,6 +399,7 @@ to `loop-ledger.md`.
 
 ## M31 — State model completeness
 
+- [x] [S] Trinket handler: `packages/state/src/reducer/trinket.ts` — `applyTrinket(state, event)` handles `TAG_CHANGE tag=TRINKET value=1` on player controller → adds a new entity to `state.player.hand` (allocates next entityId from registry), sets `state.player.trinketUsed = true` (add field to PlayerState); 4 tests (trinket adds to hand, sets flag, no-op on non-player, no-op when value=0) — `packages/state/src/reducer/trinket.ts` + test (commit 63f1235)
 - [ ] [S] Game over handler: `packages/state/src/reducer/gameOver.ts` — `applyGameOver(state, event)` handles `TAG_CHANGE tag=PLAYSTATE value=FINISHED` → sets `state.phase = 'end'`; wire into reducer; 3 tests (FINISHED sets phase=end, non-FINISHED is no-op, phase was shopping before) — `packages/state/src/reducer/gameOver.ts` + test
 - [ ] [S] Entity cardId resolver: `packages/state/src/entityCardId.ts` — `resolveCardId(entityId: number, state: GameState): string | null` looks up entity in `state.player.entityRegistry`, returns cardId string or null if not found; 3 tests (entity in registry returns cardId, unknown entity returns null, registry empty returns null) — `packages/state/src/entityCardId.ts` + test
 - [ ] [S] `ipcBridge` stop test: in `apps/overlay/src/ipcBridge.test.ts`, add 1 test: call `startBridge` with mock window, wait 300ms for first tick, record send count, call `stopBridge()`, wait 300ms more, assert send count did not increase — `apps/overlay/src/ipcBridge.test.ts` update
