@@ -18,6 +18,9 @@ const SAFE_HP_THRESHOLD = 6;
 
 export function freezeScore(state: GameState): number {
   const { player } = state;
+
+  if (player.shop.frozen) return 0;
+
   const shopMinions = player.shop.minions;
   const boardMinions = player.board.minions;
 

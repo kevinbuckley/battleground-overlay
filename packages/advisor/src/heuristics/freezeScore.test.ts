@@ -42,6 +42,17 @@ function makeState(overrides: Partial<GameState> = {}): GameState {
 }
 
 describe('freezeScore', () => {
+  it('returns 0 when shop is already frozen', () => {
+    const shopMinion = makeMinion('DRAGON', 3, 3, ['Dragon']);
+    const state = makeState({
+      player: {
+        shop: { ...initialState().player.shop, minions: [shopMinion], frozen: true },
+        hero: { ...initialState().player.hero, hp: 10 },
+      },
+    });
+    expect(freezeScore(state)).toBe(0);
+  });
+
   it('returns 0 for empty shop', () => {
     const state = makeState();
     expect(freezeScore(state)).toBe(0);
