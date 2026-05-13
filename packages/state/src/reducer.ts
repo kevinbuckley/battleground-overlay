@@ -7,6 +7,7 @@ import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyDivineShield } from './reducer/divineShield';
+import { applyElite } from './reducer/elite';
 import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
@@ -155,6 +156,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'CLEAVE') {
         return applyCleave(state, event);
+      }
+      if (event.tag === 'ELITE') {
+        return applyElite(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
