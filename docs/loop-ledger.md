@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 07:15  [DONE]  M33: Gold spent tracker — `applyGoldSpent` handles `TAG_CHANGE tag=RESOURCES_USED` on player controller, sets `state.player.goldSpentThisTurn: number`, adds field to PlayerState, 4 tests, wired into reducer (commit 6ecbf78)
+
 2026-05-13 07:00  [DONE]  M33: TurnsInGame tracker — `applyTurnsInGame` handles `TAG_CHANGE tag=NUM_TURNS_IN_GAME` on player controller, sets `state.player.turnsInGame: number`, adds field to PlayerState, 4 tests, wired into reducer (commit 533ac8f)
 
 2026-05-13 07:15  [DONE]  M33: MinionsOnBoard tracker — `applyMinionsOnBoard` handles `TAG_CHANGE tag=NUM_MINIONS_ON_BOARD` on player controller, sets `state.player.minionsOnBoard: number`, adds field to PlayerState, 4 tests, wired into reducer (commit c5628bf)
