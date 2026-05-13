@@ -1,13 +1,14 @@
 import type { TagChange } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 
-export function applyBuffs(state: GameState, event: TagChange): GameState {
-  if (event.tag !== 'DIVINE_SHIELD') return state;
+export function applyAttackBuff(state: GameState, event: TagChange): GameState {
+  if (event.tag !== 'ATK') return state;
 
   const entityId = Number.parseInt(event.entity, 10);
   if (Number.isNaN(entityId)) return state;
 
-  const shieldOn = event.value === '1';
+  const newAttack = Number.parseInt(event.value, 10);
+  if (Number.isNaN(newAttack)) return state;
 
   const playerMinion = state.player.board.minions.find((m) => m.entityId === entityId);
   const opponentMinion = state.opponents
@@ -24,7 +25,7 @@ export function applyBuffs(state: GameState, event: TagChange): GameState {
         board: {
           ...state.player.board,
           minions: state.player.board.minions.map((m) =>
-            m.entityId === entityId ? { ...m, divineShield: shieldOn } : m,
+            m.entityId === entityId ? { ...m, attack: newAttack } : m,
           ),
         },
       },
@@ -38,7 +39,7 @@ export function applyBuffs(state: GameState, event: TagChange): GameState {
         board: {
           ...o.board,
           minions: o.board.minions.map((m) =>
-            m.entityId === entityId ? { ...m, divineShield: shieldOn } : m,
+            m.entityId === entityId ? { ...m, attack: newAttack } : m,
           ),
         },
       };

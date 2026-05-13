@@ -24,6 +24,10 @@ function makePlayerMinion(
     reborn: false,
     frozen: false,
     golden: false,
+    windfury: false,
+    cleave: false,
+    elite: false,
+    cost: 0,
     tribes: [],
   };
 }
@@ -64,32 +68,47 @@ function makeStateWithOpponentMinion(
 }
 
 describe('applyBuffs', () => {
-  it('ATK update on player minion', () => {
+  it('divine shield on on player minion', () => {
     const state = makeStateWithPlayerMinion(1, 2, 3);
-    const event = makeTagChange('1', 'ATK', '5');
+    const event = makeTagChange('1', 'DIVINE_SHIELD', '1');
     const result = applyBuffs(state, event);
-    expect(result.player.board.minions[0].attack).toBe(5);
-    expect(result.player.board.minions[0].health).toBe(3);
+    expect(result.player.board.minions[0].divineShield).toBe(true);
   });
 
-  it('ATK update on opponent minion', () => {
+  it('divine shield off on player minion', () => {
+    const state = makeStateWithPlayerMinion(1, 2, 3);
+    const stateWithShield = {
+      ...state,
+      player: {
+        ...state.player,
+        board: {
+          ...state.player.board,
+          minions: [{ ...state.player.board.minions[0], divineShield: true }],
+        },
+      },
+    };
+    const event = makeTagChange('1', 'DIVINE_SHIELD', '0');
+    const result = applyBuffs(stateWithShield, event);
+    expect(result.player.board.minions[0].divineShield).toBe(false);
+  });
+
+  it('divine shield on on opponent minion', () => {
     const state = makeStateWithOpponentMinion(0, 10, 2, 3);
-    const event = makeTagChange('10', 'ATK', '7');
+    const event = makeTagChange('10', 'DIVINE_SHIELD', '1');
     const result = applyBuffs(state, event);
-    expect(result.opponents[0].board.minions[0].attack).toBe(7);
-    expect(result.opponents[0].board.minions[0].health).toBe(3);
+    expect(result.opponents[0].board.minions[0].divineShield).toBe(true);
   });
 
   it('no-op on non-play entity', () => {
     const state = initialState();
-    const event = makeTagChange('999', 'ATK', '10');
+    const event = makeTagChange('999', 'DIVINE_SHIELD', '1');
     const result = applyBuffs(state, event);
     expect(result).toBe(state);
   });
 
   it('no-op on hero', () => {
     const state = initialState();
-    const event = makeTagChange(String(state.player.hero.entityId), 'ATK', '10');
+    const event = makeTagChange(String(state.player.hero.entityId), 'DIVINE_SHIELD', '1');
     const result = applyBuffs(state, event);
     expect(result).toBe(state);
   });

@@ -2,7 +2,8 @@ import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
-import { applyBuffs } from './reducer/buffs';
+import { applyAttackBuff } from './reducer/attackBuff';
+
 import { applyCardCost } from './reducer/cardCost';
 import { applyCardsDrawn } from './reducer/cardsDrawn';
 import { applyCardsGiven } from './reducer/cardsGiven';
@@ -168,7 +169,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyAnomaly(state, event);
       }
       if (event.tag === 'ATK') {
-        return applyBuffs(state, event);
+        return applyAttackBuff(state, event);
       }
       if (event.tag === 'DIVINE_SHIELD') {
         return applyDivineShield(state, event);
