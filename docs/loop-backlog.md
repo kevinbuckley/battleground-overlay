@@ -459,6 +459,13 @@ to `loop-ledger.md`.
 - [x] [S] `reviewSession` markdown output: in `scripts/review-session.test.ts`, add a test calling `reviewSession(sessionEvents)` with 2 turn-snapshots and 1 recommendation event, and asserting the output string contains `## Turn`, a score value, and the action type string — `scripts/review-session.test.ts` update (commit 542636c)
 - [x] [S] `scrubber` edge cases: in `apps/replay/src/scrubber.test.ts`, add 2 tests: (1) calling `stepBackward()` at tick 0 does not throw and returns tick 0, (2) calling `stepForward()` past the last event returns the final state without throwing — `apps/replay/src/scrubber.test.ts` update (commit 0d93037)
 
+## M36 — Missing tag handlers
+
+- [ ] [S] `applyRace` — handles `TAG_CHANGE tag=RACE` on entities in PLAY zone → updates `minion.tribes: string[]` (already on Minion interface); wire into reducer; 4 tests (race set on player minion, race set on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/race.ts` + test
+- [ ] [S] `applyCardId` — handles `TAG_CHANGE tag=CARDID` on entities in PLAY zone → updates `entityRegistry` entry for that entityId with new cardId; wire into reducer; 4 tests (cardId update on player minion, cardId update on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/cardId.ts` + test
+- [ ] [S] `applyFatigue` — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller → reduces player hero HP by fatigue cost; wire into reducer; 4 tests (fatigue damage on player hero, no-op on opponent, no-op when not fatigue tag, no-op on non-player entity) — `packages/state/src/reducer/fatigue.ts` + test
+- [ ] [S] `applyBuffs` wiring — import `applyBuffs` from `./reducer/buffs` in `packages/state/src/reducer.ts`, add `case 'DIVINE_SHIELD':` branch that calls `applyBuffs` when the DIVINE_SHIELD tag is on a minion entity (not the player controller); 4 tests (divine shield on player minion, divine shield on opponent minion, no-op on player controller, no-op on non-play entity) — `packages/state/src/reducer.ts` update + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
