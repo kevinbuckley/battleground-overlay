@@ -36,3 +36,7 @@ export type {
   BlockEnd,
   ZoneChangeList,
 } from './types';
+
+export { streamEvents } from './stream';
+export type { StreamHandle } from './stream';
+export { findActiveLogDir } from './findActiveLogDir';

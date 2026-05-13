@@ -3,11 +3,13 @@ import { app, ipcMain } from 'electron';
 import { setAdvice } from './advicePanel';
 import { createOverlayWindow } from './createOverlayWindow';
 import { setExplanation } from './explanationPanel';
+import { wireLogStream } from './logStream';
 import { getOverlayWin, setInteractive } from './overlayState';
 import { loadSettings } from './settings';
 
-function createWindow(): void {
+async function createWindow(): Promise<void> {
   createOverlayWindow();
+  await wireLogStream(() => {});
 }
 
 ipcMain.handle('set-interactive', (_event, interactive: boolean) => {

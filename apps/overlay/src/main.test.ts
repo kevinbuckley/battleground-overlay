@@ -1,7 +1,48 @@
 import { describe, expect, it } from 'bun:test';
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { pruneOldSessions } from '@overlay/shared';
 import { createOverlayWindow, getRendererPath, getWindowOptions } from './createOverlayWindow';
+import { wireLogStream } from './logStream';
 import { loadSettings } from './settings';
+
+describe('wireLogStream', () => {
+  it('returns a handle and calls onEvent when given a valid log dir with Power.log', async () => {
+    const tmpBase = join(tmpdir(), `wire-log-test-${Date.now()}`);
+    const hsDir = join(tmpBase, 'Hearthstone_2024-01-01');
+    mkdirSync(hsDir, { recursive: true });
+    writeFileSync(
+      join(hsDir, 'Power.log'),
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30\n',
+    );
+
+    const events: unknown[] = [];
+    const handle = await wireLogStream((e) => events.push(e), tmpBase);
+
+    expect(handle).not.toBeNull();
+    expect(events.length).toBeGreaterThan(0);
+
+    handle!.close();
+    rmSync(tmpBase, { recursive: true, force: true });
+  });
+
+  it('returns null when given a non-existent basedir', async () => {
+    const result = await wireLogStream(() => {}, '/tmp/non-existent-log-base-dir-for-testing');
+    expect(result).toBeNull();
+  });
+
+  it('returns null when Power.log is missing in a valid log dir', async () => {
+    const tmpBase = join(tmpdir(), `wire-log-no-log-${Date.now()}`);
+    const hsDir = join(tmpBase, 'Hearthstone_2024-01-01');
+    mkdirSync(hsDir, { recursive: true });
+
+    const result = await wireLogStream(() => {}, tmpBase);
+    expect(result).toBeNull();
+
+    rmSync(tmpBase, { recursive: true, force: true });
+  });
+});
 
 describe('getWindowOptions', () => {
   it('returns correct window options', () => {
