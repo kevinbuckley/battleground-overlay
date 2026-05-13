@@ -148,6 +148,84 @@ describe('pruneOldSessions', () => {
   });
 });
 
+describe('resetSession with auto-prune', () => {
+  it('prunes to keepLast when >keepLast sessions exist', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__resetprune__');
+    if (existsSync(tmpDir)) {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+    mkdirSync(tmpDir, { recursive: true });
+    for (let i = 0; i < 55; i++) {
+      writeFileSync(
+        join(tmpDir, `session-2026-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z-${i}.jsonl`),
+        '',
+      );
+    }
+
+    // Override LOGS_DIR by writing to tmpDir, then calling resetSession
+    // We need to test that resetSession calls pruneOldSessions with 50
+    // Since LOGS_DIR is module-scoped, we use the tmpDir approach:
+    // Create 55 files in tmpDir, then call pruneOldSessions(50, tmpDir) directly
+    // to verify the prune logic works, then assert resetSession calls it.
+    // Instead, we test by overriding the module's LOGS_DIR behavior:
+    // The simplest approach: write 55 files to LOGS_DIR, call resetSession,
+    // and assert only 50 remain.
+
+    // Write 55 files to the actual LOGS_DIR
+    for (let i = 0; i < 55; i++) {
+      writeFileSync(
+        join(
+          LOGS_DIR,
+          `session-2026-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z-${i}.jsonl`,
+        ),
+        '',
+      );
+    }
+
+    const beforeCount = readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-')).length;
+    expect(beforeCount).toBe(55);
+
+    resetSession();
+
+    const afterCount = readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-')).length;
+    expect(afterCount).toBe(50);
+
+    // Clean up
+    for (const f of readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-'))) {
+      rmSync(join(LOGS_DIR, f));
+    }
+  });
+
+  it('does nothing when ≤keepLast sessions exist', () => {
+    // Reset first to clean up from previous test
+    resetSession();
+
+    // Write 3 files to LOGS_DIR
+    for (let i = 0; i < 3; i++) {
+      writeFileSync(
+        join(
+          LOGS_DIR,
+          `session-2026-01-${String(i + 1).padStart(2, '0')}T00:00:00.000Z-${i}.jsonl`,
+        ),
+        '',
+      );
+    }
+
+    const beforeCount = readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-')).length;
+    expect(beforeCount).toBe(3);
+
+    resetSession();
+
+    const afterCount = readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-')).length;
+    expect(afterCount).toBe(3);
+
+    // Clean up
+    for (const f of readdirSync(LOGS_DIR).filter((n) => n.startsWith('session-'))) {
+      rmSync(join(LOGS_DIR, f));
+    }
+  });
+});
+
 describe('readSession', () => {
   it('returns empty array for a non-existent file', () => {
     const result = readSession('/nonexistent/path/session-2026-01-01T00:00:00.000Z-1.jsonl');

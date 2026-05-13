@@ -28,6 +28,7 @@ export function appendSessionEvent(kind: string, payload: unknown): void {
 
 export function resetSession(): void {
   sessionFile = null;
+  pruneOldSessions(50);
 }
 
 export function listSessions(logsDir?: string): string[] {
