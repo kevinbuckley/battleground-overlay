@@ -1,5 +1,5 @@
 import { initialState } from '@overlay/state';
-import { clamp, isShoppingPhase, lerp, round2 } from './utils';
+import { clamp, hpBucket, isShoppingPhase, lerp, round2 } from './utils';
 
 describe('clamp', () => {
   test('returns lo when below range', () => {
@@ -48,5 +48,22 @@ describe('isShoppingPhase', () => {
   test('returns false when phase is combat', () => {
     const state = initialState();
     expect(isShoppingPhase({ ...state, phase: 'combat' })).toBe(false);
+  });
+});
+
+describe('hpBucket', () => {
+  test('returns critical when hp < 6', () => {
+    expect(hpBucket(0)).toBe('critical');
+    expect(hpBucket(5)).toBe('critical');
+  });
+
+  test('returns low when 6 <= hp < 15', () => {
+    expect(hpBucket(6)).toBe('low');
+    expect(hpBucket(14)).toBe('low');
+  });
+
+  test('returns safe when hp >= 15', () => {
+    expect(hpBucket(15)).toBe('safe');
+    expect(hpBucket(40)).toBe('safe');
   });
 });

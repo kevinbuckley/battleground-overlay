@@ -15,3 +15,9 @@ import type { GameState } from './state';
 export function isShoppingPhase(state: GameState): boolean {
   return state.phase === 'shopping';
 }
+
+export type HpBucket = 'critical' | 'low' | 'safe';
+
+export function hpBucket(hp: number): HpBucket {
+  return hp < 6 ? 'critical' : hp < 15 ? 'low' : 'safe';
+}
