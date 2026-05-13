@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 22:45  [DONE]  M29: Damage forecast IPC push — `overlay:damage-update` sent with DamageForecast (minDmg, maxDmg, winPct), 1 test (commit 53e3b3a)
 
+2026-05-12 22:50  [DONE]  M10: Fetch-cards script — `fetchCards(patch, outPath)` fetches HearthstoneJSON, writes cards.json; 2 tests (commit 281393c)
+
 2026-05-12 22:30  [DONE]  M29: Opponent panel IPC push — `overlay:opponents-update` sent with opponent shape (entityId, hp, tier, eliminated), 1 test (commit 0889157)
 
 2026-05-12 22:30  [DONE]  M29: Board panel IPC push — `overlay:board-update` sent with minion shape (cardId, attack, health, taunt, divineShield), 1 test (commit aa4be38)

@@ -348,7 +348,7 @@ to `loop-ledger.md`.
 
 ## M30 — Card data fetch + shell improvements
 
-- [ ] [S] Fetch-cards script: `packages/card-data/src/fetchCards.ts` — `fetchCards(patch: string, outPath: string): Promise<void>` fetches `https://api.hearthstonejson.com/v1/<patch>/enUS/cards.collectible.json` and writes to `outPath`; test: mock `fetch` (globalThis.fetch = mockFn), assert called with correct URL, assert file written — `packages/card-data/src/fetchCards.ts` + test
+- [x] [S] Fetch-cards script: `packages/card-data/src/fetchCards.ts` — `fetchCards(patch: string, outPath: string): Promise<void>` fetches `https://api.hearthstonejson.com/v1/<patch>/enUS/cards.collectible.json` and writes to `outPath`; test: mock `fetch` (globalThis.fetch = mockFn), assert called with correct URL, assert file written — `packages/card-data/src/fetchCards.ts` + test (commit 281393c)
 
 - [x] [S] Patch diff reporter: `packages/card-data/src/patchDiff.ts` already implements `patchDiff(oldCards, newCards)` returning `{added, removed, changed}`; 74-line test file present — done ✓
 
