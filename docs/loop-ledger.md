@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 19:00  [DONE]  M41: check-patch CI script — `scripts/check-patch.ts` imports `patchVersion`, reads `process.argv[2]`, prints "OK" (exit 0) on match, "Patch mismatch" (exit 1) on mismatch, usage (exit 1) with no arg; 3 tests (commit f4bf812)
 
+2026-05-13 19:30  [DONE]  M41: parseLine roundtrip tests — added 2 tests to `packages/log-parser/src/index.test.ts`: ZONE_CHANGE_LIST ID=99 returns correct shape, SHOW_ENTITY line returns correct shape with entity string and cardId; 813/813 tests pass (commit b2f02ca)
+
 2026-05-13 18:30  [DONE]  M41: fixtureTest mismatch throws — added 2 bun:test tests to `fixtureTest.test.ts`: count mismatch throws "count mismatch", wrong kind throws "type mismatch"; 808/808 tests pass (commit a4ff312)
 
 2026-05-13 18:15  [DONE]  M41: stream close stops watcher test — added 1 test to `stream.test.ts`: open stream, close handle, append TAG_CHANGE line, wait 400ms, assert events array is empty; 803/803 tests pass (commit 80edfff)
