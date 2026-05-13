@@ -38,7 +38,7 @@ to `loop-ledger.md`.
 
 ## M1 — Log parser foundations
 
-- [ ] [M] Record fixture: capture a real `Power.log` from a 1-turn BG match into `fixtures/turn-1-bootstrap.log`; document how it was captured in `fixtures/README.md` — fixtures/turn-1-bootstrap.log, fixtures/README.md (NEEDS LIVE GAME — see Quarantined)
+- [Q] [M] Record fixture: capture a real `Power.log` from a 1-turn BG match into `fixtures/turn-1-bootstrap.log`; document how it was captured in `fixtures/README.md` — fixtures/turn-1-bootstrap.log, fixtures/README.md (NEEDS LIVE GAME — see Quarantined)
 - [x] [S] Define `HsEvent` discriminated union in `packages/log-parser/src/types.ts`: `TagChange | FullEntity | ShowEntity | BlockStart | BlockEnd | ZoneChangeList`; export from index — packages/log-parser/src/types.ts ✓
 - [x] [S] Implement `tokenizeLine(line: string)` that splits an indented Power.log line into `{depth, kind, payload}` — packages/log-parser/src/tokenize.ts + test ✓
 - [x] [S] Implement `parseTagChange(line)` for `TAG_CHANGE Entity=... tag=... value=...` lines; return `null` if not a tag change — packages/log-parser/src/parseTagChange.ts + test with 3 sample lines ✓
@@ -344,15 +344,15 @@ to `loop-ledger.md`.
 
 - [x] [S] Damage forecast IPC push: `computeDamageForecast` already wired in `ipcBridge.ts:56-64`, pushes `overlay:damage-update` with forecast; test at line 385-410 passes — `apps/overlay/src/ipcBridge.ts` update + test (commit existing)
 
-- [ ] [S] Settings apply on load: in `apps/overlay/src/main.ts`, after constructing the window call `loadSettings()` and apply `settings.opacity` via `win.setOpacity(settings.opacity)` and position via `win.setPosition(settings.x, settings.y)`; add 2 tests: spy confirms `setOpacity` called with default 0.85, `setPosition` called with default 0/0 — `apps/overlay/src/main.ts` update + test
+- [x] [S] Settings apply on load: `createOverlayWindow` already calls `loadSettings()` and applies `setOpacity`/`setPosition`; tests in `main.test.ts` confirm defaults (0.85 opacity, 0/0 position) — done ✓
 
 ## M30 — Card data fetch + shell improvements
 
 - [ ] [S] Fetch-cards script: `packages/card-data/src/fetchCards.ts` — `fetchCards(patch: string, outPath: string): Promise<void>` fetches `https://api.hearthstonejson.com/v1/<patch>/enUS/cards.collectible.json` and writes to `outPath`; test: mock `fetch` (globalThis.fetch = mockFn), assert called with correct URL, assert file written — `packages/card-data/src/fetchCards.ts` + test
 
-- [ ] [S] Patch diff reporter: `packages/card-data/src/patchDiff.ts` (if stub) — `diffPatches(oldCards: Card[], newCards: Card[]): { added: Card[]; removed: Card[]; changed: Card[] }` compares two card arrays by `dbfId`, returns added/removed/changed; 5 tests (no change, add, remove, change attack, combined) — `packages/card-data/src/patchDiff.ts` + test
+- [x] [S] Patch diff reporter: `packages/card-data/src/patchDiff.ts` already implements `patchDiff(oldCards, newCards)` returning `{added, removed, changed}`; 74-line test file present — done ✓
 
-- [ ] [S] `formatState` completeness in replay: in `apps/replay/src/stateViewer.ts`, if `formatState` only returns a stub, implement it to return a multi-line string: `Turn: N | Phase: X | HP: N | Gold: N | Tier: N\nBoard: [cardId x A/H, ...]`; 3 tests: empty board, 1 minion, 2 minions — `apps/replay/src/stateViewer.ts` update + test
+- [x] [S] `formatState` completeness in replay: `apps/replay/src/stateViewer.ts` already returns full multi-line state including turn/phase/hp/tier/gold/board/opponents — done ✓
 
 - [ ] [S] `hpBucket(hp: number): 'critical'|'low'|'safe'` in `packages/shared/src/utils.ts` — critical < 6, low < 15, safe otherwise; export from shared index; 4 tests — `packages/shared/src/utils.ts` + test
 
@@ -360,6 +360,10 @@ to `loop-ledger.md`.
 - [ ] [S] `overlayState` gold/tier selectors: in `apps/overlay/src/overlayState.ts`, add `getGold(state: GameState): number` returning `state.player.gold` and `getTier(state: GameState): number` returning `state.player.tier`; export both from the file; 4 tests: getGold returns correct value, getTier returns correct value, each returns 0 for empty player — `apps/overlay/src/overlayState.ts` + test
 - [ ] [S] `opponentPanel` worst-threat selector: in `packages/shared/src/opponentPanel.ts`, add `getWorstThreat(opponents: OpponentState[]): OpponentState | null` — returns the non-eliminated opponent with the highest board minion count (ties: pick first); returns null if all eliminated or empty; 4 tests: empty, all eliminated, two opponents, tie — `packages/shared/src/opponentPanel.ts` update + test
 - [ ] [S] Session log `readSession(path: string): SessionEntry[]` in `packages/shared/src/sessionLog.ts` — reads a JSONL file and returns parsed entries `{ ts: number; kind: string; payload: unknown }[]`; skips blank lines; 3 tests: empty file returns [], single entry roundtrip, multi-entry roundtrip — `packages/shared/src/sessionLog.ts` update + test
+- [ ] [S] `tierUpScore` heuristic: in `packages/advisor/src/heuristics/tierCurve.ts`, verify `tierCurveScore(turn, hp, gold)` covers the "safe-to-tier" case when `gold >= tierUpCost && hp > 20`; add 3 edge-case tests: turn 2 low-gold returns <0.5, turn 5 full-gold healthy returns >0.5, turn 10 desperate-hp forces low score — `packages/advisor/src/heuristics/tierCurve.ts` + test
+- [ ] [S] `advisorDiff` report: in `apps/replay/src/advisorDiff.ts`, add `summarizeDiff(diffs: AdvisorDiff[]): string` returning a multi-line markdown string listing each turn where `diffs[i].actualAction !== diffs[i].recommendedAction?.action.type` with `Turn N: did X, advisor said Y`; 3 tests: empty returns empty string, no mismatches returns "No mismatches", one mismatch formats correctly — `apps/replay/src/advisorDiff.ts` update + test
+- [ ] [S] `byTechLevel` index in card-data: in `packages/card-data/src/indexes.ts`, add `byTechLevel: Map<number, Card[]>` built lazily alongside `byDbfId`; `getCardsByTechLevel(level: number): Card[]` returns all BG cards at that tavern tier; 3 tests: tier 1 returns cards, tier 7 returns empty, lazy init doesn't double-build — `packages/card-data/src/indexes.ts` update + test
+- [ ] [S] `isBattlegroundsMinion` predicate: in `packages/card-data/src/isBattlegroundsPool.ts`, verify or add `isBattlegroundsMinion(card: Card): boolean` that checks `card.techLevel` is between 1-6 AND card has no `DUNGEON_PASSIVE_BUFF` mechanic; 4 tests: tier-1 minion true, tier-7 false, spell false, passive buff false — `packages/card-data/src/isBattlegroundsPool.ts` update + test
 
 ## Quarantined
 
