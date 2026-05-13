@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M27: scoreSellCandidate — `scoreSellCandidate(projectedBoard, player, opponents, n)` wraps `scoreCandidate` for sell action evaluation; 2 tests (commit ddcfb46)
+
 2026-05-12 23:59  [DONE]  M3: `isBattlegroundsMinion` predicate — checks `techLevel` 1-6 AND no `DUNGEON_PASSIVE_BUFF`; 4 tests, exported from card-data index (commit 5e8701e)
 
 2026-05-12 23:59  [DONE]  M3: `getCardName(cardId)` — looks up card by `id` field, returns `name` or `cardId` unchanged if not found; 4 tests, exported from card-data index (commit 25d0eb3)
