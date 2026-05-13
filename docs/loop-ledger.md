@@ -11,6 +11,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 22:45  [DONE]  M44: summarizeSession aggregate — added `summarizeSession(entries: SessionEntry[]): SessionSummary` to `scripts/review-session.ts` counting entries by kind (event, recommendation, state-snapshot, llm/llm-error); 2 tests (counts 3 events + 2 recommendations + 3 snapshots + 3 llm, empty returns all zeros); 819/819 tests pass (commit 4f73979)
 
+2026-05-13 23:00  [DONE]  M44: getCurrentSessionFile — added `getCurrentSessionFile(): string | null` to `packages/shared/src/sessionLog.ts` returning the active session file path or null if no session has been started; 2 tests (null before append, path after append); 821/821 tests pass (commit 82ede5a)
+
 2026-05-13 21:00  [DONE]  M43: Document resolveCombatPhase status — added top-of-file comment to `packages/state/src/reducer/combatPhase.ts` noting it's not wired into the reducer dispatch; 7/7 tests pass (commit 7f5b49f)
 
 2026-05-13 20:30  [DONE]  M43: Remove applyBuffs duplicate — deleted `packages/state/src/reducer/buffs.ts` and `buffs.test.ts` (identical to `applyDivineShield`), 810 tests pass (commit dec764d)
