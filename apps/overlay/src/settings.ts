@@ -27,8 +27,19 @@ export function loadSettings(path: string): OverlaySettings {
     return defaultSettings();
   }
 
-  const raw = readFileSync(filePath, 'utf-8');
-  const parsed = JSON.parse(raw) as Partial<OverlaySettings>;
+  let raw: string;
+  try {
+    raw = readFileSync(filePath, 'utf-8');
+  } catch {
+    return defaultSettings();
+  }
+
+  let parsed: Partial<OverlaySettings>;
+  try {
+    parsed = JSON.parse(raw) as Partial<OverlaySettings>;
+  } catch {
+    return defaultSettings();
+  }
 
   return {
     opacity: parsed.opacity ?? defaultSettings().opacity,

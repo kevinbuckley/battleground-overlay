@@ -85,6 +85,20 @@ describe('settings', () => {
     }
   });
 
+  it('loadSettings returns defaults when file contains invalid JSON', () => {
+    const dir = setup();
+    try {
+      const fullPath = join(dir, 'overlay-settings.json');
+      writeFileSync(fullPath, '{invalid json}', 'utf-8');
+
+      const loaded = loadSettings(dir);
+
+      expect(loaded).toEqual(defaultSettings());
+    } finally {
+      teardown();
+    }
+  });
+
   it('loadSettings accepts a full file path ending with the filename', () => {
     const dir = setup();
     try {
