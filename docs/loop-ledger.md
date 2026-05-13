@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 16:00  [DONE]  M39: recommend Reposition rec test — added 1 test to `recommend.test.ts`: state with 3-minion board and 1 opponent with different minions, calls `recommend(state)`, asserts ≥1 rec returned (hill-climb runs without throwing); 778/778 tests pass (commit 62b8168)
+
 2026-05-13 15:30  [DONE]  M39: predictOpponentBoard scale cap + boundary tests — added 2 tests to `opponentPredictor.test.ts`: turn 20 cap at 1.5× original stats, turn 4 boundary returns unscaled board; 777/777 tests pass (commit d3b010e)
 
 2026-05-13 15:00  [DONE]  M39: Coordinator snapshot logging — added `previousTurn` tracking to `startCoordinator`, logs `state-snapshot` with `{ turn, phase, gold, tier }` when turn increments, 2 new tests (turn increment logs snapshot, no turn change skips snapshot), 771/771 tests pass (commit 93911a8)
