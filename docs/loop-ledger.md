@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-12 22:00  [DONE]  M30: opponentPanel worst-threat selector — `getWorstThreat(opponents)` returns non-eliminated opponent with highest board minion count (ties: first), null if all eliminated or empty; 4 tests (commit 5e59570)
+
 2026-05-12 23:15  [DONE]  M25: overlayState gold/tier selectors — `getGold(state)` and `getTier(state)` with 4 tests (commit 19019da)
 
 2026-05-12 22:45  [DONE]  M29: Damage forecast IPC push — `overlay:damage-update` sent with DamageForecast (minDmg, maxDmg, winPct), 1 test (commit 53e3b3a)
