@@ -79,4 +79,11 @@ describe('compareBenchmarks', () => {
     const result = compareBenchmarks(old, new_);
     expect(result).toContain('no change');
   });
+
+  it('reports degradation with ↓ when winPct drops', () => {
+    const old = { a: { durationMs: 100, winPct: 0.6, sims: 10 } };
+    const new_ = { a: { durationMs: 120, winPct: 0.4, sims: 10 } };
+    const result = compareBenchmarks(old, new_);
+    expect(result).toContain('↓');
+  });
 });
