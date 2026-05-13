@@ -100,3 +100,46 @@ run('wrong count fails', fixtureTestWrongCount);
 run('wrong type fails', fixtureTestWrongType);
 console.log(`\n${passed} passed, ${failed} failed`);
 if (failed > 0) process.exit(1);
+
+// bun:test integration tests
+import { describe, expect, it } from 'bun:test';
+
+describe('fixtureTest mismatch throws', () => {
+  it('throws "count mismatch" when fixture has 2 events but only 1 expected', () => {
+    const lines = [SAMPLE_TAG_CHANGE, SAMPLE_FULL_ENTITY].join('\n');
+    const path = writeFixture('count-mismatch.log', lines);
+
+    const e1 = parseLine(SAMPLE_TAG_CHANGE);
+    if (!e1) throw new Error('parseLine returned null for valid line');
+    const expected: HsEvent[] = [e1];
+
+    try {
+      runFixtureTest(path, expected);
+      expect.fail('Expected runFixtureTest to throw');
+    } catch (err) {
+      expect((err as Error).message).toContain('count mismatch');
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it('throws with "kind" in message when matching count but wrong kind at index 0', () => {
+    const lines = [SAMPLE_FULL_ENTITY, SAMPLE_TAG_CHANGE].join('\n');
+    const path = writeFixture('kind-mismatch.log', lines);
+
+    const e1 = parseLine(SAMPLE_FULL_ENTITY);
+    const e2 = parseLine(SAMPLE_TAG_CHANGE);
+    if (!e1 || !e2) throw new Error('parseLine returned null for valid line');
+    // Swap expected order: fixture has FULL_ENTITY first, we expect TAG_CHANGE first
+    const expected: HsEvent[] = [e2, e1];
+
+    try {
+      runFixtureTest(path, expected);
+      expect.fail('Expected runFixtureTest to throw');
+    } catch (err) {
+      expect((err as Error).message).toContain('type mismatch');
+    } finally {
+      cleanup(path);
+    }
+  });
+});
