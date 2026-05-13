@@ -1,3 +1,10 @@
+// Not yet wired into the reducer dispatch.
+// The reducer handles TAG_CHANGE DAMAGE and BLOCK_START events individually
+// via applyCombatDamage and applyDeathrattle. resolveCombatPhase is a batch
+// processor that does the same thing in a loop — kept here for future
+// combat-resolution work (e.g. reordering events by timestamp).
+// See docs/code-inventory.md for the full inventory of wired vs. unwired handlers.
+
 import type { BlockStart, HsEvent, TagChange } from '@overlay/log-parser';
 import type { GameState, Minion } from '@overlay/shared';
 import { applyCombatDamage } from './combatDamage';
