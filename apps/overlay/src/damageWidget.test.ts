@@ -14,10 +14,10 @@ describe('computeDamageForecast', () => {
     expect(result.maxDmg).toBe(7);
   });
 
-  it('full-loss: winPct=0 → minDmg=playerTier, maxDmg=0', () => {
+  it('full-loss: winPct=0, avgHpDelta<0 → minDmg=0 (player winning HP), maxDmg=0', () => {
     const result = computeDamageForecast(makeScoreResult(0, -3), 5);
     expect(result.winPct).toBe(0);
-    expect(result.minDmg).toBe(5);
+    expect(result.minDmg).toBe(0);
     expect(result.maxDmg).toBe(0);
   });
 
@@ -26,5 +26,18 @@ describe('computeDamageForecast', () => {
     expect(result.winPct).toBe(0.5);
     expect(result.minDmg).toBe(3);
     expect(result.maxDmg).toBe(3);
+  });
+
+  it('zero scoreResult (avgHpDelta=0) returns all-zero forecast', () => {
+    const result = computeDamageForecast(makeScoreResult(0, 0), 7);
+    expect(result.minDmg).toBe(0);
+    expect(result.maxDmg).toBe(0);
+    expect(result.winPct).toBe(0);
+  });
+
+  it('negative avgHpDelta returns non-negative minDmg (clamped to 0)', () => {
+    const result = computeDamageForecast(makeScoreResult(0, -3), 5);
+    expect(result.minDmg).toBe(0);
+    expect(result.maxDmg).toBe(0);
   });
 });

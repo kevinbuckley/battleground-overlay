@@ -54,8 +54,17 @@ export function computeDamageForecast(
   // minDmg = (1 - winPct) * playerTier  (damage taken when losing)
   // maxDmg = winPct * playerTier        (damage dealt when winning)
 
+  // Guard: when avgHpDelta is 0 and winPct is 0 (no sims run), return
+  // all-zero forecast to avoid NaN or misleading values.
+  if (scoreResult.avgHpDelta === 0 && scoreResult.winPct === 0) {
+    return { minDmg: 0, maxDmg: 0, winPct: 0 };
+  }
+
   const minDmg = Math.round((1 - scoreResult.winPct) * playerTier);
   const maxDmg = Math.round(scoreResult.winPct * playerTier);
 
-  return { minDmg, maxDmg, winPct: scoreResult.winPct };
+  // Clamp minDmg to 0 when avgHpDelta < 0 (player winning in HP exchange).
+  const clampedMinDmg = scoreResult.avgHpDelta < 0 ? 0 : Math.max(0, minDmg);
+
+  return { minDmg: clampedMinDmg, maxDmg, winPct: scoreResult.winPct };
 }
