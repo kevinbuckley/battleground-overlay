@@ -63,16 +63,52 @@ describe('pruneOldSessions on startup', () => {
 });
 
 describe('settings apply on load', () => {
-  it('default settings have opacity 0.85', () => {
-    const { defaultSettings } = require('./settings') as typeof import('./settings');
-    const s = defaultSettings();
-    expect(s.opacity).toBe(0.85);
+  it('calls setOpacity with default 0.85 when no settings file', () => {
+    const electron = require('electron') as typeof import('electron');
+    const sends: { method: string; args: unknown[] }[] = [];
+    const mockWin = {
+      setOpacity: (opacity: number) => sends.push({ method: 'setOpacity', args: [opacity] }),
+      setPosition: (x: number, y: number) => sends.push({ method: 'setPosition', args: [x, y] }),
+      setIgnoreMouseEvents: () => {},
+      loadFile: () => {},
+      isVisible: () => true,
+      setVisible: () => {},
+      hide: () => {},
+      webContents: { reload: () => {} },
+    };
+    const mockApp = {
+      whenReady: () => Promise.resolve(),
+      globalShortcut: { register: () => true, unregisterAll: () => {} },
+    };
+    const Ctor = (() => mockWin) as unknown as typeof electron.BrowserWindow;
+    createOverlayWindow(Ctor, '/tmp/settings-for-test', mockApp);
+    const opacityCalls = sends.filter((s) => s.method === 'setOpacity');
+    expect(opacityCalls.length).toBeGreaterThanOrEqual(1);
+    expect(opacityCalls.at(0)!.args[0]).toBe(0.85);
   });
 
-  it('loadSettings returns default x/y 0/0 when no settings file exists', () => {
-    const { loadSettings } = require('./settings') as typeof import('./settings');
-    const s = loadSettings('/tmp/nonexistent-settings-dir-zzz');
-    expect(s.x).toBe(0);
-    expect(s.y).toBe(0);
+  it('calls setPosition with default 0/0 when no settings file', () => {
+    const electron = require('electron') as typeof import('electron');
+    const sends: { method: string; args: unknown[] }[] = [];
+    const mockWin = {
+      setOpacity: (opacity: number) => sends.push({ method: 'setOpacity', args: [opacity] }),
+      setPosition: (x: number, y: number) => sends.push({ method: 'setPosition', args: [x, y] }),
+      setIgnoreMouseEvents: () => {},
+      loadFile: () => {},
+      isVisible: () => true,
+      setVisible: () => {},
+      hide: () => {},
+      webContents: { reload: () => {} },
+    };
+    const mockApp = {
+      whenReady: () => Promise.resolve(),
+      globalShortcut: { register: () => true, unregisterAll: () => {} },
+    };
+    const Ctor = (() => mockWin) as unknown as typeof electron.BrowserWindow;
+    createOverlayWindow(Ctor, '/tmp/settings-for-test', mockApp);
+    const posCalls = sends.filter((s) => s.method === 'setPosition');
+    expect(posCalls.length).toBeGreaterThanOrEqual(1);
+    expect(posCalls.at(0)!.args[0]).toBe(0);
+    expect(posCalls.at(0)!.args[1]).toBe(0);
   });
 });
