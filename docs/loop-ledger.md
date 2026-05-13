@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 18:30  [DONE]  M41: fixtureTest mismatch throws — added 2 bun:test tests to `fixtureTest.test.ts`: count mismatch throws "count mismatch", wrong kind throws "type mismatch"; 808/808 tests pass (commit a4ff312)
+
 2026-05-13 18:15  [DONE]  M41: stream close stops watcher test — added 1 test to `stream.test.ts`: open stream, close handle, append TAG_CHANGE line, wait 400ms, assert events array is empty; 803/803 tests pass (commit 80edfff)
 
 2026-05-13 18:00  [DONE]  M40: review-session filterByTurnRange + readSession — added `filterByTurnRange(entries, minTurn, maxTurn)` filtering entries by payload.turn field, plus `readSession(filePath)` returning `SessionEntry[]`; 5 new tests (in-range, out-of-range, empty, no-turn-field, boundary), 794/794 tests pass (commit 93b4831)
