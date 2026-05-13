@@ -5,6 +5,7 @@ import { applyArmor } from './reducer/armor';
 import { applyAttackBuff } from './reducer/attackBuff';
 
 import { applyCardCost } from './reducer/cardCost';
+import { applyCardId } from './reducer/cardId';
 import { applyCardsDrawn } from './reducer/cardsDrawn';
 import { applyCardsGiven } from './reducer/cardsGiven';
 import { applyCardsInDeck } from './reducer/cardsInDeck';
@@ -209,6 +210,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'RACE') {
         return applyRace(state, event);
+      }
+      if (event.tag === 'CARDID') {
+        return applyCardId(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
