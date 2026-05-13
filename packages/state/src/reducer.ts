@@ -23,6 +23,7 @@ import { applyHeroPower } from './reducer/heroPower';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
+import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerDeath } from './reducer/playerDeath';
@@ -90,6 +91,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       {
         const entityId = Number.parseInt(event.entity, 10);
         if (!Number.isNaN(entityId) && state.opponents.some((o) => o.entityId === entityId)) {
+          if (event.tag === 'HEALTH' && event.value === '0') {
+            return applyOpponentEliminated(state, event);
+          }
           if (event.tag === 'PLAYER_TECH_LEVEL') {
             return applyOpponentTier(state, event);
           }
