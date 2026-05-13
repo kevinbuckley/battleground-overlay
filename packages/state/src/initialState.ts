@@ -25,6 +25,7 @@ export function initialState(): GameState {
       cardsGivenThisTurn: 0,
       deckSize: 30,
       heroPowerCardId: null,
+      heroPowerCost: 1,
       turnsInGame: 0,
       minionsOnBoard: 0,
       minionsKilledThisTurn: 0,

@@ -26,9 +26,10 @@ import { applyHandTracker } from './reducer/handTracker';
 import { applyHeroHealth } from './reducer/health';
 import { applyHealthBuff } from './reducer/healthBuff';
 import { applyHeroIdentify } from './reducer/heroIdentify';
-import { applyLifesteal } from './reducer/lifesteal';
 import { applyHeroPower } from './reducer/heroPower';
 import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
+import { applyHeroPowerCost } from './reducer/heroPowerCost';
+import { applyLifesteal } from './reducer/lifesteal';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
@@ -176,6 +177,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'HERO_POWER_ID') {
         return applyHeroPowerCardId(state, event);
+      }
+      if (event.tag === 'HERO_POWER_COST') {
+        return applyHeroPowerCost(state, event);
       }
       if (event.tag === 'NUM_MINIONS_IN_LOBBY') {
         return applyLobbySize(state, event);

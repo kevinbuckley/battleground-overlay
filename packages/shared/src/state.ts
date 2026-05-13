@@ -53,6 +53,7 @@ export interface PlayerState {
   cardsGivenThisTurn: number;
   deckSize: number;
   heroPowerCardId: string | null;
+  heroPowerCost: number;
   turnsInGame: number;
   minionsOnBoard: number;
   minionsKilledThisTurn: number;
