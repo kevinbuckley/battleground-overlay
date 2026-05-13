@@ -412,7 +412,7 @@ to `loop-ledger.md`.
 
 ## M33 — State model completeness (continued)
 
-- [ ] [S] `applyTurnsInGame` — handles `TAG_CHANGE tag=NUM_TURNS_IN_GAME` on player controller → sets `state.player.turnsInGame: number`; wire into reducer; 4 tests (initial=0, increments each turn, no-op on opponent, persisted across turns) — `packages/state/src/reducer/turnsInGame.ts` + test
+- [x] [S] `applyTurnsInGame` — handles `TAG_CHANGE tag=NUM_TURNS_IN_GAME` on player controller → sets `state.player.turnsInGame: number`; wire into reducer; 4 tests (initial=0, increments each turn, no-op on opponent, persisted across turns) — `packages/state/src/reducer/turnsInGame.ts` + test (commit 533ac8f)
 - [ ] [S] `applyMinionsOnBoard` — handles `TAG_CHANGE tag=NUM_MINIONS_ON_BOARD` on player controller → sets `state.player.minionsOnBoard: number`; wire into reducer; 4 tests (initial=0, updates on minion play/death, no-op on opponent, reflects board size) — `packages/state/src/reducer/minionsOnBoard.ts` + test
 - [ ] [S] `applyCardsDrawn` — handles `TAG_CHANGE tag=NUM_CARDS_DRAWN_THIS_TURN` on player controller → sets `state.player.cardsDrawnThisTurn: number`; wire into reducer; 4 tests (initial=0, increments on draw, no-op on opponent, reset on MAIN_READY) — `packages/state/src/reducer/cardsDrawn.ts` + test
 - [ ] [S] `applyMinionsKilled` — handles `TAG_CHANGE tag=NUM_MINIONS_KILLED_THIS_TURN` on player controller → sets `state.player.minionsKilledThisTurn: number`; wire into reducer; 4 tests (initial=0, increments on combat kills, no-op on opponent, reset on MAIN_READY) — `packages/state/src/reducer/minionsKilled.ts` + test
