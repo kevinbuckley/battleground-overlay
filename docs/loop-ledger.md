@@ -7,6 +7,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 18:30  [DONE]  M40: hotkeys unregisterAll before re-register — added `app.globalShortcut.unregisterAll()` call at the top of `registerHotkeys` (before `whenReady`), plus 1 test verifying `unregisterAll` is called on each invocation; 9/9 tests pass (commit 40caf97)
 
+2026-05-13 18:45  [DONE]  M41: stream.ts add missing parsers — added `parseZoneChangeList` and `parseShowEntity` to `parseSingleLine` in `stream.ts`, 2 tests (ZONE_CHANGE_LIST line picked up, SHOW_ENTITY line picked up), 802/802 tests pass (commit 99773a6)
+
 2026-05-13 17:30  [DONE]  M40: settings:apply IPC handler — added `ipcMain.handle('settings:apply', ...)` to `main.ts` importing `loadSettings` + `getOverlayWin`, calls `setOpacity`/`setPosition` on the window; 2 tests in `main.test.ts` (handler exists, non-existent path returns default opacity), 789/789 tests pass (commit 3d2d41f)
 
 2026-05-13 17:00  [DONE]  M40: Renderer onBoard handler — added `onBoard(cb)` to `OverlayBridge` interface, wired `bridge.onBoard(...)` in `initRenderer` to update `#board-count` with `Minions: N` format, added `<div id="board-count"></div>` to `renderer.html`, 3 new tests (count shows correct N, missing element no-op, empty minions shows `Minions: 0`), 784/784 tests pass (commit c2db361)
