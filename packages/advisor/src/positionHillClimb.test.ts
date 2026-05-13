@@ -185,4 +185,33 @@ describe('hillClimbPosition', () => {
     // Should still score against the active opponent
     expect(result.bestScore.winPct).toBeGreaterThanOrEqual(0);
   });
+
+  it('returns scoreDelta=0 and fromIndex=null when no opponents provided', () => {
+    const board: Board = {
+      minions: [
+        makeMinion(1, 'Minion_A', 1, 1),
+        makeMinion(2, 'Minion_B', 3, 3),
+        makeMinion(3, 'Minion_C', 2, 2),
+      ],
+    };
+    const playerState = makePlayerState(board.minions);
+    const opponents: OpponentState[] = [];
+
+    const result = hillClimbPosition(board, playerState, opponents, 50);
+    expect(result.scoreDelta).toBe(0);
+    expect(result.fromIndex).toBeNull();
+    expect(result.toIndex).toBeNull();
+    expect(result.bestOrder).toEqual([0, 1, 2]);
+  });
+
+  it('single-minion board returns bestOrder.length === 1', () => {
+    const board: Board = {
+      minions: [makeMinion(1, 'Minion_A', 3, 3)],
+    };
+    const playerState = makePlayerState(board.minions);
+    const opponents: OpponentState[] = [makeOpponent([makeMinion(10, 'Enemy', 2, 2)], 30, 3)];
+
+    const result = hillClimbPosition(board, playerState, opponents, 50);
+    expect(result.bestOrder.length).toBe(1);
+  });
 });
