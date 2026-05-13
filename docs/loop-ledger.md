@@ -13,6 +13,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 23:00  [DONE]  M25: hpBucket utility — `hpBucket(hp)` returns 'critical' (<6), 'low' (6-14), 'safe' (>=15); 4 tests, exported from shared index (commit d3e3a73)
 
+2026-05-12 23:45  [DONE]  M27: tierCurveScore edge-case tests — 3 tests: turn 2 low-gold returns 0, turn 6 healthy returns ≥0.8, turn 10 desperate-hp <0.5 (commit db083ba)
+
 2026-05-12 22:50  [DONE]  M10: Fetch-cards script — `fetchCards(patch, outPath)` fetches HearthstoneJSON, writes cards.json; 2 tests (commit 281393c)
 
 2026-05-12 22:30  [DONE]  M29: Opponent panel IPC push — `overlay:opponents-update` sent with opponent shape (entityId, hp, tier, eliminated), 1 test (commit 0889157)
