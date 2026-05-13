@@ -6,6 +6,7 @@ import { applyBuffs } from './reducer/buffs';
 import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
+import { applyDivineShield } from './reducer/divineShield';
 import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
@@ -134,8 +135,11 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       if (event.tag === 'ANOMALY') {
         return applyAnomaly(state, event);
       }
-      if (event.tag === 'ATK' || event.tag === 'DIVINE_SHIELD') {
+      if (event.tag === 'ATK') {
         return applyBuffs(state, event);
+      }
+      if (event.tag === 'DIVINE_SHIELD') {
+        return applyDivineShield(state, event);
       }
       if (event.tag === 'SILENCED') {
         return applySilence(state, event);

@@ -52,42 +52,5 @@ export function applyBuffs(state: GameState, event: TagChange): GameState {
     }
   }
 
-  // Handle DIVINE_SHIELD tag
-  if (event.tag === 'DIVINE_SHIELD') {
-    const shieldOn = event.value === '1';
-
-    if (playerMinion) {
-      return {
-        ...state,
-        player: {
-          ...state.player,
-          board: {
-            ...state.player.board,
-            minions: state.player.board.minions.map((m) =>
-              m.entityId === entityId ? { ...m, divineShield: shieldOn } : m,
-            ),
-          },
-        },
-      };
-    }
-    if (opponentMinion) {
-      const updatedOpponents = state.opponents.map((o) => {
-        if (o.board.minions.some((m) => m.entityId === entityId)) {
-          return {
-            ...o,
-            board: {
-              ...o.board,
-              minions: o.board.minions.map((m) =>
-                m.entityId === entityId ? { ...m, divineShield: shieldOn } : m,
-              ),
-            },
-          };
-        }
-        return o;
-      });
-      return { ...state, opponents: updatedOpponents };
-    }
-  }
-
   return state;
 }

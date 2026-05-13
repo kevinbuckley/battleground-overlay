@@ -80,20 +80,6 @@ describe('applyBuffs', () => {
     expect(result.opponents[0].board.minions[0].health).toBe(3);
   });
 
-  it('divine shield on', () => {
-    const state = makeStateWithPlayerMinion(1, 3, 4);
-    const event = makeTagChange('1', 'DIVINE_SHIELD', '1');
-    const result = applyBuffs(state, event);
-    expect(result.player.board.minions[0].divineShield).toBe(true);
-  });
-
-  it('divine shield off', () => {
-    const state = makeStateWithPlayerMinion(1, 3, 4);
-    const event = makeTagChange('1', 'DIVINE_SHIELD', '0');
-    const result = applyBuffs(state, event);
-    expect(result.player.board.minions[0].divineShield).toBe(false);
-  });
-
   it('no-op on non-play entity', () => {
     const state = initialState();
     const event = makeTagChange('999', 'ATK', '10');
