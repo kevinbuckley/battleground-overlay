@@ -448,7 +448,7 @@ to `loop-ledger.md`.
 - [x] [S] `pipeline` reset test: already implemented at line 45 of `packages/state/src/pipeline.test.ts` ✓
 - [x] [S] `isBattlegroundsPool` golden card test: in `packages/card-data/src/isBattlegroundsPool.test.ts`, add 2 tests: a golden variant (cardId ending in `_golden`) of a known pool card still returns true via base-id lookup, and a non-BG card returns false — `packages/card-data/src/isBattlegroundsPool.test.ts` update (2 tests added, 11/11 pass)
 - [x] [S] `simulateBatch` determinism test: already implemented at line 27 of `packages/sim/src/simulateBatch.test.ts` ✓
-- [ ] [S] `diffRecs` structured diff: in `apps/replay/src/advisorDiff.ts`, add `diffRecs(actual: Recommendation[], expected: Recommendation[]): { action: string; actualScore: number; expectedScore: number }[]` that pairs recs by action type and returns score-delta entries; export it; add 3 tests in `apps/replay/src/advisorDiff.test.ts`: identical recs return [], different action types each appear as diffs, same action different scores returns 1 entry with correct delta — `apps/replay/src/advisorDiff.ts` + test
+- [x] [S] `diffRecs` structured diff: in `apps/replay/src/advisorDiff.ts`, add `diffRecs(actual: Recommendation[], expected: Recommendation[]): { action: string; actualScore: number; expectedScore: number }[]` that pairs recs by action type and returns score-delta entries; export it; add 3 tests in `apps/replay/src/advisorDiff.test.ts`: identical recs return [], different action types each appear as diffs, same action different scores returns 1 entry with correct delta — `apps/replay/src/advisorDiff.ts` + test (3 tests added, 21/21 pass)
 
 ## M35 — Integration coverage
 

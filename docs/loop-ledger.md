@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 09:15  [DONE]  M34: diffRecs structured diff — `diffRecs(actual, expected)` pairs recs by action type (score-independent key), returns `{ action, actualScore, expectedScore }[]`; 3 tests (identical=[], different actions=2 diffs, same action different scores=1 entry), 21/21 tests pass (commit 7bc75e7)
+
 2026-05-13 09:00  [DONE]  M34: applyAttackBuff — already implemented with 4 tests (player board, opponent board, no-op hero, no-op unknown) and wired into reducer (commit d787221)
 
 2026-05-13 08:00  [DONE]  M34: serializeGameState roundtrip test — added tests for initialState() roundtrip (turn, phase, gold, tier, opponents length) and entityRegistry Map restoration (entry present after roundtrip), 2 new tests (commit c077d91)
