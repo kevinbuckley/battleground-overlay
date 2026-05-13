@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 12:30  [DONE]  M37: simScorer with 2 opponents — added test building player board with 2 minions and 2 opponent boards, calls scoreCandidate with n=5, asserts winPct in [0,1] and finite avgHpDelta; 742 pass (commit 8547f2d)
+
 2026-05-13 11:30  [DONE]  M37: pipeline shopping-phase integration — added test firing MAIN_READY + RESOURCES + PLAYER_TECH_LEVEL, asserts phase=shopping, gold=4, tier=2; 740 pass (commit 69b7b8e)
 
 2026-05-13 12:00  [DONE]  M37: recommend Buy rec with shop minions — added test setting shop.minions=2, gold=3, phase=shopping, asserts ≥1 Buy recommendation; 741 pass (commit 56f257f)
