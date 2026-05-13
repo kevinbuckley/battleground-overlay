@@ -1,5 +1,9 @@
 import type { GameState, Recommendation } from '@overlay/shared';
-import { enumerateBuyCandidates, enumerateSellCandidates } from './candidates';
+import {
+  enumerateBuyCandidates,
+  enumerateSellCandidates,
+  enumerateTierUpCandidates,
+} from './candidates';
 import { predictOpponentBoard } from './opponentPredictor';
 import { scoreCandidate, scoreSellCandidate } from './simScorer';
 import { withBudget } from './withBudget';
@@ -88,4 +92,52 @@ export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number)
   });
 
   return scored.sort((a, b) => b.score - a.score).slice(0, TOP_N);
+}
+
+/**
+ * Score a tier-up candidate via simulation with a time budget.
+ *
+ * When the player can afford to tier up, evaluates the current board
+ * against all opponents (no board change from tiering up itself) and
+ * returns a single recommendation with the simulated win rate.
+ *
+ * When n=0 (no simulations), returns a recommendation with score 0
+ * so the heuristic path can still produce output.
+ */
+export function scoreTierUpWithSim(
+  state: GameState,
+  n: number,
+  budgetMs: number,
+): Recommendation[] {
+  const candidates = enumerateTierUpCandidates(state);
+  const { player, opponents, turn } = state;
+
+  if (candidates.length === 0) {
+    return [];
+  }
+
+  const projectedOpponents = opponents.map((o) => ({
+    ...o,
+    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+  }));
+
+  const result = withBudget(
+    () => scoreCandidate(player.board, player, projectedOpponents, n),
+    budgetMs,
+    { winPct: 0, avgHpDelta: 0 },
+  );
+
+  return [
+    {
+      action: { type: 'TierUp' },
+      score: result.winPct,
+      confidence: Math.min(1, result.winPct + 0.05),
+      reason:
+        result.winPct > 0.5
+          ? 'can tier up with strong projected win rate'
+          : result.winPct > 0
+            ? 'can tier up, evaluating win rate'
+            : 'can tier up, no simulation data',
+    },
+  ];
 }

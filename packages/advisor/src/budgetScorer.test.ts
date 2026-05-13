@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { GameState, PlayerState } from '@overlay/shared';
 import { initialState } from '@overlay/state';
-import { scoreBuysWithSim } from './budgetScorer';
+import { scoreBuysWithSim, scoreTierUpWithSim } from './budgetScorer';
 
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
@@ -290,5 +290,54 @@ describe('scoreBuysWithSim', () => {
     for (const rec of result) {
       expect(rec.score).toBe(0);
     }
+  });
+});
+
+describe('scoreTierUpWithSim', () => {
+  it('returns a recommendation when tier-3 and affordable', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        tier: 3,
+        gold: 5,
+        tierUpCost: 4,
+      }),
+    });
+
+    const result = scoreTierUpWithSim(state, 0, 1000);
+
+    expect(result.length).toBe(1);
+    expect(result[0].action.type).toBe('TierUp');
+    expect(result[0].score).toBe(0);
+  });
+
+  it('returns empty array when tier is 6 (max)', () => {
+    const state = makeState({
+      turn: 6,
+      player: makePlayer({
+        tier: 6,
+        gold: 10,
+        tierUpCost: 6,
+      }),
+    });
+
+    const result = scoreTierUpWithSim(state, 0, 1000);
+
+    expect(result).toEqual([]);
+  });
+
+  it('returns empty array when tier-up is too expensive', () => {
+    const state = makeState({
+      turn: 4,
+      player: makePlayer({
+        tier: 3,
+        gold: 2,
+        tierUpCost: 4,
+      }),
+    });
+
+    const result = scoreTierUpWithSim(state, 0, 1000);
+
+    expect(result).toEqual([]);
   });
 });
