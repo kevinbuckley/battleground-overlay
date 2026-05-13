@@ -29,6 +29,7 @@ export function initialState(): GameState {
       minionsOnBoard: 0,
       minionsKilledThisTurn: 0,
       cardsDrawnThisTurn: 0,
+      goldSpentThisTurn: 0,
       entityRegistry: new Map(),
     },
     opponents: [],

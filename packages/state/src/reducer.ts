@@ -16,6 +16,7 @@ import { applyElite } from './reducer/elite';
 import { applyFrozenMinion } from './reducer/frozenMinion';
 import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
+import { applyGoldSpent } from './reducer/goldSpent';
 import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandSize } from './reducer/handSize';
 import { applyHandTracker } from './reducer/handTracker';
@@ -141,6 +142,10 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyFrozenMinion(state, event);
       }
       if (event.tag === 'RESOURCES_USED') {
+        const afterGoldSpent = applyGoldSpent(state, event);
+        if (afterGoldSpent !== state) {
+          return afterGoldSpent;
+        }
         return applyShopReroll(state, event);
       }
       if (event.tag === 'PREMIUM') {
