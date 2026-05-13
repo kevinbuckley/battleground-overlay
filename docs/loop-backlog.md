@@ -483,6 +483,8 @@ to `loop-ledger.md`.
 - [ ] [S] Wire all three new scorers into `recommend()` — import `scoreTierUpWithSim`, `scoreFreezeWithSim`, `scoreRerollWithSim` from `budgetScorer`; replace the heuristic-only TierUp/Freeze/Reroll blocks with simulation-based scoring using the new functions; 4 tests: tier-up sim rec when affordable, freeze sim rec when shop not frozen, reroll sim rec when affordable, all three fall back to heuristic when n=0
 - [ ] [S] `recommend` edge-case tests — in `packages/advisor/src/recommend.test.ts`, add 3 tests: (1) empty state (no shop, no board, no opponents) returns recommendations (heuristic fallback), (2) combat phase returns recommendations (not just shopping), (3) single minion board with no opponents returns at least 1 recommendation
 
+- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
