@@ -1,5 +1,11 @@
 import { expect, test } from 'bun:test';
-import { type SessionEntry, filterByTurnRange, formatEntry, readSession } from './review-session';
+import {
+  type SessionEntry,
+  filterByTurnRange,
+  formatEntry,
+  formatSessionLine,
+  readSession,
+} from './review-session';
 
 test('formatEntry: parses kind and payload (object)', () => {
   const line = JSON.stringify({ ts: 1000, kind: 'event', payload: { name: 'test', value: 42 } });
@@ -125,4 +131,40 @@ test('filterByTurnRange: boundary values included', () => {
   ];
   const result = filterByTurnRange(entries, 2, 5);
   expect(result.length).toBe(2);
+});
+
+test('formatSessionLine: recommendation entry', () => {
+  const entry: SessionEntry = {
+    ts: 1715000000,
+    kind: 'recommendation',
+    payload: { turn: 5, action: 'Buy', cardId: 'TB_BaconShop_1' },
+  };
+  const result = formatSessionLine(entry);
+  expect(result).toContain('[recommendation]');
+  expect(result).toContain('TB_BaconShop_1');
+  expect(result).toContain('Buy');
+});
+
+test('formatSessionLine: state-snapshot entry', () => {
+  const entry: SessionEntry = {
+    ts: 1715000000,
+    kind: 'state-snapshot',
+    payload: { turn: 3, phase: 'shopping', gold: 4, tier: 3 },
+  };
+  const result = formatSessionLine(entry);
+  expect(result).toContain('[state-snapshot]');
+  expect(result).toContain('turn');
+  expect(result).toContain('3');
+  expect(result).toContain('shopping');
+});
+
+test('formatSessionLine: empty-payload entry', () => {
+  const entry: SessionEntry = {
+    ts: 1715000000,
+    kind: 'event',
+    payload: null,
+  };
+  const result = formatSessionLine(entry);
+  expect(result).toContain('[event]');
+  expect(result).not.toContain('null');
 });

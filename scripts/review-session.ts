@@ -91,6 +91,30 @@ export function reviewSession(filePath: string): void {
   }
 }
 
+/** Format a parsed SessionEntry as `[kind] HH:MM:SS payload-summary`. */
+export function formatSessionLine(entry: SessionEntry): string {
+  const d = new Date(entry.ts * 1000);
+  const hh = String(d.getUTCHours()).padStart(2, '0');
+  const mm = String(d.getUTCMinutes()).padStart(2, '0');
+  const ss = String(d.getUTCSeconds()).padStart(2, '0');
+  const ts = `${hh}:${mm}:${ss}`;
+  let summary = '';
+  const payload = entry.payload;
+  if (payload === null || payload === undefined) {
+    summary = '';
+  } else if (typeof payload === 'string') {
+    summary = payload.length > 60 ? `${payload.slice(0, 57)}...` : payload;
+  } else if (typeof payload === 'object') {
+    summary = JSON.stringify(payload);
+    if (summary.length > 60) {
+      summary = `${summary.slice(0, 57)}...`;
+    }
+  } else {
+    summary = String(payload);
+  }
+  return summary ? `[${entry.kind}] ${ts} ${summary}` : `[${entry.kind}] ${ts}`;
+}
+
 if (import.meta.main) {
   const filePath = process.argv[2];
   if (!filePath) {
