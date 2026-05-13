@@ -1,7 +1,13 @@
 import { beforeEach, describe, expect, it } from 'bun:test';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { appendSessionEvent, listSessions, pruneOldSessions, resetSession } from './sessionLog';
+import {
+  appendSessionEvent,
+  listSessions,
+  pruneOldSessions,
+  readSession,
+  resetSession,
+} from './sessionLog';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
 
@@ -139,5 +145,56 @@ describe('pruneOldSessions', () => {
     expect(remaining).toHaveLength(50);
 
     rmSync(tmpDir, { recursive: true, force: true });
+  });
+});
+
+describe('readSession', () => {
+  it('returns empty array for a non-existent file', () => {
+    const result = readSession('/nonexistent/path/session-2026-01-01T00:00:00.000Z-1.jsonl');
+    expect(result).toEqual([]);
+  });
+
+  it('returns parsed entries from a single-entry file', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__readtest__');
+    if (existsSync(tmpDir)) {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+    mkdirSync(tmpDir, { recursive: true });
+    const filePath = join(tmpDir, 'session-2026-01-01T00:00:00.000Z-1.jsonl');
+    const entry = { ts: 1700000000000, kind: 'TEST', payload: { value: 42 } };
+    writeFileSync(filePath, JSON.stringify(entry) + '\n');
+
+    const result = readSession(filePath);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+
+    expect(result).toHaveLength(1);
+    expect(result[0]).toMatchObject({ ts: 1700000000000, kind: 'TEST' });
+    expect((result[0]!.payload as { value: number }).value).toBe(42);
+  });
+
+  it('returns parsed entries from a multi-entry file, skipping blank lines', () => {
+    const tmpDir = join(import.meta.dirname, '..', '..', '..', 'logs', '__readtest__');
+    if (existsSync(tmpDir)) {
+      rmSync(tmpDir, { recursive: true, force: true });
+    }
+    mkdirSync(tmpDir, { recursive: true });
+    const filePath = join(tmpDir, 'session-2026-01-01T00:00:00.000Z-1.jsonl');
+    const entries = [
+      { ts: 1700000000000, kind: 'A', payload: { n: 1 } },
+      { ts: 1700000001000, kind: 'B', payload: { n: 2 } },
+      { ts: 1700000002000, kind: 'C', payload: { n: 3 } },
+    ];
+    const content = entries.map((e) => JSON.stringify(e)).join('\n\n') + '\n';
+    writeFileSync(filePath, content);
+
+    const result = readSession(filePath);
+
+    rmSync(tmpDir, { recursive: true, force: true });
+
+    expect(result).toHaveLength(3);
+    expect(result[0]).toMatchObject({ kind: 'A' });
+    expect(result[1]).toMatchObject({ kind: 'B' });
+    expect(result[2]).toMatchObject({ kind: 'C' });
   });
 });
