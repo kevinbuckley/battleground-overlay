@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 04:00  [DONE]  M32: Hero power cardId — `applyHeroPowerCardId` handles `TAG_CHANGE tag=HERO_POWER_ID` on player controller, sets `state.player.heroPowerCardId: string | null`, 4 tests (commit 25be89c)
+
 2026-05-12 22:00  [DONE]  M31: Cards given tracker — `applyCardsGiven` handles `TAG_CHANGE tag=NUM_CARDS_GIVEN_THIS_TURN` on player controller, sets `state.player.cardsGivenThisTurn: number`, 4 tests, wired into reducer (commit 01231aa)
 
 2026-05-13 04:00  [DONE]  M32: Cards played tracker — `applyCardsPlayed` handles `TAG_CHANGE tag=NUM_CARDS_PLAYED_THIS_TURN` on player controller, sets `state.player.cardsPlayedThisTurn: number`, wired into reducer, 4 tests (commit 27596db)
