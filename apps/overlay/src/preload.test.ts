@@ -195,7 +195,7 @@ describe('preload', () => {
     expect(boardArg).toEqual(boardData);
   });
 
-  it('onOpponents is not yet exposed (still only recs+explanation+damage+board after change)', () => {
+  it('onOpponents is exposed and fires with payload when overlay:opponents-update channel fires', () => {
     const mockIpc = makeMockIpc();
     const mockCb = makeMockContextBridge();
 
@@ -205,12 +205,26 @@ describe('preload', () => {
     );
 
     const exposed = mockCb._getExposed();
-    const bridge = exposed!.value as Record<string, unknown>;
+    const bridge = exposed!.value as {
+      onOpponents: (cb: (o: unknown[]) => void) => void;
+    };
 
-    expect(typeof bridge.onRecs).toBe('function');
-    expect(typeof bridge.onExplanation).toBe('function');
-    expect(typeof bridge.onDamage).toBe('function');
-    expect(typeof bridge.onBoard).toBe('function');
-    expect(bridge.onOpponents).toBeUndefined();
+    expect(typeof bridge.onOpponents).toBe('function');
+
+    let opponentsArg: unknown[] | null = null;
+    bridge.onOpponents((o) => {
+      opponentsArg = o;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const opponentsListener = listeners['overlay:opponents-update']?.[0];
+
+    const opponentsData = [
+      { entityId: 1, hp: 30, tier: 3, eliminated: false },
+      { entityId: 2, hp: 15, tier: 5, eliminated: false },
+    ];
+    opponentsListener?.(null, opponentsData);
+
+    expect(opponentsArg).toEqual(opponentsData);
   });
 });

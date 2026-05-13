@@ -22,5 +22,10 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(board);
       });
     },
+    onOpponents(cb: (o: unknown[]) => void): void {
+      ipc.on('overlay:opponents-update', (_event, opponents) => {
+        cb(opponents);
+      });
+    },
   });
 }
