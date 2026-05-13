@@ -78,4 +78,62 @@ describe('preload', () => {
     expect(listeners['overlay:explanation-update']).toBeDefined();
     expect(listeners['overlay:explanation-update'].length).toBe(1);
   });
+
+  it('only expected channels are registered: state-update, board-update, opponents-update, damage-update, recs-update, explanation-update', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onRecs: (cb: (r: unknown[]) => void) => void;
+      onExplanation: (cb: (t: string) => void) => void;
+    };
+    bridge.onRecs(() => {});
+    bridge.onExplanation(() => {});
+
+    const listeners = mockIpc._getListeners();
+    const registeredChannels = Object.keys(listeners);
+    const expectedChannels = ['overlay:recs-update', 'overlay:explanation-update'];
+    expect(registeredChannels.sort()).toEqual(expectedChannels.sort());
+  });
+
+  it('onRecs and onExplanation callbacks are invoked when their channels fire', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onRecs: (cb: (r: unknown[]) => void) => void;
+      onExplanation: (cb: (t: string) => void) => void;
+    };
+
+    let recsArg: unknown[] | null = null;
+    let textArg: string | null = null;
+    bridge.onRecs((r) => {
+      recsArg = r;
+    });
+    bridge.onExplanation((t) => {
+      textArg = t;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const recsListener = listeners['overlay:recs-update']?.[0];
+    const explanationListener = listeners['overlay:explanation-update']?.[0];
+
+    recsListener?.(null, [{ action: { type: 'Buy' }, score: 0.5 }]);
+    explanationListener?.(null, 'This is a good play');
+
+    expect(recsArg).toEqual([{ action: { type: 'Buy' }, score: 0.5 }]);
+    expect(textArg).toBe('This is a good play');
+  });
 });
