@@ -21,24 +21,39 @@ export interface CoordinatorOpts {
 
 export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Coordinator {
   const pipeline: Pipeline = createPipeline();
+  let previousTurn: number | null = null;
 
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
   pipeline.onEvent = (event: HsEvent) => {
     originalOnEvent(event);
+    const state = pipeline.getState();
+    const currentTurn = state.turn;
+
+    // Log a state-snapshot when the turn increments
+    if (previousTurn !== null && currentTurn > previousTurn) {
+      (opts?.logFn ?? appendSessionEvent)('state-snapshot', {
+        turn: currentTurn,
+        phase: state.phase,
+        gold: state.player.gold,
+        tier: state.player.tier,
+      });
+    }
+    previousTurn = currentTurn;
+
     try {
-      const recs = recommend(pipeline.getState());
+      const recs = recommend(state);
       const top = recs[0];
       if (top) {
         setAdvice(top);
         if (top.needsExplanation === true) {
-          explain(top, pipeline.getState())
+          explain(top, state)
             .then((text) => setExplanation(text))
             .catch(() => {});
         }
       }
       (opts?.logFn ?? appendSessionEvent)('recommendation', {
-        turn: pipeline.getState().turn,
+        turn: currentTurn,
         action: recs[0]?.action ?? null,
       });
     } catch {
@@ -48,14 +63,19 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
   };
 
   // Start the IPC bridge so the renderer gets state/recs updates
-  startBridge(win, pipeline.getState, () => {
-    try {
-      const recs = recommend(pipeline.getState());
-      return recs.length > 0 ? recs : null;
-    } catch {
-      return null;
-    }
-  });
+  startBridge(
+    win,
+    pipeline.getState,
+    () => {
+      try {
+        const recs = recommend(pipeline.getState());
+        return recs.length > 0 ? recs : null;
+      } catch {
+        return null;
+      }
+    },
+    () => null,
+  );
 
   const coordinator: Coordinator = {
     onEvent: pipeline.onEvent,

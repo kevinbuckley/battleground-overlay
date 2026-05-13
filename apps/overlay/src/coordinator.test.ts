@@ -161,4 +161,71 @@ describe('coordinator', () => {
     expect(typeof callArgs.turn).toBe('number');
     expect(callArgs.action).toBeNull();
   });
+
+  it('logFn receives a state-snapshot entry when turn increments', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    // First event: turn 0 → 1 (BLOCK_START of StartGame)
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+
+    // Second event: turn 1 → 2 (MAIN_READY increments turn)
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '0',
+      tag: 'STEP',
+      value: 'MAIN_READY',
+    });
+
+    // Should have a state-snapshot entry from the turn increment
+    const snapshots = calls.filter((c) => c.kind === 'state-snapshot');
+    expect(snapshots.length).toBeGreaterThanOrEqual(1);
+    const snapPayload = (snapshots[0]?.payload ?? {}) as {
+      turn: number;
+      phase: string;
+      gold: number;
+      tier: number;
+    };
+    expect(snapPayload.turn).toBe(2);
+    expect(snapPayload.phase).toBe('shopping');
+  });
+
+  it('no state-snapshot logged when turn does not change', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    // Two events that don't change the turn
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '3',
+      tag: 'HEALTH',
+      value: '25',
+    });
+
+    const snapshots = calls.filter((c) => c.kind === 'state-snapshot');
+    expect(snapshots.length).toBe(0);
+  });
 });
