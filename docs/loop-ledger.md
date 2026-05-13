@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 17:30  [DONE]  M40: settings:apply IPC handler — added `ipcMain.handle('settings:apply', ...)` to `main.ts` importing `loadSettings` + `getOverlayWin`, calls `setOpacity`/`setPosition` on the window; 2 tests in `main.test.ts` (handler exists, non-existent path returns default opacity), 789/789 tests pass (commit 3d2d41f)
+
 2026-05-13 17:00  [DONE]  M40: Renderer onBoard handler — added `onBoard(cb)` to `OverlayBridge` interface, wired `bridge.onBoard(...)` in `initRenderer` to update `#board-count` with `Minions: N` format, added `<div id="board-count"></div>` to `renderer.html`, 3 new tests (count shows correct N, missing element no-op, empty minions shows `Minions: 0`), 784/784 tests pass (commit c2db361)
 
 2026-05-13 16:30  [DONE]  M40: Coordinator calls setBoardPanel for Reposition rec — imported `setBoardPanel` from `@overlay/shared` in `coordinator.ts`, added `if (top.action.type === 'Reposition')` branch that calls `setBoardPanel({ recommendation: top })` after `setAdvice(top)`; 2 new tests in `coordinator.test.ts` (Reposition rec wiring verified, non-Reposition doesn't update boardPanel), 781/781 tests pass (commit e10c418)
