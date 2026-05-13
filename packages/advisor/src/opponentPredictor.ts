@@ -1,17 +1,31 @@
-import type { OpponentState } from '@overlay/shared';
+import type { Minion, OpponentState } from '@overlay/shared';
 
 /**
  * Predicts the opponent's board for use in simulation search.
  *
- * v0: returns the opponent's board as-is with no projection.
- * Future versions will infer likely board state from tier,
- * eliminations, and entity registry data.
+ * Scales minion attack/health upward when turn > 4 to account for
+ * stat growth across tavern tiers. The scaling factor is
+ * `1 + (turn - 4) * 0.1` capped at 1.5x.
  */
 export function predictOpponentBoard(
   opp: OpponentState,
-  _turn: number,
+  turn: number,
 ): {
-  minions: import('@overlay/shared').Minion[];
+  minions: Minion[];
 } {
-  return { minions: [...opp.board.minions] };
+  const baseMinions = opp.board.minions;
+
+  if (turn <= 4) {
+    return { minions: [...baseMinions] };
+  }
+
+  const scale = Math.min(1.5, 1 + (turn - 4) * 0.1);
+
+  return {
+    minions: baseMinions.map((m) => ({
+      ...m,
+      attack: Math.round(m.attack * scale),
+      health: Math.round(m.health * scale),
+    })),
+  };
 }
