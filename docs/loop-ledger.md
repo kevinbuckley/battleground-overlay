@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 05:00  [DONE]  M32: minionsOnBoard + opponentMinionsOnBoard helpers — `minionsOnBoard(state)` returns player board minion count, `opponentMinionsOnBoard(state, index)` returns opponent board size or 0; 4 tests, exported from shared index (commit 593186f)
 
+2026-05-13 05:30  [DONE]  M32: shopMinionCount helper — `shopMinionCount(state)` returns `state.player.shop.minions.length`; 2 tests, exported from shared index (commit 88ac1d5)
+
 2026-05-13 04:00  [DONE]  M32: Hero power cardId — `applyHeroPowerCardId` handles `TAG_CHANGE tag=HERO_POWER_ID` on player controller, sets `state.player.heroPowerCardId: string | null`, 4 tests (commit 25be89c)
 
 2026-05-12 22:00  [DONE]  M31: Cards given tracker — `applyCardsGiven` handles `TAG_CHANGE tag=NUM_CARDS_GIVEN_THIS_TURN` on player controller, sets `state.player.cardsGivenThisTurn: number`, 4 tests, wired into reducer (commit 01231aa)
