@@ -1,5 +1,5 @@
 import type { Recommendation } from '@overlay/shared';
-import { advisorDiff, formatAction, summarizeDiff } from './advisorDiff';
+import { advisorDiff, diffRecs, formatAction, summarizeDiff } from './advisorDiff';
 import type { AdvisorDiff } from './advisorDiff';
 
 function makeRec(
@@ -167,5 +167,31 @@ describe('summarizeDiff', () => {
       },
     ];
     expect(summarizeDiff(diffs)).toBe('Turn 5: did nothing, advisor said TierUp (score 0.9)');
+  });
+});
+
+describe('diffRecs', () => {
+  it('returns empty array when actual and expected are identical', () => {
+    const recs: Recommendation[] = [
+      makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8),
+      makeRec({ type: 'Sell', boardIndex: 1 }, 0.3),
+    ];
+    expect(diffRecs(recs, recs)).toEqual([]);
+  });
+
+  it('returns diffs for different action types', () => {
+    const actual = [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)];
+    const expected = [makeRec({ type: 'Sell', boardIndex: 0 }, 0.8)];
+    const result = diffRecs(actual, expected);
+    expect(result).toHaveLength(2);
+  });
+
+  it('returns 1 entry with correct delta for same action different scores', () => {
+    const actual = [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.8)];
+    const expected = [makeRec({ type: 'Buy', cardId: 'A', shopIndex: 0 }, 0.3)];
+    const result = diffRecs(actual, expected);
+    expect(result).toHaveLength(1);
+    expect(result[0].actualScore).toBe(0.8);
+    expect(result[0].expectedScore).toBe(0.3);
   });
 });

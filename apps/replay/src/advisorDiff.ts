@@ -6,6 +6,75 @@ export interface AdvisorDiff {
   recommended: Recommendation[];
 }
 
+export interface RecDiff {
+  action: string;
+  actualScore: number;
+  expectedScore: number;
+}
+
+export function diffRecs(actual: Recommendation[], expected: Recommendation[]): RecDiff[] {
+  const diffs: RecDiff[] = [];
+
+  function actionKey(rec: Recommendation): string {
+    switch (rec.action.type) {
+      case 'Buy':
+        return `Buy ${rec.action.cardId}`;
+      case 'Sell':
+        return `Sell [${rec.action.boardIndex}]`;
+      case 'Freeze':
+        return 'Freeze';
+      case 'Reroll':
+        return 'Reroll';
+      case 'TierUp':
+        return 'TierUp';
+      case 'Reposition':
+        return `Reposition [${rec.action.fromIndex}→${rec.action.toIndex}]`;
+    }
+  }
+
+  const actualMap = new Map<string, Recommendation>();
+  for (const r of actual) {
+    const key = actionKey(r);
+    actualMap.set(key, r);
+  }
+
+  const expectedMap = new Map<string, Recommendation>();
+  for (const r of expected) {
+    const key = actionKey(r);
+    expectedMap.set(key, r);
+  }
+
+  const allKeys = new Set([...actualMap.keys(), ...expectedMap.keys()]);
+
+  for (const key of allKeys) {
+    const a = actualMap.get(key);
+    const e = expectedMap.get(key);
+    if (a && e) {
+      if (a.score !== e.score) {
+        diffs.push({
+          action: formatAction(a),
+          actualScore: a.score,
+          expectedScore: e.score,
+        });
+      }
+    } else if (a) {
+      diffs.push({
+        action: formatAction(a),
+        actualScore: a.score,
+        expectedScore: 0,
+      });
+    } else if (e) {
+      diffs.push({
+        action: formatAction(e),
+        actualScore: 0,
+        expectedScore: e.score,
+      });
+    }
+  }
+
+  return diffs;
+}
+
 export function formatAction(rec: Recommendation): string {
   const score = rec.score.toFixed(1);
   switch (rec.action.type) {
