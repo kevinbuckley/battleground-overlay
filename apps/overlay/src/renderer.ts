@@ -3,7 +3,8 @@ import type { Recommendation } from '@overlay/shared';
 export interface OverlayBridge {
   onRecs(cb: (r: unknown[]) => void): void;
   onExplanation(cb: (t: string) => void): void;
-  onDamage(cb: (f: unknown) => void): void;
+  onDamage(cb: (f: unknown) => void);
+  onBoard(cb: (b: unknown) => void);
 }
 
 export function getActionText(rec: Recommendation): string {
@@ -59,5 +60,12 @@ export function initRenderer(bridge: OverlayBridge): void {
     if (!el) return;
     const f = forecast as { winPct: number };
     el.textContent = `Win: ${Math.round(f.winPct * 100)}%`;
+  });
+
+  bridge.onBoard((boardData: unknown) => {
+    const el = document.getElementById('board-count');
+    if (!el) return;
+    const b = boardData as { minions: unknown[] };
+    el.textContent = `Minions: ${b.minions.length}`;
   });
 }

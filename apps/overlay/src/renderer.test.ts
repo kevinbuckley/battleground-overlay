@@ -62,6 +62,7 @@ describe('initRenderer', () => {
       },
       onExplanation: () => {},
       onDamage: () => {},
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -98,6 +99,7 @@ describe('initRenderer', () => {
       },
       onExplanation: () => {},
       onDamage: () => {},
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -128,6 +130,7 @@ describe('initRenderer', () => {
         explanationCallback = cb;
       },
       onDamage: () => {},
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -162,6 +165,7 @@ describe('initRenderer', () => {
         explanationCallback = cb;
       },
       onDamage: () => {},
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -201,6 +205,7 @@ describe('initRenderer', () => {
       onDamage: (cb: (f: unknown) => void) => {
         damageCallback = cb;
       },
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -230,6 +235,7 @@ describe('initRenderer', () => {
       onDamage: (cb: (f: unknown) => void) => {
         damageCallback = cb;
       },
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -254,6 +260,7 @@ describe('initRenderer', () => {
       onDamage: (cb: (f: unknown) => void) => {
         damageCallback = cb;
       },
+      onBoard: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -270,6 +277,91 @@ describe('initRenderer', () => {
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
       'Win: 0%',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onBoard updates #board-count textContent with "Minions: N"', () => {
+    let boardCallback: ((b: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: (cb: (b: unknown) => void) => {
+        boardCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('board-count', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    boardCallback!({ minions: ['a', 'b', 'c'] });
+
+    expect((mockElements.get('board-count') as { textContent: string }).textContent).toBe(
+      'Minions: 3',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onBoard is no-op when #board-count element is missing', () => {
+    let boardCallback: ((b: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: (cb: (b: unknown) => void) => {
+        boardCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    boardCallback!({ minions: ['a', 'b'] });
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onBoard shows "Minions: 0" when minions array is empty', () => {
+    let boardCallback: ((b: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: (cb: (b: unknown) => void) => {
+        boardCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('board-count', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    boardCallback!({ minions: [] });
+
+    expect((mockElements.get('board-count') as { textContent: string }).textContent).toBe(
+      'Minions: 0',
     );
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
