@@ -518,6 +518,8 @@ to `loop-ledger.md`.
 - [ ] [S] `parseLine` SHOW_ENTITY + ZONE_CHANGE_LIST roundtrip — in `packages/log-parser/src/index.test.ts`, add 1 test: `parseLine('ZONE_CHANGE_LIST')` returns `{ kind: 'ZONE_CHANGE_LIST' }`; add 1 test: `parseLine('SHOW_ENTITY - Updating Entity=5 CardID=CS2_168')` returns object with `kind: 'SHOW_ENTITY'` and `entityId: 5` and `cardId: 'CS2_168'` — `packages/log-parser/src/index.test.ts` only
 - [ ] [S] `Benchmark.compareBenchmarks` result shape — in `packages/sim/src/bench.test.ts`, add 1 test: `compareBenchmarks(baselineResults, currentResults)` where current durationMs is 20% higher; assert return value has a truthy `regression` field or string containing "regression"; also add 1 test: identical results → no regression — `packages/sim/src/bench.test.ts` only
 
+- [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
