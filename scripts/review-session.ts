@@ -28,13 +28,22 @@ export function formatEntry(line: string): string {
   }
 }
 
-/** Read a session JSONL file and print each entry as formatted text. */
-export function reviewSession(filePath: string): void {
+/** Read a session JSONL file and return each entry as formatted text lines. */
+export function reviewSessionLines(filePath: string): string[] {
   const content = readFileSync(filePath, 'utf8');
   const lines = content.split('\n');
+  const result: string[] = [];
   for (const line of lines) {
     const formatted = formatEntry(line);
-    if (formatted) console.log(formatted);
+    if (formatted) result.push(formatted);
+  }
+  return result;
+}
+
+/** Read a session JSONL file and print each entry as formatted text. */
+export function reviewSession(filePath: string): void {
+  for (const line of reviewSessionLines(filePath)) {
+    console.log(line);
   }
 }
 

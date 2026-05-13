@@ -46,3 +46,35 @@ test('formatEntry: handles missing kind', () => {
   expect(result).toContain('[unknown]');
   expect(result).toContain('foo:"bar"');
 });
+
+test('reviewSessionLines: formats turn snapshots and recommendations', () => {
+  const { reviewSessionLines } = require('./review-session');
+  const tmpDir = '/tmp';
+  const filePath = `${tmpDir}/test-session-${Date.now()}.jsonl`;
+  const entries = [
+    JSON.stringify({
+      ts: 1000,
+      kind: 'state_snapshot',
+      payload: { turn: 1, phase: 'shopping', boardSize: 3 },
+    }),
+    JSON.stringify({
+      ts: 1001,
+      kind: 'state_snapshot',
+      payload: { turn: 2, phase: 'shopping', boardSize: 5 },
+    }),
+    JSON.stringify({
+      ts: 1002,
+      kind: 'recommendation',
+      payload: { turn: 2, action: 'Buy', cardId: 'TB_BaconShop_1' },
+    }),
+  ];
+  require('node:fs').writeFileSync(filePath, entries.join('\n'));
+  const lines = reviewSessionLines(filePath);
+  expect(lines.length).toBe(3);
+  const combined = lines.join(' ');
+  expect(combined).toContain('state_snapshot');
+  expect(combined).toContain('recommendation');
+  expect(combined).toContain('Buy');
+  expect(combined).toContain('TB_BaconShop_1');
+  require('node:fs').unlinkSync(filePath);
+});
