@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 05:30  [DONE]  M32: formatRecommendation helper — `formatRecommendation(rec: Recommendation): string` returns readable string for all 6 action types (Buy, Sell, Freeze, Reroll, TierUp, Reposition); 6 tests, exported from shared index (commit 6109a27)
+
 2026-05-13 05:00  [DONE]  M32: minionsOnBoard + opponentMinionsOnBoard helpers — `minionsOnBoard(state)` returns player board minion count, `opponentMinionsOnBoard(state, index)` returns opponent board size or 0; 4 tests, exported from shared index (commit 593186f)
 
 2026-05-13 05:30  [DONE]  M32: shopMinionCount helper — `shopMinionCount(state)` returns `state.player.shop.minions.length`; 2 tests, exported from shared index (commit 88ac1d5)
