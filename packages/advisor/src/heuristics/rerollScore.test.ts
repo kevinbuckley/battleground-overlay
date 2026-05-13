@@ -20,6 +20,12 @@ function makeMinion(
     poisonous: false,
     reborn: false,
     frozen: false,
+    golden: false,
+    windfury: false,
+    cleave: false,
+    elite: false,
+    lifesteal: false,
+    cost: 0,
     tribes,
   };
 }
@@ -98,5 +104,22 @@ describe('rerollScore', () => {
     // No triple (0 copies on board), no synergy (different tribes),
     // hp 20 >= 15, gold 3 >= rollCost 1
     expect(rerollScore(state)).toBe(1.0);
+  });
+
+  it('returns 0 when gold=0 (cannot afford reroll)', () => {
+    const state = makeStateWithShop([makeMinion(1, 'ANY', 2, 2)], [], 30, 0, 1);
+    expect(rerollScore(state)).toBe(0);
+  });
+
+  it('returns a value <= 1 when gold=10 and shop is full', () => {
+    const state = makeStateWithShop(
+      [makeMinion(1, 'NOVEL', 2, 2), makeMinion(2, 'ANOTHER', 3, 3)],
+      [makeMinion(3, 'OTHER', 3, 3)],
+      20,
+      10,
+      1,
+    );
+    const score = rerollScore(state);
+    expect(score).toBeLessThanOrEqual(1);
   });
 });
