@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 10:45  [DONE]  M35: reviewSession lines — extracted `reviewSessionLines` returning `string[]` from `reviewSession`, added 1 test verifying 3 session entries (2 state_snapshots + 1 recommendation) format correctly with state_snapshot, recommendation, Buy, and cardId present; 8/8 tests pass (commit 542636c)
 
+2026-05-13 11:00  [DONE]  M35: Scrubber edge cases — implemented `stepBackward()` and `stepForward()` on `Scrubber` class with boundary guards (no-op at 0 / at end), added 2 tests to `scrubber.test.ts`; 11/11 tests pass (commit 0d93037)
+
 2026-05-13 10:30  [DONE]  M35: LLM cache deduplication test — added 1 test to `cache.test.ts` verifying two different GameState objects with identical hash-relevant fields share a cache entry; 16/16 tests pass (commit 9f61c24)
 
 2026-05-13 10:00  [DONE]  M35: buildPrompt Buy recommendation test — added 1 test to `buildPrompt.test.ts` verifying the user message contains the cardId, action type 'Buy', and a score digit; 13/13 tests pass (commit 4c4a509)
