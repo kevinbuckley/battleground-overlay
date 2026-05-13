@@ -23,6 +23,16 @@ export function isBattlegroundsPool(card: Card): boolean {
   return false;
 }
 
+export function isBattlegroundsMinion(card: Card): boolean {
+  if (card.mechanics?.includes('DUNGEON_PASSIVE_BUFF')) {
+    return false;
+  }
+  if (card.techLevel !== undefined && card.techLevel >= 1 && card.techLevel <= 6) {
+    return true;
+  }
+  return false;
+}
+
 export function getBgMinionsByTribe(tribe: string): Card[] {
   if (!bgByTribeCache) {
     const tribeCards = getCardsByTribe(tribe);
