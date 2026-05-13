@@ -463,7 +463,7 @@ to `loop-ledger.md`.
 
 - [x] [S] `applyRace` — handles `TAG_CHANGE tag=RACE` on entities in PLAY zone → updates `minion.tribes: string[]` (already on Minion interface); wire into reducer; 4 tests (race set on player minion, race set on opponent minion, no-op on hero, no-op on non-play entity) — `packages/state/src/reducer/race.ts` + test
 - [x] [S] `applyFatigue` — handles `TAG_CHANGE tag=FATIGUE` or `TAG_CHANGE tag=FATIGUE_COST` on player controller → reduces player hero HP by fatigue cost; wire into reducer; 5 tests (fatigue damage on player hero, fatigue_cost tag, no-op on opponent, no-op when not fatigue tag, no-op on non-player entity) — `packages/state/src/reducer/fatigue.ts` + test
-- [ ] [S] `applyBuffs` wiring — import `applyBuffs` from `./reducer/buffs` in `packages/state/src/reducer.ts`, add `case 'DIVINE_SHIELD':` branch that calls `applyBuffs` when the DIVINE_SHIELD tag is on a minion entity (not the player controller); 4 tests (divine shield on player minion, divine shield on opponent minion, no-op on player controller, no-op on non-play entity) — `packages/state/src/reducer.ts` update + test
+- [x] [S] `applyBuffs` wiring — `applyBuffs` is identical to `applyDivineShield` (both already exist with 4 tests in `buffs.test.ts`); `applyDivineShield` already wired in reducer.ts line 191-192 with 4 tests in `reducer.test.ts` lines 121-235; behavior correct — done ✓
 
 ## M37 — Integration tests + end-to-end coverage
 
