@@ -12,6 +12,7 @@ export interface Minion {
   windfury: boolean;
   cleave: boolean;
   elite: boolean;
+  cost: number;
   tribes: string[];
 }
 

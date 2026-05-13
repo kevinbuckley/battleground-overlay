@@ -3,6 +3,7 @@ import type { GameState } from '@overlay/shared';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyBuffs } from './reducer/buffs';
+import { applyCardCost } from './reducer/cardCost';
 import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
@@ -165,6 +166,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'TRINKET') {
         return applyTrinket(state, event);
+      }
+      if (event.tag === 'COST') {
+        return applyCardCost(state, event);
       }
       return applyTripleBonus(state, event);
 
