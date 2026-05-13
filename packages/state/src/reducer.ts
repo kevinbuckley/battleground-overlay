@@ -6,6 +6,7 @@ import { applyBuffs } from './reducer/buffs';
 import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyDeathrattle } from './reducer/deathrattle';
+import { applyGameOver } from './reducer/gameOver';
 import { applyGold } from './reducer/gold';
 import { applyGoldenMinion } from './reducer/goldenMinion';
 import { applyHandSize } from './reducer/handSize';
@@ -57,6 +58,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       return applyShopRefresh(state, event);
 
     case 'TAG_CHANGE':
+      if (event.tag === 'PLAYSTATE' && event.value === 'FINISHED') {
+        return applyGameOver(state, event);
+      }
       if (event.tag === 'PLAYSTATE' && event.value === 'LOST') {
         return applyPlayerLost(state, event);
       }
