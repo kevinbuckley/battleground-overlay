@@ -409,6 +409,13 @@ to `loop-ledger.md`.
 - [ ] [S] `recommend` freeze/reroll integration: in `packages/advisor/src/recommend.ts`, after buy+sell candidates, also score freeze and reroll candidates using heuristics (freeze score = 0.4 when shop has ≥2 minions not on board, reroll score = 0.3 * (1 - winPct)); merge into results and sort; 2 tests: freezing shop with good minions appears in results, reroll appears when win rate is low — `packages/advisor/src/recommend.ts` update + test
 - [ ] [S] `enumerateSellCandidates` implementation: in `packages/advisor/src/candidates.ts`, add `enumerateSellCandidates(state: GameState): { action: { type: 'Sell'; boardIndex: number }; projectedBoard: Board }[]` — one candidate per board minion with that minion removed; 3 tests: empty board returns [], 1 minion returns 1 candidate, 3 minions returns 3 with correct boardIndex — `packages/advisor/src/candidates.ts` update + test
 
+## M32 — State model completeness
+
+- [x] [S] Divine Shield handler: `packages/state/src/reducer/divineShield.ts` — `applyDivineShield(state, event)` handles `TAG_CHANGE tag=DIVINE_SHIELD value=1/0` on entities in PLAY zone → sets `minion.divineShield = true/false` (separate from buffs); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity)
+- [ ] [S] Elite status handler: `packages/state/src/reducer/elite.ts` — `applyElite(state, event)` handles `TAG_CHANGE tag=ELITE value=1/0` on entities in PLAY zone → sets `minion.elite = true/false` (add `elite: boolean` to Minion); wire into reducer; 4 tests (set, clear, no-op on hero, no-op on non-play entity)
+- [ ] [S] Card cost tracker: `packages/state/src/reducer/cardCost.ts` — `applyCardCost(state, event)` handles `TAG_CHANGE tag=COST` on entities in PLAY/SHOP zones → updates `minion.cost` field (add `cost: number` to Minion); wire into reducer; 4 tests (update cost on player minion, update cost on shop minion, no-op on hero, no-op on non-play entity)
+- [ ] [S] Player death handler: `packages/state/src/reducer/playerDeath.ts` — `applyPlayerDeath(state, event)` handles `TAG_CHANGE tag=HEALTH value=0` on player controller → sets `state.player.eliminated = true`; wire into reducer; 3 tests (HP=0 sets eliminated, HP>0 is no-op, already eliminated stays eliminated)
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
