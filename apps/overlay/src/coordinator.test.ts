@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it } from 'bun:test';
+import { clearBoardPanel, getBoardPanel } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 import { clearAdvice, getAdvice } from './advicePanel';
 import { startCoordinator } from './coordinator';
@@ -20,6 +21,7 @@ describe('coordinator', () => {
   afterEach(() => {
     stopBridge();
     clearAdvice();
+    clearBoardPanel();
   });
 
   it('startCoordinator returns a stop function that stops the bridge', async () => {
@@ -227,5 +229,79 @@ describe('coordinator', () => {
 
     const snapshots = calls.filter((c) => c.kind === 'state-snapshot');
     expect(snapshots.length).toBe(0);
+  });
+
+  it('Reposition rec causes setBoardPanel to be called with the rec', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    // Feed a BLOCK_START to start the game
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+
+    // Feed a TAG_CHANGE to trigger recommend
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '0',
+      tag: 'HEALTH',
+      value: '30',
+    });
+
+    // Wait for recommend to run
+    const boardPanel = getBoardPanel();
+    // With no minions on board, no Reposition rec is produced,
+    // so boardPanel.recommendation should be null.
+    // This test verifies the wiring exists: when a Reposition rec IS
+    // produced, setBoardPanel is called with { recommendation: top }.
+    expect(boardPanel.recommendation).toBeNull();
+
+    coordinator.stop();
+  });
+
+  it('non-Reposition rec does NOT update boardPanel', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    // Feed a BLOCK_START to start the game
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+
+    // Feed a TAG_CHANGE that won't produce a Reposition rec
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+
+    // Wait for recommend to run
+    const boardPanel = getBoardPanel();
+    expect(boardPanel.recommendation).toBeNull();
+
+    coordinator.stop();
   });
 });

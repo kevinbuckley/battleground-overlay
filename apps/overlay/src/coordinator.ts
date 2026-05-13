@@ -2,7 +2,7 @@ import { recommend } from '@overlay/advisor';
 import { explain } from '@overlay/llm';
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
-import { appendSessionEvent } from '@overlay/shared';
+import { appendSessionEvent, setBoardPanel } from '@overlay/shared';
 import { type Pipeline, createPipeline } from '@overlay/state';
 import type { BrowserWindow } from 'electron';
 import { setAdvice } from './advicePanel';
@@ -46,6 +46,9 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       const top = recs[0];
       if (top) {
         setAdvice(top);
+        if (top.action.type === 'Reposition') {
+          setBoardPanel({ recommendation: top });
+        }
         if (top.needsExplanation === true) {
           explain(top, state)
             .then((text) => setExplanation(text))
