@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 02:45  [DONE]  M31: Game over handler — `applyGameOver` handles `TAG_CHANGE tag=PLAYSTATE value=FINISHED` → sets `state.phase = 'end'`, 3 tests, wired into reducer (commit 4f8b653)
+
 2026-05-13 02:45  [DONE]  M31: Trinket handler — `applyTrinket` handles `TAG_CHANGE tag=TRINKET value=1` on player controller, adds entity to hand, sets `trinketUsed` flag, 4 tests, wired into reducer (commit 63f1235)
 
 2026-05-12 22:15  [DONE]  M10: lobbyWeight total — added `totalLobbyWeight(opponents)` to `packages/advisor/src/lobbyWeight.ts` summing all weights from `lobbyWeights`; 3 new tests (empty=0, equal hp sums to 1, eliminated excluded); exported from index (commit 05604e2)
