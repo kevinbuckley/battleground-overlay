@@ -4,6 +4,7 @@ import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyBuffs } from './reducer/buffs';
 import { applyCardCost } from './reducer/cardCost';
+import { applyCardsDrawn } from './reducer/cardsDrawn';
 import { applyCardsGiven } from './reducer/cardsGiven';
 import { applyCardsInDeck } from './reducer/cardsInDeck';
 import { applyCardsPlayed } from './reducer/cardsPlayed';
@@ -206,6 +207,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_MINIONS_ON_BOARD') {
         return applyMinionsOnBoard(state, event);
+      }
+      if (event.tag === 'NUM_CARDS_DRAWN_THIS_TURN') {
+        return applyCardsDrawn(state, event);
       }
       return applyTripleBonus(state, event);
 
