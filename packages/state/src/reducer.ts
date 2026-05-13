@@ -37,6 +37,7 @@ import { applyOpponentTier } from './reducer/opponentTier';
 import { applyPlayerDeath } from './reducer/playerDeath';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyPoisonous } from './reducer/poisonous';
+import { applyRace } from './reducer/race';
 import { applyReborn } from './reducer/reborn';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
@@ -205,6 +206,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'ELITE') {
         return applyElite(state, event);
+      }
+      if (event.tag === 'RACE') {
+        return applyRace(state, event);
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
