@@ -1,5 +1,13 @@
 import { initialState } from '@overlay/state';
-import { clamp, hpBucket, isShoppingPhase, lerp, round2 } from './utils';
+import {
+  clamp,
+  hpBucket,
+  isShoppingPhase,
+  lerp,
+  minionsOnBoard,
+  opponentMinionsOnBoard,
+  round2,
+} from './utils';
 
 describe('clamp', () => {
   test('returns lo when below range', () => {
@@ -65,5 +73,34 @@ describe('hpBucket', () => {
   test('returns safe when hp >= 15', () => {
     expect(hpBucket(15)).toBe('safe');
     expect(hpBucket(40)).toBe('safe');
+  });
+});
+
+describe('minionsOnBoard', () => {
+  test('returns 0 when board is empty', () => {
+    expect(minionsOnBoard(initialState())).toBe(0);
+  });
+
+  test('returns correct count for 3 minions', () => {
+    const state = initialState();
+    state.player.board.minions = [
+      { entityId: 1, cardId: 'test1' },
+      { entityId: 2, cardId: 'test2' },
+      { entityId: 3, cardId: 'test3' },
+    ];
+    expect(minionsOnBoard(state)).toBe(3);
+  });
+});
+
+describe('opponentMinionsOnBoard', () => {
+  test('returns 0 when opponent board is empty', () => {
+    const state = initialState();
+    state.opponents = [{ ...state.opponents[0], board: { minions: [] } }];
+    expect(opponentMinionsOnBoard(state, 0)).toBe(0);
+  });
+
+  test('returns 0 when index is out of range', () => {
+    const state = initialState();
+    expect(opponentMinionsOnBoard(state, 5)).toBe(0);
   });
 });

@@ -21,3 +21,12 @@ export type HpBucket = 'critical' | 'low' | 'safe';
 export function hpBucket(hp: number): HpBucket {
   return hp < 6 ? 'critical' : hp < 15 ? 'low' : 'safe';
 }
+
+export function minionsOnBoard(state: GameState): number {
+  return state.player.board.minions.length;
+}
+
+export function opponentMinionsOnBoard(state: GameState, index: number): number {
+  if (index < 0 || index >= state.opponents.length) return 0;
+  return state.opponents[index].board.minions.length;
+}
