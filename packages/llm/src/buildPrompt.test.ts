@@ -218,4 +218,19 @@ describe('buildExplainPrompt', () => {
     const usr = (messages as unknown as [(typeof messages)[0], (typeof messages)[1]])[1];
     expect(usr.content).not.toContain('Reason:');
   });
+
+  it('Buy recommendation contains cardId, action type, and score digit', () => {
+    const state = makeState();
+    const recs = [
+      makeRec({
+        action: { type: 'Buy', cardId: 'Minion_456', shopIndex: 1 },
+        score: 0.75,
+      }),
+    ];
+    const messages = buildExplainPrompt(state, recs);
+    const usr = (messages as unknown as [(typeof messages)[0], (typeof messages)[1]])[1];
+    expect(usr.content).toContain('Minion_456');
+    expect(usr.content).toContain('Buy');
+    expect(usr.content).toMatch(/0\.\d+/);
+  });
 });
