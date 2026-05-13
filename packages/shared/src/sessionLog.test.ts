@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { join } from 'node:path';
 import {
   appendSessionEvent,
+  getCurrentSessionFile,
   listSessions,
   pruneOldSessions,
   readSession,
@@ -274,5 +275,21 @@ describe('readSession', () => {
     expect(result[0]).toMatchObject({ kind: 'A' });
     expect(result[1]).toMatchObject({ kind: 'B' });
     expect(result[2]).toMatchObject({ kind: 'C' });
+  });
+});
+
+describe('getCurrentSessionFile', () => {
+  it('returns null before any appendSessionEvent is called', () => {
+    resetSession();
+    expect(getCurrentSessionFile()).toBeNull();
+  });
+
+  it('returns a path after appendSessionEvent is called', () => {
+    resetSession();
+    appendSessionEvent('TEST', { value: 1 });
+    const path = getCurrentSessionFile();
+    expect(path).not.toBeNull();
+    expect(typeof path).toBe('string');
+    expect(path).toMatch(/session-\d{4}-\d{2}-\d{2}T.*\.jsonl$/);
   });
 });

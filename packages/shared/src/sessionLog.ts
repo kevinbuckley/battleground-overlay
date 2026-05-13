@@ -53,6 +53,10 @@ export function pruneOldSessions(keepLast: number, logsDir?: string): void {
   }
 }
 
+export function getCurrentSessionFile(): string | null {
+  return sessionFile;
+}
+
 export function readSession(path: string): SessionEntry[] {
   if (!existsSync(path)) return [];
   const content = readFileSync(path, 'utf8');
