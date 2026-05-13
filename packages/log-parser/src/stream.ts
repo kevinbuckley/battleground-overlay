@@ -1,10 +1,12 @@
-import { watch } from 'chokidar';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
-import type { HsEvent } from './types';
+import { watch } from 'chokidar';
 import { parseBlockEnd, parseBlockStart } from './parseBlock';
 import { parseFullEntity } from './parseFullEntity';
+import { parseShowEntity } from './parseShowEntity';
 import { parseTagChange } from './parseTagChange';
+import { parseZoneChangeList } from './parseZoneChangeList';
+import type { HsEvent } from './types';
 
 function parseSingleLine(line: string): HsEvent | null {
   return (
@@ -12,6 +14,8 @@ function parseSingleLine(line: string): HsEvent | null {
     parseFullEntity(line) ??
     parseBlockStart(line) ??
     parseBlockEnd(line) ??
+    parseZoneChangeList(line) ??
+    parseShowEntity(line) ??
     null
   );
 }

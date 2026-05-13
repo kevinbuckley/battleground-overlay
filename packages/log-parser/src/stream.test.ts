@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtempSync, writeFileSync, appendFileSync, rmSync } from 'node:fs';
+import { appendFileSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { streamEvents } from './stream';
@@ -39,6 +39,48 @@ describe('streamEvents', () => {
 
     handle.close();
     expect(events.some((e) => e.kind === 'TAG_CHANGE')).toBe(true);
+
+    rmSync(dir, { recursive: true });
+  });
+
+  it('picks up ZONE_CHANGE_LIST lines', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, '');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+
+    appendFileSync(file, 'ZONE_CHANGE_LIST ID=42\n');
+
+    const deadline = Date.now() + 2000;
+    while (Date.now() < deadline && !events.some((e) => e.kind === 'ZONE_CHANGE_LIST')) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+
+    handle.close();
+    expect(events.some((e) => e.kind === 'ZONE_CHANGE_LIST')).toBe(true);
+
+    rmSync(dir, { recursive: true });
+  });
+
+  it('picks up SHOW_ENTITY lines', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, '');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+
+    appendFileSync(file, 'SHOW_ENTITY - Updating Entity=5 CardID=CS2_168\n');
+
+    const deadline = Date.now() + 2000;
+    while (Date.now() < deadline && !events.some((e) => e.kind === 'SHOW_ENTITY')) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+
+    handle.close();
+    expect(events.some((e) => e.kind === 'SHOW_ENTITY')).toBe(true);
 
     rmSync(dir, { recursive: true });
   });
