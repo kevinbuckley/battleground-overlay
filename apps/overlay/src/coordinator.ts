@@ -26,6 +26,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
   pipeline.onEvent = (event: HsEvent) => {
+    (opts?.logFn ?? appendSessionEvent)('event', { kind: event.kind });
     originalOnEvent(event);
     const state = pipeline.getState();
     const currentTurn = state.turn;

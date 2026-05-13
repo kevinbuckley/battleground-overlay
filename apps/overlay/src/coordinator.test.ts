@@ -158,10 +158,69 @@ describe('coordinator', () => {
       value: '30',
     });
 
-    expect(calls.length).toBeGreaterThanOrEqual(1);
-    const callArgs = (calls[0]?.payload ?? {}) as { turn: number; action: unknown };
+    const recEntries = calls.filter((c) => c.kind === 'recommendation');
+    expect(recEntries.length).toBeGreaterThanOrEqual(1);
+    const callArgs = (recEntries[0]?.payload ?? {}) as { turn: number; action: unknown };
     expect(typeof callArgs.turn).toBe('number');
     expect(callArgs.action).toBeNull();
+  });
+
+  it('logFn receives an event entry for each onEvent call', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+
+    const eventEntries = calls.filter((c) => c.kind === 'event');
+    expect(eventEntries.length).toBe(1);
+    expect((eventEntries[0]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'TAG_CHANGE' });
+  });
+
+  it('logFn receives one event entry per onEvent call (3 events = 3 entries)', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '2',
+      tag: 'HEALTH',
+      value: '30',
+    });
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: '3',
+      tag: 'HEALTH',
+      value: '25',
+    });
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+
+    const eventEntries = calls.filter((c) => c.kind === 'event');
+    expect(eventEntries.length).toBe(3);
+    expect((eventEntries[0]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'TAG_CHANGE' });
+    expect((eventEntries[1]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'TAG_CHANGE' });
+    expect((eventEntries[2]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'BLOCK_START' });
   });
 
   it('logFn receives a state-snapshot entry when turn increments', () => {
