@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-13 14:00  [DONE]  M38: scoreFreezeWithSim + scoreRerollWithSim — added both functions to `budgetScorer.ts` following the existing `scoreTierUpWithSim` pattern (enumerate candidates, project opponents, score via `scoreCandidate` wrapped in `withBudget`), 6 new tests (3 per function), 756/756 tests pass (commit 64b1687)
 
+2026-05-13 14:30  [DONE]  M38: Wire all three new scorers into recommend() — imported `scoreTierUpWithSim`, `scoreFreezeWithSim`, `scoreRerollWithSim` from `budgetScorer`, replaced heuristic-only TierUp/Freeze/Reroll blocks with simulation-based scoring (sim rec when score > 0, heuristic fallback otherwise), 4 new tests (tier-up, freeze, reroll, fallback), 760/760 tests pass (commit ab65200)
+
 2026-05-13 13:30  [DONE]  M37: opponentPanel update/clear — added 2 tests to `opponentPanel.test.ts`: setOpponentPanel with 2 opponents then getOpponentPanel returns length 2; clearOpponentPanel then getOpponentPanel returns empty; 6/6 tests pass (commit de5ba5a)
 
 2026-05-13 12:30  [DONE]  M37: simScorer with 2 opponents — added test building player board with 2 minions and 2 opponent boards, calls scoreCandidate with n=5, asserts winPct in [0,1] and finite avgHpDelta; 742 pass (commit 8547f2d)
