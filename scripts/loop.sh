@@ -171,6 +171,19 @@ run_supervisor() {
   else
     log "  supervisor: no changes"
   fi
+
+  # Push all accumulated commits (iteration + supervisor) to origin every
+  # supervisor pass. Skips silently if nothing to push or the push fails
+  # (e.g. no network — next pass will retry).
+  local ahead
+  ahead=$(git -C "$REPO" rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)
+  if [[ "$ahead" -gt 0 ]]; then
+    if git -C "$REPO" push origin main >>"$LOG" 2>&1; then
+      log "  ↑ pushed $ahead commit(s) to origin/main"
+    else
+      log "  ⚠ push failed (will retry next supervisor pass)"
+    fi
+  fi
 }
 
 # ---------------------------------------------------------------------------
