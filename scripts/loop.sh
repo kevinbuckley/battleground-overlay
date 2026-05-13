@@ -20,6 +20,7 @@ set -euo pipefail
 
 REPO="$(cd "$(dirname "$0")/.." && pwd)"
 PROMPT_FILE="$REPO/scripts/loop-prompt.md"
+SUPERVISE_PROMPT_FILE="$REPO/scripts/supervise-prompt.md"
 MODEL="mlx//Users/kbux/.cache/mlx/Qwen3.6-35B-A3B-4bit"
 MLX_URL="http://localhost:8080/v1/models"
 
@@ -35,6 +36,8 @@ MAX_TIME_HOURS=12
 DEBUG=0
 ITER_TIMEOUT=600
 STUCK_THRESHOLD=3
+SUPERVISE_EVERY=3
+SUPERVISE_TIMEOUT=180
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -111,6 +114,63 @@ inject_recovery_task() {
     printf '\n%s\n' "$next_task" >> "$REPO/docs/loop-backlog.md"
   fi
   log "  → Recovery task injected: $next_task"
+}
+
+# ---------------------------------------------------------------------------
+# Supervisor — runs every $SUPERVISE_EVERY iterations. Constrained to
+# only touch docs/loop-backlog.md; the guard below reverts anything else.
+# ---------------------------------------------------------------------------
+run_supervisor() {
+  local n="$1"
+  if [[ ! -f "$SUPERVISE_PROMPT_FILE" ]]; then
+    log "  supervisor: prompt file missing — skipping"
+    return 0
+  fi
+
+  log "  → supervisor pass (after iter $n)"
+  local pre_head
+  pre_head=$(git -C "$REPO" rev-parse HEAD)
+
+  local sup_log="$LOG_DIR/supervise-$STAMP-$(printf '%03d' "$n").log"
+  local prompt
+  prompt=$(cat "$SUPERVISE_PROMPT_FILE")
+
+  cd "$REPO"
+  gtimeout "$SUPERVISE_TIMEOUT" opencode run -m "$MODEL" "$prompt" \
+    > "$sup_log" 2>&1 || log "  supervisor: opencode exited non-zero (continuing)"
+
+  # Revert any uncommitted non-backlog changes the supervisor made.
+  local dirty_bad
+  dirty_bad=$(git -C "$REPO" status --porcelain \
+    | awk '{print $2}' \
+    | grep -v '^docs/loop-backlog\.md$' \
+    | grep -v '^\.claude/' \
+    || true)
+  if [[ -n "$dirty_bad" ]]; then
+    log "  ⚠ supervisor touched non-backlog files (uncommitted): reverting"
+    git -C "$REPO" checkout -- . 2>/dev/null || true
+    git -C "$REPO" clean -fd packages/ apps/ scripts/ 2>/dev/null || true
+  fi
+
+  # Revert any committed changes that touched files outside docs/loop-backlog.md.
+  local post_head
+  post_head=$(git -C "$REPO" rev-parse HEAD)
+  if [[ "$post_head" != "$pre_head" ]]; then
+    local commit_bad
+    commit_bad=$(git -C "$REPO" diff --name-only "$pre_head" "$post_head" \
+      | grep -v '^docs/loop-backlog\.md$' \
+      || true)
+    if [[ -n "$commit_bad" ]]; then
+      log "  ⚠ supervisor commit touched non-backlog files — resetting to pre-supervisor HEAD"
+      git -C "$REPO" reset --hard "$pre_head" >/dev/null
+    else
+      local summary
+      summary=$(grep -oE 'SUPERVISE: .*' "$sup_log" | tail -1 || echo 'SUPERVISE: (no marker)')
+      log "  ✓ $summary"
+    fi
+  else
+    log "  supervisor: no changes"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -230,6 +290,7 @@ log "  max iters       = $MAX_ITERS"
 log "  max time        = ${MAX_TIME_HOURS}h"
 log "  sleep           = ${SLEEP_BETWEEN}s"
 log "  stuck threshold = $STUCK_THRESHOLD"
+log "  supervise every = $SUPERVISE_EVERY iters"
 log "  log             = $LOG"
 log "  fixed log       = $FIXED_LOG"
 
@@ -257,6 +318,11 @@ for ((i=1; i<=MAX_ITERS; i++)); do
     break
   fi
   run_iteration "$i" || log "  (run_iteration error swallowed; continuing)"
+
+  if (( i % SUPERVISE_EVERY == 0 )); then
+    run_supervisor "$i" || log "  (run_supervisor error swallowed; continuing)"
+  fi
+
   if (( i < MAX_ITERS )); then
     [[ -f "$STOP_FILE" ]] && { log "Stop file detected after iter $i."; rm -f "$STOP_FILE"; break; }
     log "  sleeping ${SLEEP_BETWEEN}s..."
