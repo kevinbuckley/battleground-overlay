@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 22:00  [DONE]  M28: scoreBuysWithSim n=1 smoke test — adds test calling scoreBuysWithSim with n=1, budgetMs=5000, verifies score >= 0 and action.type === 'Buy' (commit 66d8caa)
 
+2026-05-12 22:15  [DONE]  M8: Preload channel whitelist test — 2 new tests: verify only expected channels registered (recs-update, explanation-update), verify callbacks invoked when channels fire (commit 79819c7)
+
 2026-05-12 22:00  [DONE]  M7: OpponentPredictor scaling — `predictOpponentBoard` scales minion attack/health by `1 + (turn-4)*0.1` capped at 1.5x when turn > 4; 5 tests (commit e1253f5)
 
 2026-05-12 22:00  [DONE]  M27: scoreSellCandidate — `scoreSellCandidate(projectedBoard, player, opponents, n)` wraps `scoreCandidate` for sell action evaluation; 2 tests (commit ddcfb46)
