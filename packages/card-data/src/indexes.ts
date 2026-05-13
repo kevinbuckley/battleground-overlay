@@ -69,6 +69,28 @@ export function getByDbfIdStr(): Map<string, Card> {
   return byIdCache;
 }
 
+let byTechLevelCache: Map<number, Card[]> | null = null;
+
+export function getCardsByTechLevel(level: number): Card[] {
+  if (!byTechLevelCache) {
+    const map = new Map<number, Card[]>();
+    for (const card of loadCards()) {
+      if (card.techLevel) {
+        const existing = map.get(card.techLevel) ?? [];
+        existing.push(card);
+        map.set(card.techLevel, existing);
+      }
+    }
+    byTechLevelCache = map;
+  }
+  let result = byTechLevelCache.get(level);
+  if (!result) {
+    result = [];
+    byTechLevelCache.set(level, result);
+  }
+  return result;
+}
+
 export function getCardById(cardId: string): Card | null {
   return getByDbfIdStr().get(cardId) ?? null;
 }

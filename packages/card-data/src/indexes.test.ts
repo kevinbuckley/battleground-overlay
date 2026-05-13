@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'bun:test';
-import { getByDbfId, getCard, getCardsByTier, getCardsByTribe } from './indexes';
+import {
+  getByDbfId,
+  getCard,
+  getCardsByTechLevel,
+  getCardsByTier,
+  getCardsByTribe,
+} from './indexes';
 
 describe('getCard', () => {
   it('returns null for unknown dbfId', () => {
@@ -32,5 +38,23 @@ describe('getCardsByTier', () => {
     const a = getCardsByTier(1);
     const b = getCardsByTier(1);
     expect(a).toBe(b);
+  });
+});
+
+describe('getCardsByTechLevel', () => {
+  it('returns empty array when no cards loaded', () => {
+    expect(getCardsByTechLevel(1)).toEqual([]);
+  });
+
+  it('returns the same array on repeated calls for same tech level', () => {
+    const a = getCardsByTechLevel(1);
+    const b = getCardsByTechLevel(1);
+    expect(a).toBe(b);
+  });
+
+  it('lazy init does not double-build', () => {
+    const before = getCardsByTechLevel(7);
+    const after = getCardsByTechLevel(7);
+    expect(before).toBe(after);
   });
 });
