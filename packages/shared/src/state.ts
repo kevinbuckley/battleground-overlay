@@ -45,6 +45,7 @@ export interface PlayerState {
   pendingTriple: string | null;
   heroPowerUsedThisTurn: boolean;
   handSize: number;
+  trinketUsed: boolean;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

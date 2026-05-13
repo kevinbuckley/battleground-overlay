@@ -20,6 +20,7 @@ export function initialState(): GameState {
       pendingTriple: null,
       heroPowerUsedThisTurn: false,
       handSize: 0,
+      trinketUsed: false,
       entityRegistry: new Map(),
     },
     opponents: [],

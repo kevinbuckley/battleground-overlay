@@ -29,6 +29,7 @@ import { applyShopSell } from './reducer/shopSell';
 import { applySilence } from './reducer/silence';
 import { applyTaunt } from './reducer/taunt';
 import { applyTierUp } from './reducer/tierUp';
+import { applyTrinket } from './reducer/trinket';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
 import { applyWindfury } from './reducer/windfury';
@@ -149,6 +150,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CARDS_IN_HAND') {
         return applyHandSize(state, event);
+      }
+      if (event.tag === 'TRINKET') {
+        return applyTrinket(state, event);
       }
       return applyTripleBonus(state, event);
 
