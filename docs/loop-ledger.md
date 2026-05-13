@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-13 21:00  [DONE]  M43: Document resolveCombatPhase status — added top-of-file comment to `packages/state/src/reducer/combatPhase.ts` noting it's not wired into the reducer dispatch; 7/7 tests pass (commit 7f5b49f)
+
 2026-05-13 20:30  [DONE]  M43: Remove applyBuffs duplicate — deleted `packages/state/src/reducer/buffs.ts` and `buffs.test.ts` (identical to `applyDivineShield`), 810 tests pass (commit dec764d)
 
 2026-05-13 20:00  [DONE]  M43: Remove applyTier duplicate — deleted `packages/state/src/reducer/tier.ts` and `tier.test.ts` (redundant with `applyTierUp`), 816 tests pass (commit 8e916e2)
