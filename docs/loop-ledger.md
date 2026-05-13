@@ -7,6 +7,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 22:30  [DONE]  M7: Hotkeys will-quit handler — `registerHotkeys` calls `app.on('will-quit', ...)` to unregister all shortcuts; `AppInterface` extended with `on` method; 1 new test + 2 existing test mocks fixed (commit 2b0a3f7)
 
+2026-05-12 22:45  [DONE]  M7: damageWidget zero guard — added `avgHpDelta === 0 && winPct === 0` early return + `avgHpDelta < 0` minDmg clamp to 0; updated existing full-loss test to match new behavior; 2 new tests (zero scoreResult, negative avgHpDelta); 5/5 tests pass (commit ec2d458)
+
 2026-05-12 22:15  [DONE]  M8: Preload channel whitelist test — 2 new tests: verify only expected channels registered (recs-update, explanation-update), verify callbacks invoked when channels fire (commit 79819c7)
 
 2026-05-12 22:00  [DONE]  M7: OpponentPredictor scaling — `predictOpponentBoard` scales minion attack/health by `1 + (turn-4)*0.1` capped at 1.5x when turn > 4; 5 tests (commit e1253f5)
