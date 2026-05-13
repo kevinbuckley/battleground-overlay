@@ -209,4 +209,32 @@ describe('LlmCache', () => {
     expect(cache.size).toBe(0);
     expect(cache.get(baseState)).toBeUndefined();
   });
+
+  it('deduplicates across different GameState objects with the same hash', () => {
+    const cache = new LlmCache();
+    // Two distinct objects with identical hash-relevant fields
+    const state1: GameState = {
+      ...baseState,
+      player: {
+        ...baseState.player,
+        trinketUsed: true,
+        cardsPlayedThisTurn: 5,
+        goldSpentThisTurn: 3,
+      },
+    };
+    const state2: GameState = {
+      ...baseState,
+      player: {
+        ...baseState.player,
+        trinketUsed: false,
+        cardsPlayedThisTurn: 0,
+        goldSpentThisTurn: 99,
+      },
+    };
+    // Hash-relevant fields are identical (turn, phase, tier, hp, gold, board, opponents)
+    expect(hashState(state1)).toBe(hashState(state2));
+    // Cache should treat them as the same key
+    cache.set(state1, 'cached-text');
+    expect(cache.get(state2)).toBe('cached-text');
+  });
 });
