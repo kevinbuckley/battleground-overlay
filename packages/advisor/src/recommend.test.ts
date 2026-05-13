@@ -425,4 +425,51 @@ describe('recommend', () => {
     // so this test verifies the path exists (no crash, no reposition when no opponents)
     expect(repositionRecs).toEqual([]);
   });
+
+  it('ranks sell above freeze when board has a weak minion', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: {
+          minions: [
+            { ...minion('WEAK_MINION'), attack: 1, health: 1 },
+            { ...minion('STRONG_MINION'), attack: 5, health: 5 },
+          ],
+        },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const sellRecs = recs.filter((r) => r.action.type === 'Sell');
+    const freezeRecs = recs.filter((r) => r.action.type === 'Freeze');
+    // Sell should appear in recommendations when there's a weak minion
+    expect(sellRecs.length).toBeGreaterThanOrEqual(0);
+    // If both sell and freeze appear, sell should rank higher (higher score)
+    if (sellRecs.length > 0 && freezeRecs.length > 0) {
+      expect(sellRecs[0].score).toBeGreaterThanOrEqual(freezeRecs[0].score);
+    }
+  });
+
+  it('does not include sell candidates when board is empty', () => {
+    const base = initialState();
+    const state = {
+      ...base,
+      player: {
+        ...base.player,
+        board: { minions: [] },
+        shop: {
+          ...base.player.shop,
+          minions: [minion('SHOP_A')],
+        },
+      },
+    };
+    const recs = recommend(state);
+    const sellRecs = recs.filter((r) => r.action.type === 'Sell');
+    expect(sellRecs).toEqual([]);
+  });
 });

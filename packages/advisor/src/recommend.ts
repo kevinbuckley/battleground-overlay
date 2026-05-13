@@ -1,5 +1,5 @@
 import type { GameState, Recommendation } from '@overlay/shared';
-import { scoreBuysWithSim } from './budgetScorer';
+import { scoreBuysWithSim, scoreSellsWithSim } from './budgetScorer';
 import { freezeMinion } from './heuristics/freezeMinion';
 import { rerollScore } from './heuristics/rerollScore';
 import { sellScore } from './heuristics/sellScore';
@@ -68,7 +68,11 @@ export function recommend(state: GameState): Recommendation[] {
         }
       : null;
 
-  const sellRecs: Recommendation[] = boardMinions
+  // Simulation-based sell scores (primary source)
+  const simSellRecs = scoreSellsWithSim(state, 50, 2000);
+
+  // Heuristic-based sell scores (fallback when sim returns nothing)
+  const heuristicSellRecs: Recommendation[] = boardMinions
     .map((minion, idx) => {
       const score = sellScore(minion, boardMinions, state);
       if (score < 0.5) return null;
@@ -80,6 +84,12 @@ export function recommend(state: GameState): Recommendation[] {
       } as Recommendation;
     })
     .filter((r): r is Recommendation => r !== null);
+
+  // Use sim sell recs only when they have actual simulation signal (score > 0);
+  // otherwise fall back to heuristics so existing behavior is preserved.
+  const sellRecs: Recommendation[] = simSellRecs.some((r) => r.score > 0)
+    ? simSellRecs
+    : heuristicSellRecs;
 
   const freezeRec: Recommendation | null = (() => {
     const freezeAction = freezeMinion(state);

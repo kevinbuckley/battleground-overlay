@@ -1,7 +1,7 @@
 import type { GameState, Recommendation } from '@overlay/shared';
-import { enumerateBuyCandidates } from './candidates';
+import { enumerateBuyCandidates, enumerateSellCandidates } from './candidates';
 import { predictOpponentBoard } from './opponentPredictor';
-import { scoreCandidate } from './simScorer';
+import { scoreCandidate, scoreSellCandidate } from './simScorer';
 import { withBudget } from './withBudget';
 
 const TOP_N = 3;
@@ -41,6 +41,48 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
           ? 'projected win rate above 50%'
           : result.winPct > 0
             ? 'projected win rate below 50%'
+            : 'no simulation data',
+    };
+  });
+
+  return scored.sort((a, b) => b.score - a.score).slice(0, TOP_N);
+}
+
+/**
+ * Score all shop sell candidates via simulation with a time budget.
+ *
+ * For each board minion, enumerates sell candidates, scores each via
+ * `scoreSellCandidate` wrapped in `withBudget`, and returns the top N
+ * sorted by winPct.
+ *
+ * When n=0 (no simulations), returns recommendations with score 0
+ * so the heuristic path can still produce output.
+ */
+export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number): Recommendation[] {
+  const candidates = enumerateSellCandidates(state);
+  const { player, opponents, turn } = state;
+
+  const projectedOpponents = opponents.map((o) => ({
+    ...o,
+    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+  }));
+
+  const scored: Recommendation[] = candidates.map((c) => {
+    const result = withBudget(
+      () => scoreSellCandidate(c.projectedBoard, player, projectedOpponents, n),
+      budgetMs,
+      { winPct: 0, avgHpDelta: 0 },
+    );
+
+    return {
+      action: c.action,
+      score: result.winPct,
+      confidence: Math.min(1, result.winPct + 0.05),
+      reason:
+        result.winPct > 0.5
+          ? 'projected win rate above 50% after selling'
+          : result.winPct > 0
+            ? 'projected win rate below 50% after selling'
             : 'no simulation data',
     };
   });
