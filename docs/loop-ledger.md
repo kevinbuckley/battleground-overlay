@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-14 00:00  [DONE]  M47: Renderer opponent-eliminated indicator — extended `onOpponents` in `renderer.ts` to count eliminated opponents and write `Alive: N/total` to `#opponent-alive`; added `<div id="opponent-alive">` to `renderer.html`; 2 new tests (5 opponents 2 eliminated → `Alive: 3/5`, all eliminated → `Alive: 0/3`); 24/24 tests pass (commit bc74ab4)
+
 2026-05-14 00:00  [DONE]  M47: Renderer board panel stat hint — extended `onBoard` in `renderer.ts` to write highest-attack minion to `#board-best-attack` as `Best: <attack>/<health>`; added `<div id="board-best-attack">` to `renderer.html`; 2 new tests (2-minion board with attacks 3,5 → `Best: 5/2`, empty minions → empty textContent); 22/22 tests pass (commit d201729)
 
 2026-05-14 00:00  [DONE]  M47: Renderer damage min/max display — updated `onDamage` handler in `renderer.ts` to format `#damage-forecast` as `Win: <P>% (<min>-<max> dmg)` with fallback to 0 when minDmg/maxDmg are missing; 2 new tests (min/max dmg included, missing fields fallback to 0) + 1 existing test updated; 21/21 tests pass (commit f64bf62)
