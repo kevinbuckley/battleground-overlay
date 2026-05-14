@@ -7,6 +7,11 @@ describe('weightedWinScore', () => {
     expect(result).toBe(0);
   });
 
+  it('returns 0 when weights array is all zeros (3 elements)', () => {
+    const result = weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, [0, 0, 0]);
+    expect(result).toBe(0);
+  });
+
   it('returns winPct * sum(weights) when all weights are equal', () => {
     const result = weightedWinScore({ winPct: 0.6, avgHpDelta: 0 }, [0.5, 0.5]);
     expect(result).toBeCloseTo(0.6);

@@ -127,6 +127,39 @@ describe('lobbyWeights', () => {
     expect(lobbyWeights([])).toEqual([]);
   });
 
+  it('returns 0 for all when all are eliminated', () => {
+    const opponents = [
+      {
+        entityId: 1,
+        playerId: 1,
+        hero: { entityId: 10, cardId: 'HERO1', hp: 30, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: true,
+      },
+      {
+        entityId: 2,
+        playerId: 2,
+        hero: { entityId: 20, cardId: 'HERO2', hp: 15, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: true,
+      },
+      {
+        entityId: 3,
+        playerId: 3,
+        hero: { entityId: 30, cardId: 'HERO3', hp: 15, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: true,
+      },
+    ];
+
+    const weights = lobbyWeights(opponents);
+    expect(weights).toEqual([0, 0, 0]);
+    expect(totalLobbyWeight(opponents)).toBe(0);
+  });
+
   it('returns 0 for empty opponents list', () => {
     expect(totalLobbyWeight([])).toBe(0);
   });
