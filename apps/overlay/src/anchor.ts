@@ -83,3 +83,15 @@ export function anchorToHearthstone(
 export function getHearthstoneBounds(): WindowBounds | null {
   return findHearthstoneBounds();
 }
+
+export function isHearthstoneRunning(
+  execFn: (cmd: string) => string = (cmd: string) =>
+    execSync(cmd, { encoding: 'utf-8' }).toString(),
+): boolean {
+  try {
+    const result = execFn(`pgrep -x ${HEARTHSTONE_PROCESS_NAME}`);
+    return result.trim().length > 0;
+  } catch {
+    return false;
+  }
+}

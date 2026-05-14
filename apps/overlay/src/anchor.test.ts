@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { getHearthstoneBounds } from './anchor';
+import { getHearthstoneBounds, isHearthstoneRunning } from './anchor';
 
 describe('anchor', () => {
   it('getHearthstoneBounds returns null when Hearthstone is not running', () => {
@@ -23,5 +23,22 @@ describe('anchor', () => {
     expect(() => getHearthstoneBounds()).not.toThrow();
     expect(() => getHearthstoneBounds()).not.toThrow();
     expect(() => getHearthstoneBounds()).not.toThrow();
+  });
+
+  it('isHearthstoneRunning returns true when pgrep returns a PID', () => {
+    const result = isHearthstoneRunning(() => '1234\n');
+    expect(result).toBe(true);
+  });
+
+  it('isHearthstoneRunning returns false when pgrep returns empty string', () => {
+    const result = isHearthstoneRunning(() => '');
+    expect(result).toBe(false);
+  });
+
+  it('isHearthstoneRunning returns false when pgrep throws', () => {
+    const result = isHearthstoneRunning(() => {
+      throw new Error('not found');
+    });
+    expect(result).toBe(false);
   });
 });
