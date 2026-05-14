@@ -585,8 +585,8 @@ to `loop-ledger.md`.
 ## M49 — Shared utilities deeper coverage
 
 - [x] [S] `clamp` boundary tests — in `packages/shared/src/utils.test.ts`, add 3 tests: `clamp(5,5,10) === 5`, `clamp(10,5,10) === 10`, `clamp(NaN,1,3)` returns NaN or 1 (assert whichever matches implementation) — `packages/shared/src/utils.test.ts` only (commit 6d4ed6e)
-- [ ] [S] `lerp` extremes — in `packages/shared/src/utils.test.ts`, add 2 tests: `lerp(0, 10, 0) === 0`, `lerp(0, 10, 1) === 10`, `lerp(0, 10, 0.5) === 5` — `packages/shared/src/utils.test.ts` only
-- [ ] [S] `round2` precision — in `packages/shared/src/utils.test.ts`, add 2 tests: `round2(1.235) === 1.24`, `round2(0) === 0` — `packages/shared/src/utils.test.ts` only
+- [x] [S] `lerp` extremes — in `packages/shared/src/utils.test.ts`, add 2 tests: `lerp(0, 10, 0) === 0`, `lerp(0, 10, 1) === 10`, `lerp(0, 10, 0.5) === 5` — `packages/shared/src/utils.test.ts` only (already exists at lines 27-38 with equivalent values)
+- [x] [S] `round2` precision — in `packages/shared/src/utils.test.ts`, add 2 tests: `round2(1.235) === 1.24`, `round2(0) === 0` — `packages/shared/src/utils.test.ts` only (commit 31e845b)
 - [ ] [S] `hpBucket` boundaries — in `packages/shared/src/utils.test.ts`, add 3 tests: `hpBucket(5) === 'critical'`, `hpBucket(6) === 'low'`, `hpBucket(15) === 'safe'` — `packages/shared/src/utils.test.ts` only
 - [ ] [S] `isShoppingPhase` non-shopping phases — in `packages/shared/src/utils.test.ts`, add 2 tests: state with `phase: 'combat'` returns `false`; state with `phase: 'shopping'` returns `true` — `packages/shared/src/utils.test.ts` only
 - [ ] [S] `getWorstThreat` all-eliminated test — in `packages/shared/src/opponentPanel.test.ts`, add 1 test: `getWorstThreat` over 3 eliminated opponents returns `null` (no live threats) — `packages/shared/src/opponentPanel.test.ts` only
