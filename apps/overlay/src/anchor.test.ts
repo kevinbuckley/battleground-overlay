@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { getHearthstoneBounds, isHearthstoneRunning } from './anchor';
+import { anchorToHearthstoneWithRetry, getHearthstoneBounds, isHearthstoneRunning } from './anchor';
 
 describe('anchor', () => {
   it('getHearthstoneBounds returns null when Hearthstone is not running', () => {
@@ -40,5 +40,43 @@ describe('anchor', () => {
       throw new Error('not found');
     });
     expect(result).toBe(false);
+  });
+
+  it('anchorToHearthstoneWithRetry returns true if first attempt succeeds', async () => {
+    const mockWin = {} as unknown as import('electron').BrowserWindow;
+    const anchorFn = () => true;
+    const result = await anchorToHearthstoneWithRetry(
+      mockWin,
+      { maxAttempts: 3, retryMs: 10 },
+      anchorFn,
+    );
+    expect(result).toBe(true);
+  });
+
+  it('anchorToHearthstoneWithRetry returns false after maxAttempts=1 when attempt returns false', async () => {
+    const mockWin = {} as unknown as import('electron').BrowserWindow;
+    const anchorFn = () => false;
+    const result = await anchorToHearthstoneWithRetry(
+      mockWin,
+      { maxAttempts: 1, retryMs: 10 },
+      anchorFn,
+    );
+    expect(result).toBe(false);
+  });
+
+  it('anchorToHearthstoneWithRetry calls anchorFn exactly 3 times when maxAttempts=3 and all return false', async () => {
+    const mockWin = {} as unknown as import('electron').BrowserWindow;
+    let callCount = 0;
+    const anchorFn = () => {
+      callCount++;
+      return false;
+    };
+    const result = await anchorToHearthstoneWithRetry(
+      mockWin,
+      { maxAttempts: 3, retryMs: 1 },
+      anchorFn,
+    );
+    expect(result).toBe(false);
+    expect(callCount).toBe(3);
   });
 });

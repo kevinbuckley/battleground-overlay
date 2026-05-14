@@ -95,3 +95,28 @@ export function isHearthstoneRunning(
     return false;
   }
 }
+
+export async function anchorToHearthstoneWithRetry(
+  win: BrowserWindow,
+  opts?: {
+    maxAttempts?: number;
+    retryMs?: number;
+    offsets?: { x?: number; y?: number; widthOffset?: number; heightOffset?: number };
+  },
+  anchorFn?: typeof anchorToHearthstone,
+): Promise<boolean> {
+  const maxAttempts = opts?.maxAttempts ?? 5;
+  const retryMs = opts?.retryMs ?? 1000;
+  const offsets = opts?.offsets;
+  const fn = anchorFn ?? anchorToHearthstone;
+
+  for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const success = fn(win, offsets);
+    if (success) return true;
+    if (attempt < maxAttempts - 1) {
+      await new Promise((resolve) => setTimeout(resolve, retryMs));
+    }
+  }
+
+  return false;
+}
