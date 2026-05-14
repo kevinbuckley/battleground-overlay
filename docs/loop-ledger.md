@@ -26,9 +26,9 @@
 
 2026-05-14 00:00  [DONE]  M52: loadSettings empty-string path — added early-return guard `if (path === '')` to `loadSettings` in `settings.ts` + 1 test asserting `loadSettings('')` deep-equals `defaultSettings()`; 873/873 tests pass (commit 8e22c1c)
 
----
+2026-05-14 00:00  [DONE]  M53: waitForLogFile poller — created `packages/log-parser/src/waitForLogFile.ts` exporting async poller with configurable intervalMs/timeoutMs/existsFn; 3 tests (immediate true, timeout false, counter-based true); exported from index; 876/876 tests pass (commit 8b5b598)
 
-Append-only log of tasks the autonomous builder has picked, with
+---
 status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M47: Renderer opponent-eliminated indicator — extended `onOpponents` in `renderer.ts` to count eliminated opponents and write `Alive: N/total` to `#opponent-alive`; added `<div id="opponent-alive">` to `renderer.html`; 2 new tests (5 opponents 2 eliminated → `Alive: 3/5`, all eliminated → `Alive: 0/3`); 24/24 tests pass (commit bc74ab4)
