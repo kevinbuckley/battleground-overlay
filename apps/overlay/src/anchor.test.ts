@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import {
   anchorToHearthstoneWithRetry,
+  formatAnchorStatusBanner,
   getAnchorStatus,
   getHearthstoneBounds,
   isHearthstoneRunning,
@@ -101,5 +102,17 @@ describe('anchor', () => {
     expect(getAnchorStatus()).toBe('failed');
     setAnchorStatus('anchored');
     expect(getAnchorStatus()).toBe('anchored');
+  });
+
+  it('formatAnchorStatusBanner returns empty string for anchored', () => {
+    expect(formatAnchorStatusBanner('anchored')).toBe('');
+  });
+
+  it('formatAnchorStatusBanner returns waiting message for waiting', () => {
+    expect(formatAnchorStatusBanner('waiting')).toBe('Waiting for Hearthstone…');
+  });
+
+  it('formatAnchorStatusBanner returns not detected message for failed', () => {
+    expect(formatAnchorStatusBanner('failed')).toBe('Hearthstone not detected — overlay disabled');
   });
 });

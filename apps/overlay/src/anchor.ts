@@ -130,3 +130,9 @@ export async function anchorToHearthstoneWithRetry(
 
   return false;
 }
+
+export function formatAnchorStatusBanner(s: 'waiting' | 'anchored' | 'failed'): string {
+  if (s === 'anchored') return '';
+  if (s === 'waiting') return 'Waiting for Hearthstone…';
+  return 'Hearthstone not detected — overlay disabled';
+}
