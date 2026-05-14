@@ -42,6 +42,14 @@ describe('getCardsByTier', () => {
     const b = getCardsByTier(1);
     expect(a).toBe(b);
   });
+
+  it('returns empty array for tier 0 (below minimum)', () => {
+    expect(getCardsByTier(0)).toEqual([]);
+  });
+
+  it('returns empty array for tier 7 (beyond maximum)', () => {
+    expect(getCardsByTier(7)).toEqual([]);
+  });
 });
 
 describe('getCardsByTechLevel', () => {
