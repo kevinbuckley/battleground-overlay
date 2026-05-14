@@ -54,6 +54,17 @@ describe('patchDiff', () => {
     expect(sc.newStat).toBe('3|4|5');
   });
 
+  it('returns empty arrays when passing the same array twice', () => {
+    const cards = [
+      makeCard({ dbfId: 1, id: 'A' }),
+      makeCard({ dbfId: 2, id: 'B', cost: 3, attack: 4, health: 5 }),
+    ];
+    const diff = patchDiff(cards, cards);
+    expect(diff.added).toEqual([]);
+    expect(diff.removed).toEqual([]);
+    expect(diff.statChanges).toEqual([]);
+  });
+
   it('combines added, removed, and stat changes in one call', () => {
     const oldCards: Card[] = [
       makeCard({ dbfId: 1, id: 'KEEP' }),
