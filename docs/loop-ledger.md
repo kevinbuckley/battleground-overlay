@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-14 00:00  [DONE]  M46: patchDiff no-change test — added 1 test to `patchDiff.test.ts` asserting that `patchDiff(cards, cards)` (same array twice) returns `{ added: [], removed: [], statChanges: [] }`; 837/837 tests pass (commit 893bf3e)
+
 2026-05-14 00:00  [DONE]  M46: getCardsByTribe case-sensitivity test — added 1 test to `indexes.test.ts` asserting that `getCardsByTribe('Beast')` and `getCardsByTribe('beast')` return different arrays (case-sensitive lookup); 835/835 tests pass (commit e00761d)
 
 2026-05-14 00:00  [DONE]  M46: isBattlegroundsMinion SPELL test — added `type?: string` to Card interface + 1 test in `isBattlegroundsPool.test.ts` asserting `isBattlegroundsMinion({ type: 'SPELL' })` returns false; 836/836 tests pass (commit 5ac352e)

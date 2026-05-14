@@ -555,7 +555,7 @@ to `loop-ledger.md`.
 - [x] [S] `getCardsByTier` boundary tests — in `packages/card-data/src/indexes.test.ts`, add 2 tests: `getCardsByTier(0)` returns `[]`; `getCardsByTier(7)` returns `[]` (beyond max tier) — `packages/card-data/src/indexes.test.ts` only (commit 8421eb4)
 - [x] [S] `getCardsByTribe` case-sensitivity test — in `packages/card-data/src/indexes.test.ts`, add 1 test: `getCardsByTribe('murloc').length === getCardsByTribe('MURLOC').length` (verify documented behavior — write whichever case matches the implementation) — `packages/card-data/src/indexes.test.ts` only (commit e00761d)
 - [x] [S] `isBattlegroundsMinion` non-minion test — in `packages/card-data/src/isBattlegroundsPool.test.ts`, add 1 test: a `Card` with `type: 'SPELL'` returns `false` from `isBattlegroundsMinion` — `packages/card-data/src/isBattlegroundsPool.test.ts` only (commit 5ac352e)
-- [ ] [S] `patchDiff` no-change test — in `packages/card-data/src/patchDiff.test.ts`, add 1 test: `patchDiff(cards, cards)` (same array twice) returns an object whose `added`, `removed`, and `changed` arrays are all empty — `packages/card-data/src/patchDiff.test.ts` only
+- [x] [S] `patchDiff` no-change test — in `packages/card-data/src/patchDiff.test.ts`, add 1 test: `patchDiff(cards, cards)` (same array twice) returns an object whose `added`, `removed`, and `statChanges` arrays are all empty — `packages/card-data/src/patchDiff.test.ts` only (commit 893bf3e)
 - [ ] [S] `patchVersion` returns non-empty string — in `packages/card-data/src/patchVersion.test.ts`, add 1 test: `patchVersion()` returns a string with length > 0 — `packages/card-data/src/patchVersion.test.ts` only
 
 ## M47 — Renderer & UI polish
