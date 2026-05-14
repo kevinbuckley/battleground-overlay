@@ -17,8 +17,8 @@ Hearthstone Battlegrounds advice overlay at
 
 ## Critical anti-loop rules — READ FIRST
 
-You have **600 seconds** for this iteration. After ~5 minutes you
-should have committed or reverted. Avoid these failure modes:
+You have **720 seconds** (12 min) for this iteration. After ~7 minutes
+you should have committed or reverted. Avoid these failure modes:
 
 1. **The "let me look at..." analysis loop.** If you write the
    phrase "let me look at" or "let me check" more than 3 times in

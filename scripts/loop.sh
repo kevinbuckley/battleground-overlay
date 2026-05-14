@@ -34,10 +34,14 @@ MAX_ITERS=999
 SLEEP_BETWEEN=5
 MAX_TIME_HOURS=12
 DEBUG=0
-ITER_TIMEOUT=600
+ITER_TIMEOUT=720
 STUCK_THRESHOLD=3
 SUPERVISE_EVERY=3
 SUPERVISE_TIMEOUT=180
+
+# Tracks the last successfully-extracted CHOSEN TASK across iterations, so
+# we can detect when the model picks the same failing task back-to-back.
+LAST_CHOSEN=""
 
 while [[ $# -gt 0 ]]; do
   case $1 in
@@ -88,32 +92,107 @@ preflight() {
 # ---------------------------------------------------------------------------
 # Recovery — when 3 iterations fail in a row, inject a small concrete task
 # ---------------------------------------------------------------------------
-inject_recovery_task() {
-  local count="$1"
-  log "  ⚠ STUCK: $count consecutive fails — injecting a recovery task"
-  local fallbacks=(
-    "- [ ] [S] RECOVERY: Add \`clamp(n: number, min: number, max: number): number\` to \`packages/shared/src/utils.ts\` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test"
-    "- [ ] [S] RECOVERY: Add \`isShoppingPhase(state: GameState): boolean\` to \`packages/shared/src/utils.ts\` returning state.phase==='shopping'; test two cases — packages/shared/src/utils.ts update + test"
-    "- [ ] [S] RECOVERY: Add \`hpBucket(hp: number): 'critical'|'low'|'safe'\` to \`packages/shared/src/utils.ts\` (critical<6, low<15, safe otherwise); 3 tests — packages/shared/src/utils.ts update + test"
-    "- [ ] [S] RECOVERY: Add \`parseLine(line: string): HsEvent | null\` to \`packages/log-parser/src/parseLine.ts\` that tries each parser in order and returns the first non-null; test with a TAG_CHANGE line and a garbage line — packages/log-parser/src/parseLine.ts + test"
-    "- [ ] [S] RECOVERY: Add \`formatRecommendation(rec: Recommendation): string\` to \`packages/shared/src/utils.ts\` returning a short human-readable string like 'Buy Murloc Tidecaller (score: 0.8)'; test one Buy and one TierUp — packages/shared/src/utils.ts update + test"
-  )
-  local idx=$(( CONSECUTIVE_FAILS_TOTAL % ${#fallbacks[@]} ))
-  local next_task="${fallbacks[$idx]}"
-  CONSECUTIVE_FAILS_TOTAL=$(( CONSECUTIVE_FAILS_TOTAL + 1 ))
+# Normalize a CHOSEN-TASK string into a stable search key: strip backslashes
+# (the model emits escaped backticks like \`foo\` which never match real `foo`
+# in the backlog), collapse whitespace, drop leading "- [ ] [S] " markers.
+normalize_chosen() {
+  echo "$1" \
+    | tr -d '\\' \
+    | sed -E 's/^- \[[^]]*\] \[[A-Z]\] *//' \
+    | tr -s '[:space:]' ' ' \
+    | sed -E 's/^ +//; s/ +$//'
+}
 
-  # Insert just before the Quarantined section (or at end of file) so it gets
-  # picked in the next iteration without burying it in all-done M0 tasks.
-  if grep -q "^## Quarantined" "$REPO/docs/loop-backlog.md"; then
-    awk -v task="$next_task" '
-      /^## Quarantined/ && !done { print task; print ""; done=1 }
-      { print }
-    ' "$REPO/docs/loop-backlog.md" > "$REPO/docs/loop-backlog.md.tmp" \
-      && mv "$REPO/docs/loop-backlog.md.tmp" "$REPO/docs/loop-backlog.md"
-  else
-    printf '\n%s\n' "$next_task" >> "$REPO/docs/loop-backlog.md"
+# Try to locate a chosen task line in the backlog. Echoes the matching line
+# number, or empty if no match. Tries progressively shorter prefix lengths
+# to handle minor formatting drift.
+locate_backlog_line() {
+  local needle_norm="$1"
+  for prefix_len in 60 45 30; do
+    local key="${needle_norm:0:$prefix_len}"
+    [[ -z "$key" ]] && continue
+    local lineno
+    lineno=$(grep -nF "$key" "$REPO/docs/loop-backlog.md" 2>/dev/null \
+      | grep -E ':-\s*\[' \
+      | head -1 \
+      | cut -d: -f1)
+    if [[ -n "$lineno" ]]; then
+      echo "$lineno"
+      return 0
+    fi
+  done
+  return 1
+}
+
+# Flip a task line's marker to [Q] and append a reason comment, then commit.
+# Returns 0 on success, 1 if the line couldn't be located.
+quarantine_task() {
+  local chosen="$1"
+  local reason="$2"
+  local needle_norm
+  needle_norm=$(normalize_chosen "$chosen")
+  [[ -z "$needle_norm" ]] && return 1
+
+  if ! grep -q "^## Quarantined" "$REPO/docs/loop-backlog.md"; then
+    printf '\n---\n\n## Quarantined (failed — DO NOT pick)\n\n' \
+      >> "$REPO/docs/loop-backlog.md"
   fi
-  log "  → Recovery task injected: $next_task"
+
+  local lineno
+  lineno=$(locate_backlog_line "$needle_norm") || {
+    log "  ⚠ could not locate task line for quarantine: ${needle_norm:0:60}"
+    return 1
+  }
+
+  local existing
+  existing=$(sed -n "${lineno}p" "$REPO/docs/loop-backlog.md")
+  [[ "$existing" =~ ^-\ \[[\ xQ]\] ]] || return 1
+
+  local flipped
+  flipped=$(echo "$existing" | sed -E "s/^- \[[ x]\]/- [Q]/")
+  sed -i '' "${lineno}d" "$REPO/docs/loop-backlog.md"
+  printf '%s  <!-- %s -->\n' "$flipped" "$reason" >> "$REPO/docs/loop-backlog.md"
+  log "  ↪ Quarantined ($reason): $(echo "$chosen" | head -c 80)"
+  return 0
+}
+
+# Check whether the chosen task line is still unchecked ([ ]) in the backlog.
+# Returns 0 if [ ], 1 if [x] (already done), 2 if [Q] (quarantined), 3 if not found.
+check_chosen_marker() {
+  local chosen="$1"
+  local needle_norm
+  needle_norm=$(normalize_chosen "$chosen")
+  [[ -z "$needle_norm" ]] && return 3
+
+  local lineno
+  lineno=$(locate_backlog_line "$needle_norm") || return 3
+
+  local line
+  line=$(sed -n "${lineno}p" "$REPO/docs/loop-backlog.md")
+  case "$line" in
+    "- [ ] "*) return 0 ;;
+    "- [x] "*) return 1 ;;
+    "- [Q] "*) return 2 ;;
+    *)         return 3 ;;
+  esac
+}
+
+# Push local commits to origin/main after pulling-rebase. Returns 0 on
+# success (or nothing to push), 1 if push failed. Safe to call after
+# every successful iteration or supervisor pass.
+push_if_ahead() {
+  local context="$1"
+  git -C "$REPO" pull --rebase origin main >/dev/null 2>&1 || true
+  local ahead
+  ahead=$(git -C "$REPO" rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)
+  [[ "$ahead" -eq 0 ]] && return 0
+  if git -C "$REPO" push origin main >>"$LOG" 2>&1; then
+    log "  ↑ pushed $ahead commit(s) to origin/main ($context)"
+    return 0
+  else
+    log "  ⚠ push failed ($context — will retry next push)"
+    return 1
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -172,18 +251,7 @@ run_supervisor() {
     log "  supervisor: no changes"
   fi
 
-  # Push all accumulated commits (iteration + supervisor) to origin every
-  # supervisor pass. Skips silently if nothing to push or the push fails
-  # (e.g. no network — next pass will retry).
-  local ahead
-  ahead=$(git -C "$REPO" rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)
-  if [[ "$ahead" -gt 0 ]]; then
-    if git -C "$REPO" push origin main >>"$LOG" 2>&1; then
-      log "  ↑ pushed $ahead commit(s) to origin/main"
-    else
-      log "  ⚠ push failed (will retry next supervisor pass)"
-    fi
-  fi
+  push_if_ahead "supervisor"
 }
 
 # ---------------------------------------------------------------------------
@@ -237,40 +305,51 @@ run_iteration() {
     fi
   fi
 
-  if [[ $typecheck_ok -eq 1 && $tests_ok -eq 1 && $real_diff -eq 1 ]]; then
+  # Extract CHOSEN TASK once — used by both success and failure paths.
+  local chosen
+  chosen=$(grep -oE 'CHOSEN TASK:.*' "$iter_log" | tail -1 | sed 's/CHOSEN TASK: *//')
+
+  # Detect the case where the model picked an already-done task. Even if
+  # typecheck + tests pass, a [x] pick means the model wasted its slot on
+  # a no-op — fail the iteration so it's logged and we move on.
+  local already_done=0
+  if [[ -n "$chosen" ]]; then
+    check_chosen_marker "$chosen"
+    case $? in
+      1) already_done=1 ;;  # was [x]
+      2) already_done=1 ;;  # was [Q] — also shouldn't have been picked
+    esac
+  fi
+
+  if [[ $typecheck_ok -eq 1 && $tests_ok -eq 1 && $real_diff -eq 1 && $already_done -eq 0 ]]; then
     local done_line
     done_line=$(grep -oE 'DONE: .+' "$iter_log" | tail -1 || echo 'DONE: (no marker)')
     log_fixed "$(date -u +%Y-%m-%dT%H:%M:%SZ) | $current | $done_line"
     log "  ✓ iteration succeeded — $done_line"
     CONSECUTIVE_FAILS=0
+    LAST_CHOSEN="$chosen"
+    # Push immediately so work doesn't sit unpushed until the next supervisor.
+    push_if_ahead "iter $n success"
   else
-    log "  ✗ iteration failed (typecheck=$typecheck_ok tests=$tests_ok real_diff=$real_diff) — reverting"
+    local fail_reason="typecheck=$typecheck_ok tests=$tests_ok real_diff=$real_diff"
+    [[ $already_done -eq 1 ]] && fail_reason="$fail_reason already_done=1"
+    log "  ✗ iteration failed ($fail_reason) — reverting"
     git -C "$REPO" reset --hard "$snap" >/dev/null
     git -C "$REPO" clean -fd packages/ apps/ fixtures/ 2>/dev/null || true
 
-    # Quarantine the picked task
-    local chosen
-    chosen=$(grep -oE 'CHOSEN TASK:.*' "$iter_log" | tail -1 | sed 's/CHOSEN TASK: *//')
-    if [[ -n "$chosen" ]]; then
-      local key
-      key=$(echo "$chosen" | head -c 50 | sed 's/[][().*+?^$\\/]/\\&/g')
-      if grep -qF "$key" "$REPO/docs/loop-backlog.md" 2>/dev/null; then
-        if ! grep -q "^## Quarantined" "$REPO/docs/loop-backlog.md"; then
-          printf '\n---\n\n## Quarantined (failed — DO NOT pick)\n\n' \
-            >> "$REPO/docs/loop-backlog.md"
-        fi
-        local lineno
-        lineno=$(grep -nF "$key" "$REPO/docs/loop-backlog.md" | head -1 | cut -d: -f1)
-        if [[ -n "$lineno" ]]; then
-          local existing
-          existing=$(sed -n "${lineno}p" "$REPO/docs/loop-backlog.md")
-          if [[ "$existing" =~ ^-\ \[[\ x]\] ]]; then
-            sed -i '' "${lineno}d" "$REPO/docs/loop-backlog.md"
-            echo "$existing  <!-- failed iter $n -->" >> "$REPO/docs/loop-backlog.md"
-            log "  ↪ Quarantined: $(echo "$chosen" | head -c 80)"
-          fi
-        fi
+    # Quarantine the picked task. Reasons (in priority order):
+    #   - already-done pick: model ignored the [x]/[Q] marker — DON'T
+    #     touch the line (it's already correctly marked); just log.
+    #   - same task picked twice consecutively after a fail: stuck on it
+    #   - generic single-iter failure
+    if [[ -n "$chosen" && $already_done -eq 1 ]]; then
+      log "  ↪ model picked an already-marked task — no quarantine needed"
+    elif [[ -n "$chosen" ]]; then
+      local q_reason="failed iter $n"
+      if [[ -n "$LAST_CHOSEN" ]] && [[ "$LAST_CHOSEN" == "$chosen" ]]; then
+        q_reason="2 consecutive picks failed (iters $((n-1)),$n)"
       fi
+      quarantine_task "$chosen" "$q_reason" || true
     fi
 
     if ! git -C "$REPO" diff --quiet docs/loop-backlog.md 2>/dev/null; then
@@ -278,15 +357,16 @@ run_iteration() {
       git -C "$REPO" commit -m "chore: quarantine failed task from iter $n" --quiet 2>/dev/null || true
     fi
 
-    log_fixed "$(date -u +%Y-%m-%dT%H:%M:%SZ) | $snap | REVERTED: iter $n failed"
+    log_fixed "$(date -u +%Y-%m-%dT%H:%M:%SZ) | $snap | REVERTED: iter $n failed ($fail_reason)"
     CONSECUTIVE_FAILS=$(( CONSECUTIVE_FAILS + 1 ))
+    LAST_CHOSEN="$chosen"
 
+    # After $STUCK_THRESHOLD consecutive fails, the most recent failing
+    # task is force-quarantined (above) and we reset the counter. We no
+    # longer inject hand-written "recovery" tasks — they were all for
+    # symbols that already exist, so they wasted iterations.
     if [[ $CONSECUTIVE_FAILS -ge $STUCK_THRESHOLD ]]; then
-      inject_recovery_task "$CONSECUTIVE_FAILS"
-      if ! git -C "$REPO" diff --quiet docs/loop-backlog.md 2>/dev/null; then
-        git -C "$REPO" add docs/loop-backlog.md
-        git -C "$REPO" commit -m "chore: inject recovery task after $CONSECUTIVE_FAILS fails" --quiet 2>/dev/null || true
-      fi
+      log "  ⚠ STUCK: $CONSECUTIVE_FAILS consecutive fails — relying on quarantine, resetting counter"
       CONSECUTIVE_FAILS=0
     fi
   fi
@@ -318,7 +398,6 @@ log "  stop file       = $STOP_FILE (touch to stop after current iteration)"
 START_TS=$(date +%s)
 DEADLINE=$(( START_TS + MAX_TIME_HOURS * 3600 ))
 CONSECUTIVE_FAILS=0
-CONSECUTIVE_FAILS_TOTAL=0
 
 for ((i=1; i<=MAX_ITERS; i++)); do
   if [[ -f "$STOP_FILE" ]]; then
