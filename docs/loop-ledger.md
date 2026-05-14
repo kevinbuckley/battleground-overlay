@@ -1,6 +1,6 @@
 # Overlay Loop Ledger
 
-2026-05-14 00:00  [DONE]  M49: round2 precision tests — added 2 tests to `utils.test.ts`: round2(1.235)===1.24, round2(0)===0; 24/24 tests pass (commit 31e845b)
+2026-05-14 00:00  [DONE]  M49: formatRecommendation score rounding — added 1 test to `recommendation.test.ts` verifying score 0.123456 rounds to "0.12" in formatted output; 7/7 tests pass (commit c4334dc)
 
 2026-05-14 00:00  [DONE]  M49: getWorstThreat 3-eliminated test — added 1 test to `opponentPanel.test.ts` verifying 3 eliminated opponents returns null; 7/7 tests pass (commit 59c5910)
 

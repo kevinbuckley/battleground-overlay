@@ -590,8 +590,8 @@ to `loop-ledger.md`.
 - [x] [S] `hpBucket` boundaries — in `packages/shared/src/utils.test.ts`, add 3 tests: `hpBucket(5) === 'critical'`, `hpBucket(6) === 'low'`, `hpBucket(15) === 'safe'` — `packages/shared/src/utils.test.ts` only (already exists at lines 63-77 with equivalent boundary values)
 - [x] [S] `isShoppingPhase` non-shopping phases — in `packages/shared/src/utils.test.ts`, add 2 tests: state with `phase: 'combat'` returns `false`; state with `phase: 'shopping'` returns `true` — `packages/shared/src/utils.test.ts` only (already exists at lines 51-60)
 - [x] [S] `getWorstThreat` all-eliminated test — in `packages/shared/src/opponentPanel.test.ts`, add 1 test: `getWorstThreat` over 3 eliminated opponents returns `null` (no live threats) — `packages/shared/src/opponentPanel.test.ts` only (commit 59c5910)
-- [ ] [S] `getWorstThreat` picks highest tier — in `packages/shared/src/opponentPanel.test.ts`, add 1 test: 3 opponents with tiers 2,5,3 (none eliminated) → returns the opponent with tier 5 — `packages/shared/src/opponentPanel.test.ts` only
-- [ ] [S] `formatRecommendation` confidence rounding — in `packages/shared/src/recommendation.test.ts`, add 1 test: `formatRecommendation({ action: {type:'Buy', cardId:'X', shopIndex:0}, score: 0.123456, confidence: 0.5, reason: '' })` contains `"0.12"` (score rounded to 2 decimals) — `packages/shared/src/recommendation.test.ts` only
+- [Q] [S] `getWorstThreat` picks highest tier — `getWorstThreat` in `opponentPanel.ts` picks by board minion count, not tier; the task's expected output contradicts the implementation. Revisit if the spec changes.
+- [x] [S] `formatRecommendation` confidence rounding — in `packages/shared/src/recommendation.test.ts`, add 1 test: `formatRecommendation({ action: {type:'Buy', cardId:'X', shopIndex:0}, score: 0.123456, confidence: 0.5, reason: '' })` contains `"0.12"` (score rounded to 2 decimals) — `packages/shared/src/recommendation.test.ts` only (commit c4334dc)
 
 ## M50 — Log parser robustness
 
