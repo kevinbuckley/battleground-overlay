@@ -59,8 +59,11 @@ export function initRenderer(bridge: OverlayBridge): void {
   bridge.onDamage((forecast: unknown) => {
     const el = document.getElementById('damage-forecast');
     if (!el) return;
-    const f = forecast as { winPct: number };
-    el.textContent = `Win: ${Math.round(f.winPct * 100)}%`;
+    const f = forecast as { winPct: number; minDmg?: number; maxDmg?: number };
+    const pct = Math.round(f.winPct * 100);
+    const minDmg = f.minDmg ?? 0;
+    const maxDmg = f.maxDmg ?? 0;
+    el.textContent = `Win: ${pct}% (${minDmg}-${maxDmg} dmg)`;
   });
 
   bridge.onBoard((boardData: unknown) => {

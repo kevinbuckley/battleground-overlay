@@ -226,7 +226,7 @@ describe('initRenderer', () => {
     damageCallback!({ winPct: 0.75 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
-      'Win: 75%',
+      'Win: 75% (0-0 dmg)',
     );
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
@@ -283,7 +283,69 @@ describe('initRenderer', () => {
     damageCallback!({ winPct: 0 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
-      'Win: 0%',
+      'Win: 0% (0-0 dmg)',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onDamage includes min/max dmg in textContent', () => {
+    let damageCallback: ((f: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: (cb: (f: unknown) => void) => {
+        damageCallback = cb;
+      },
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('damage-forecast', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    damageCallback!({ winPct: 0.7, minDmg: 2, maxDmg: 5 });
+
+    expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
+      'Win: 70% (2-5 dmg)',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onDamage falls back to 0 when minDmg/maxDmg are missing', () => {
+    let damageCallback: ((f: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: (cb: (f: unknown) => void) => {
+        damageCallback = cb;
+      },
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('damage-forecast', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    damageCallback!({ winPct: 0.5 });
+
+    expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
+      'Win: 50% (0-0 dmg)',
     );
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
