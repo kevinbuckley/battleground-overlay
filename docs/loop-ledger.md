@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M56: Preload onHsStatus channel — added `onHsStatus(cb: (s: string) => void)` to `apps/overlay/src/preload.ts` listening on `'overlay:hs-status'`; 2 tests (bridge exposes onHsStatus, callback fires with payload); 904/904 tests pass (commit f9342b1)
+
 2026-05-14 00:00  [DONE]  M55: formatMinionLine helper — added `formatMinionLine(m)` to `apps/overlay/src/renderer.ts` returning `\`${m.attack}/${m.health} ${m.cardId}\``; 2 tests (3/4 X → "`3/4 X`", 0/1 empty → "`0/1 `"); 34/34 tests pass (commit 9a1857e)
 
 2026-05-14 00:00  [DONE]  M55: Renderer per-minion list — extended `onBoard` in `renderer.ts` to populate `<ul id="board-minions">` with `<li>` items via `formatMinionLine`; added `<ul id="board-minions"></ul>` to `renderer.html`; 2 new tests (2-minion board → 2 `<li>`, empty minions → 0 `<li>`); 36/36 tests pass (commit 8262461)
