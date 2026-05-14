@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M56: getHsLogConfigPath helper — added `getHsLogConfigPath(homedir)` to `apps/overlay/src/hsLogConfig.ts` returning `path.join(homedir, 'Library/Preferences/Blizzard/Hearthstone/log.config')`; 2 tests (ends with log.config, custom homedir prefix); 910/910 tests pass (commit c035d50)
+
 2026-05-14 00:00  [DONE]  M56: Preload onHsStatus channel — added `onHsStatus(cb: (s: string) => void)` to `apps/overlay/src/preload.ts` listening on `'overlay:hs-status'`; 2 tests (bridge exposes onHsStatus, callback fires with payload); 904/904 tests pass (commit f9342b1)
 
 2026-05-14 00:00  [DONE]  M56: verifyHsLoggingConfig helper — created `apps/overlay/src/hsLogConfig.ts` exporting `verifyHsLoggingConfig(configPath, readFn)` that checks for 6 required sections `[Power,Zone,Bob,LoadingScreen,Asset,Net.Mgr]` in config file text; 4 tests (all sections ok, missing Zone, missing 3, read error); 908/908 tests pass (commit f833c97)
