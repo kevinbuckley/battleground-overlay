@@ -33,7 +33,8 @@ export function initRenderer(bridge: OverlayBridge): void {
     const list = recs as Recommendation[];
     const actionEl = document.getElementById('advice-action');
     const reasonEl = document.getElementById('advice-reason');
-    if (!actionEl || !reasonEl) return;
+    const listEl = document.getElementById('advice-list');
+    if (!actionEl && !reasonEl && !listEl) return;
     if (list.length > 0) {
       const top = list[0] as Recommendation;
       actionEl.textContent = getActionText(top);
@@ -41,6 +42,11 @@ export function initRenderer(bridge: OverlayBridge): void {
     } else {
       actionEl.textContent = '—';
       reasonEl.textContent = '';
+    }
+    if (listEl) {
+      const capped = list.slice(0, 3);
+      const items = capped.map((r) => `<li>${getActionText(r as Recommendation)}</li>`).join('');
+      listEl.innerHTML = items;
     }
   });
 

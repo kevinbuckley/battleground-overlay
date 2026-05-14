@@ -634,4 +634,131 @@ describe('initRenderer', () => {
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
+
+  it('onRecs populates up to 3 <li> in #advice-list', () => {
+    let recsCallback: ((r: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: (cb: (r: unknown[]) => void) => {
+        recsCallback = cb;
+      },
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<
+      string,
+      { textContent: string; innerHTML: string; children: unknown[] }
+    >();
+    mockElements.set('advice-action', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-reason', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-list', { textContent: '', innerHTML: '', children: [] });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+
+    const recs = [
+      makeBuyRec('TB_GolgBos_04'),
+      makeBuyRec('TB_GolgBos_05'),
+      makeBuyRec('TB_GolgBos_06'),
+    ];
+    recsCallback!(recs);
+
+    const listEl = mockElements.get('advice-list') as { innerHTML: string };
+    expect(listEl.innerHTML).toContain('Buy TB_GolgBos_04');
+    expect(listEl.innerHTML).toContain('Buy TB_GolgBos_05');
+    expect(listEl.innerHTML).toContain('Buy TB_GolgBos_06');
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onRecs caps to 3 <li> when 5 recs provided', () => {
+    let recsCallback: ((r: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: (cb: (r: unknown[]) => void) => {
+        recsCallback = cb;
+      },
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<
+      string,
+      { textContent: string; innerHTML: string; children: unknown[] }
+    >();
+    mockElements.set('advice-action', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-reason', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-list', { textContent: '', innerHTML: '', children: [] });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+
+    const recs = [
+      makeBuyRec('A'),
+      makeBuyRec('B'),
+      makeBuyRec('C'),
+      makeBuyRec('D'),
+      makeBuyRec('E'),
+    ];
+    recsCallback!(recs);
+
+    const listEl = mockElements.get('advice-list') as { innerHTML: string };
+    expect(listEl.innerHTML).toContain('Buy A');
+    expect(listEl.innerHTML).toContain('Buy B');
+    expect(listEl.innerHTML).toContain('Buy C');
+    expect(listEl.innerHTML).not.toContain('Buy D');
+    expect(listEl.innerHTML).not.toContain('Buy E');
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onRecs with 1 rec creates 1 <li>', () => {
+    let recsCallback: ((r: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: (cb: (r: unknown[]) => void) => {
+        recsCallback = cb;
+      },
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<
+      string,
+      { textContent: string; innerHTML: string; children: unknown[] }
+    >();
+    mockElements.set('advice-action', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-reason', { textContent: '', innerHTML: '', children: [] });
+    mockElements.set('advice-list', { textContent: '', innerHTML: '', children: [] });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+
+    recsCallback!([makeBuyRec('TB_GolgBos_04')]);
+
+    const listEl = mockElements.get('advice-list') as { innerHTML: string };
+    expect(listEl.innerHTML).toContain('Buy TB_GolgBos_04');
+    expect(listEl.innerHTML.split('Buy').length - 1).toBe(1);
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
 });
