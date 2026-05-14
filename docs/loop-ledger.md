@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M49: formatRecommendation score rounding — added 1 test to `recommendation.test.ts` verifying score 0.123456 rounds to "0.12" in formatted output; 7/7 tests pass (commit c4334dc)
 
+2026-05-14 00:00  [DONE]  M50: parseLine malformed TAG_CHANGE — added 1 test to `index.test.ts` verifying `parseLine('TAG_CHANGE Entity= tag= value=')` returns null; 5/5 tests pass (commit d88be81)
+
 2026-05-14 00:00  [DONE]  M50: parseLine whitespace-only test — added 1 test to `index.test.ts` verifying `parseLine('   ')` returns null; 4/4 tests pass (commit 10b8978)
 
 2026-05-14 00:00  [DONE]  M49: formatRecommendation score rounding — added 1 test to `recommendation.test.ts` verifying score 0.123456 rounds to "0.12" in formatted output; 7/7 tests pass (commit c4334dc)

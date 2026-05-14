@@ -596,7 +596,7 @@ to `loop-ledger.md`.
 ## M50 — Log parser robustness
 
 - [x] [S] `parseLine` empty input — in `packages/log-parser/src/index.test.ts`, add 1 test: `parseLine('')` returns `null`; `parseLine('   ')` returns `null` — `packages/log-parser/src/index.test.ts` only (commit 10b8978)
-- [ ] [S] `parseLine` malformed TAG_CHANGE — in `packages/log-parser/src/index.test.ts`, add 1 test: `parseLine('TAG_CHANGE Entity= tag= value=')` returns `null` (no valid fields) — `packages/log-parser/src/index.test.ts` only
+- [x] [S] `parseLine` malformed TAG_CHANGE — in `packages/log-parser/src/index.test.ts`, add 1 test: `parseLine('TAG_CHANGE Entity= tag= value=')` returns `null` (no valid fields) — `packages/log-parser/src/index.test.ts` only (commit d88be81)
 - [ ] [S] `parseTagChange` quoted value — in `packages/log-parser/src/parseTagChange.test.ts`, add 1 test: line `"TAG_CHANGE Entity=5 tag=ZONE value=\"PLAY\""` returns a TagChange with `value: 'PLAY'` (quotes stripped) OR returns null if implementation doesn't support quotes — verify against current behavior before writing — `packages/log-parser/src/parseTagChange.test.ts` only
 - [ ] [S] `tokenizeLine` ignores garbage prefix — in `packages/log-parser/src/tokenize.test.ts`, add 1 test: a line starting with timestamp `"2024-01-01 00:00:00.000 LOG: TAG_CHANGE Entity=1 tag=HEALTH value=30"` returns a TokenizedLine with kind `TAG_CHANGE` (or null if not supported — verify first) — `packages/log-parser/src/tokenize.test.ts` only
 - [ ] [S] `parseBlockStart` indented form — in `packages/log-parser/src/parseBlock.test.ts`, add 1 test: a BLOCK_START line with 4 leading spaces parses to a BlockStart event (or null — verify behavior first) — `packages/log-parser/src/parseBlock.test.ts` only
