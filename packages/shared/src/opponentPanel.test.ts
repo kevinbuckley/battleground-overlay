@@ -49,6 +49,15 @@ describe('getWorstThreat', () => {
     expect(getWorstThreat(opponents)).toBeNull();
   });
 
+  it('returns null when 3 opponents are all eliminated', () => {
+    const opponents: OpponentState[] = [
+      makeOpponent({ entityId: 1, boardMinions: 3, eliminated: true }),
+      makeOpponent({ entityId: 2, boardMinions: 5, eliminated: true }),
+      makeOpponent({ entityId: 3, boardMinions: 2, eliminated: true }),
+    ];
+    expect(getWorstThreat(opponents)).toBeNull();
+  });
+
   it('returns the opponent with the most board minions', () => {
     const opponents: OpponentState[] = [
       makeOpponent({ entityId: 1, boardMinions: 2 }),
