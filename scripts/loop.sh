@@ -172,21 +172,39 @@ quarantine_task() {
 # Returns 0 if [ ], 1 if [x] (already done), 2 if [Q] (quarantined), 3 if not found.
 check_chosen_marker() {
   local chosen="$1"
+  local snap_sha="${2:-}"   # check backlog at snapshot time, not after model commits
   local needle_norm
   needle_norm=$(normalize_chosen "$chosen")
   [[ -z "$needle_norm" ]] && return 3
 
-  local lineno
-  lineno=$(locate_backlog_line "$needle_norm") || return 3
+  # Read the backlog at the snapshot SHA so we detect tasks that were already
+  # done BEFORE the iteration ran, not tasks the model just marked done.
+  local backlog
+  if [[ -n "$snap_sha" ]]; then
+    backlog=$(git -C "$REPO" show "${snap_sha}:docs/loop-backlog.md" 2>/dev/null) \
+      || backlog=$(cat "$REPO/docs/loop-backlog.md")
+  else
+    backlog=$(cat "$REPO/docs/loop-backlog.md")
+  fi
 
-  local line
-  line=$(sed -n "${lineno}p" "$REPO/docs/loop-backlog.md")
-  case "$line" in
-    "- [ ] "*) return 0 ;;
-    "- [x] "*) return 1 ;;
-    "- [Q] "*) return 2 ;;
-    *)         return 3 ;;
-  esac
+  local match
+  for prefix_len in 60 45 30; do
+    local key="${needle_norm:0:$prefix_len}"
+    [[ -z "$key" ]] && continue
+    match=$(printf '%s\n' "$backlog" \
+      | grep -F "$key" \
+      | grep -E '^-[[:space:]]*\[' \
+      | head -1)
+    if [[ -n "$match" ]]; then
+      case "$match" in
+        "- [ ] "*) return 0 ;;
+        "- [x] "*) return 1 ;;
+        "- [Q] "*) return 2 ;;
+        *)         return 3 ;;
+      esac
+    fi
+  done
+  return 3
 }
 
 # Push local commits to origin/main after pulling-rebase. Returns 0 on
@@ -409,10 +427,10 @@ run_iteration() {
   # a no-op — fail the iteration so it's logged and we move on.
   local already_done=0
   if [[ -n "$chosen" ]]; then
-    check_chosen_marker "$chosen"
+    check_chosen_marker "$chosen" "$snap"
     case $? in
-      1) already_done=1 ;;  # was [x]
-      2) already_done=1 ;;  # was [Q] — also shouldn't have been picked
+      1) already_done=1 ;;  # was [x] at snapshot time — model picked stale task
+      2) already_done=1 ;;  # was [Q] at snapshot time — model picked quarantined task
     esac
   fi
 
