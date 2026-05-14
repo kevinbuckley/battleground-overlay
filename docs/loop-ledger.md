@@ -24,6 +24,8 @@
 
 2026-05-14 00:00  [DONE]  M52: getDefaultSettingsPath — added `getDefaultSettingsPath(getHomedir)` to `apps/overlay/src/settings.ts` returning `path.join(homedir, 'Library/Application Support/battleground-overlay', 'overlay-settings.json')`; 2 tests (ends with filename, custom homedir prefix); 872/872 tests pass (commit 7e16572)
 
+2026-05-14 00:00  [DONE]  M52: loadSettings empty-string path — added early-return guard `if (path === '')` to `loadSettings` in `settings.ts` + 1 test asserting `loadSettings('')` deep-equals `defaultSettings()`; 873/873 tests pass (commit 8e22c1c)
+
 ---
 
 Append-only log of tasks the autonomous builder has picked, with
