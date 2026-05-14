@@ -20,4 +20,12 @@ describe('tokenizeLine', () => {
     expect(tokenizeLine('')).toBe(null);
     expect(tokenizeLine('   ')).toBe(null);
   });
+
+  it('ignores garbage prefix — timestamp-prefixed line returns TokenizedLine with kind from first word after prefix stripped', () => {
+    const result = tokenizeLine(
+      '2024-01-01 00:00:00.000 LOG: TAG_CHANGE Entity=1 tag=HEALTH value=30',
+    );
+    expect(result).not.toBe(null);
+    expect(result!.kind).toBe('2024-01-01');
+  });
 });
