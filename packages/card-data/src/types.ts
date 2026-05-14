@@ -4,6 +4,7 @@ export interface Card {
   name: string;
   cardClass: string;
   cost: number;
+  type?: string;
   attack?: number;
   health?: number;
   race?: string;

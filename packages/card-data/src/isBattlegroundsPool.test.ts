@@ -57,6 +57,10 @@ describe('isBattlegroundsMinion', () => {
     expect(isBattlegroundsMinion({ ...base, cost: 2 })).toBe(false);
   });
 
+  it('returns false for a Card with type SPELL', () => {
+    expect(isBattlegroundsMinion({ ...base, type: 'SPELL' })).toBe(false);
+  });
+
   it('returns false for card with DUNGEON_PASSIVE_BUFF mechanic', () => {
     expect(
       isBattlegroundsMinion({ ...base, techLevel: 3, mechanics: ['DUNGEON_PASSIVE_BUFF'] }),
