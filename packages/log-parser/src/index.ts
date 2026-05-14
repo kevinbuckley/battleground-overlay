@@ -40,3 +40,4 @@ export type {
 export { streamEvents } from './stream';
 export type { StreamHandle } from './stream';
 export { findActiveLogDir } from './findActiveLogDir';
+export { waitForLogFile } from './waitForLogFile';
