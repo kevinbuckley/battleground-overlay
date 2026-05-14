@@ -1,4 +1,5 @@
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { homedir } from 'node:os';
 import { join } from 'node:path';
 import type { HotkeyConfig } from './hotkeys';
 
@@ -51,6 +52,10 @@ export function loadSettings(path: string): OverlaySettings {
       hide: parsed.hotkeys?.hide ?? defaultSettings().hotkeys.hide,
     },
   };
+}
+
+export function getDefaultSettingsPath(getHomedir = homedir): string {
+  return join(getHomedir(), 'Library/Application Support/battleground-overlay', SETTINGS_FILENAME);
 }
 
 export function saveSettings(path: string, s: OverlaySettings): void {

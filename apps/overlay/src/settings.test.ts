@@ -2,7 +2,13 @@ import { describe, expect, it } from 'bun:test';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { type OverlaySettings, defaultSettings, loadSettings, saveSettings } from './settings';
+import {
+  type OverlaySettings,
+  defaultSettings,
+  getDefaultSettingsPath,
+  loadSettings,
+  saveSettings,
+} from './settings';
 
 describe('settings', () => {
   let tmpDir: string;
@@ -117,5 +123,15 @@ describe('settings', () => {
     } finally {
       teardown();
     }
+  });
+
+  it('getDefaultSettingsPath returns a path ending with overlay-settings.json', () => {
+    const path = getDefaultSettingsPath(() => '/fake/home');
+    expect(path.endsWith('overlay-settings.json')).toBe(true);
+  });
+
+  it('getDefaultSettingsPath with custom homedir returns path starting with that homedir', () => {
+    const path = getDefaultSettingsPath(() => '/tmp/test');
+    expect(path.startsWith('/tmp/test/')).toBe(true);
   });
 });
