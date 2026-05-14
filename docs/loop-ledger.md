@@ -5,6 +5,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M46: getCardsByTribe case-sensitivity test — added 1 test to `indexes.test.ts` asserting that `getCardsByTribe('Beast')` and `getCardsByTribe('beast')` return different arrays (case-sensitive lookup); 835/835 tests pass (commit e00761d)
 
+2026-05-14 00:00  [DONE]  M46: isBattlegroundsMinion SPELL test — added `type?: string` to Card interface + 1 test in `isBattlegroundsPool.test.ts` asserting `isBattlegroundsMinion({ type: 'SPELL' })` returns false; 836/836 tests pass (commit 5ac352e)
+
 2026-05-14 00:00  [DONE]  M46: getCardsByTier boundary tests — added 2 tests to `indexes.test.ts`: tier 0 returns [], tier 7 returns []; 834/834 tests pass (commit 8421eb4)
 
 2026-05-13 23:45  [DONE]  M45: sellScore empty-board test — added 1 test to `sellScore.test.ts` asserting `Number.isFinite(sellScore(minion, [], initialState()))` is true; 7/7 tests pass (commit 8df04f9)
