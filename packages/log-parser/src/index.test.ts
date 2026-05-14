@@ -6,6 +6,10 @@ describe('parseLine', () => {
     expect(parseLine('')).toBe(null);
   });
 
+  it('returns null for whitespace-only string', () => {
+    expect(parseLine('   ')).toBe(null);
+  });
+
   it('parses ZONE_CHANGE_LIST lines', () => {
     const result = parseLine('ZONE_CHANGE_LIST ID=99');
     expect(result).toEqual({ kind: 'ZONE_CHANGE_LIST', id: 99 });
