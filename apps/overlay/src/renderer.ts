@@ -8,6 +8,12 @@ export interface OverlayBridge {
   onOpponents(cb: (o: unknown[]) => void);
 }
 
+export function getConfidenceLabel(c: number): 'high' | 'medium' | 'low' {
+  if (c >= 0.7) return 'high';
+  if (c >= 0.4) return 'medium';
+  return 'low';
+}
+
 export function getActionText(rec: Recommendation): string {
   const action = rec.action;
   switch (action.type) {

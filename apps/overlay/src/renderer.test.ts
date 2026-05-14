@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import type { Recommendation } from '@overlay/shared';
-import { getActionText, initRenderer } from './renderer';
+import { getActionText, getConfidenceLabel, initRenderer } from './renderer';
 
 function makeBuyRec(cardId: string): Recommendation {
   return {
@@ -832,5 +832,22 @@ describe('initRenderer', () => {
     );
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+});
+
+describe('getConfidenceLabel', () => {
+  it('returns "high" when c >= 0.7', () => {
+    expect(getConfidenceLabel(0.9)).toBe('high');
+    expect(getConfidenceLabel(0.7)).toBe('high');
+  });
+
+  it('returns "medium" when c >= 0.4 and < 0.7', () => {
+    expect(getConfidenceLabel(0.5)).toBe('medium');
+    expect(getConfidenceLabel(0.4)).toBe('medium');
+  });
+
+  it('returns "low" when c < 0.4', () => {
+    expect(getConfidenceLabel(0.2)).toBe('low');
+    expect(getConfidenceLabel(0)).toBe('low');
   });
 });
