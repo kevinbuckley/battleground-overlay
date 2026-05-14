@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M55: Renderer top-3 recs list — added `<ul id="advice-list">` to `renderer.html`, modified `onRecs` handler in `renderer.ts` to populate up to 3 `<li>` children via `innerHTML` with `getActionText`; 3 new tests (1 rec → 1 li, 3 recs → 3 li, 5 recs → capped at 3); 894/894 tests pass (commit 8890ca1)
 
+2026-05-14 00:00  [DONE]  M55: Renderer confidence percent — added `<span id="advice-confidence"></span>` to `renderer.html`, modified `onRecs` handler in `renderer.ts` to set `#advice-confidence` textContent to `Math.round(top.confidence * 100) + '%'`; 2 new tests (0.84 → "84%", 0 → "0%"); 895/895 tests pass (commit 2d604d1)
+
 2026-05-14 00:00  [DONE]  M49: formatRecommendation score rounding — added 1 test to `recommendation.test.ts` verifying score 0.123456 rounds to "0.12" in formatted output; 7/7 tests pass (commit c4334dc)
 
 2026-05-14 00:00  [DONE]  M50: parseBlockStart indented form — added 1 test to `parseBlock.test.ts` verifying a BLOCK_START line with 4 leading spaces parses correctly to a BlockStart event (`.trim()` handles it); 7/7 tests pass (commit a647ce2)
