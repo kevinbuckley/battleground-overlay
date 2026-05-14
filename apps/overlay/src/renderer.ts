@@ -90,7 +90,8 @@ export function initRenderer(bridge: OverlayBridge): void {
   bridge.onBoard((boardData: unknown) => {
     const countEl = document.getElementById('board-count');
     const bestEl = document.getElementById('board-best-attack');
-    if (!countEl && !bestEl) return;
+    const minionsEl = document.getElementById('board-minions');
+    if (!countEl && !bestEl && !minionsEl) return;
     const b = boardData as { minions: { attack: number; health: number; cardId: string }[] };
     if (countEl) {
       countEl.textContent = `Minions: ${b.minions.length}`;
@@ -103,6 +104,10 @@ export function initRenderer(bridge: OverlayBridge): void {
       bestEl.textContent = `Best: ${best.attack}/${best.health}`;
     } else if (bestEl) {
       bestEl.textContent = '';
+    }
+    if (minionsEl) {
+      const items = b.minions.map((m) => `<li>${formatMinionLine(m)}</li>`).join('');
+      minionsEl.innerHTML = items;
     }
   });
 
