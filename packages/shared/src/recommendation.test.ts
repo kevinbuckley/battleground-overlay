@@ -36,4 +36,14 @@ describe('formatRecommendation', () => {
     const rec = makeRec({ type: 'Reposition', fromIndex: 1, toIndex: 3 });
     expect(formatRecommendation(rec)).toBe('Reposition 1→3 (score: 0.72)');
   });
+
+  it('rounds score to 2 decimal places', () => {
+    const rec: Recommendation = {
+      action: { type: 'Buy', cardId: 'X', shopIndex: 0 },
+      score: 0.123456,
+      confidence: 0.5,
+      reason: '',
+    };
+    expect(formatRecommendation(rec)).toContain('0.12');
+  });
 });
