@@ -422,6 +422,7 @@ describe('initRenderer', () => {
 
     const mockElements = new Map<string, { textContent: string }>();
     mockElements.set('board-count', { textContent: '' });
+    mockElements.set('board-best-attack', { textContent: '' });
 
     (globalThis as unknown as Record<string, unknown>).document = {
       getElementById(id: string) {
@@ -434,6 +435,44 @@ describe('initRenderer', () => {
 
     expect((mockElements.get('board-count') as { textContent: string }).textContent).toBe(
       'Minions: 0',
+    );
+    expect((mockElements.get('board-best-attack') as { textContent: string }).textContent).toBe('');
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onBoard writes best minion to #board-best-attack', () => {
+    let boardCallback: ((b: unknown) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: (cb: (b: unknown) => void) => {
+        boardCallback = cb;
+      },
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('board-count', { textContent: '' });
+    mockElements.set('board-best-attack', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    boardCallback!({
+      minions: [
+        { attack: 3, health: 4, cardId: 'TB_GolgBos_04' },
+        { attack: 5, health: 2, cardId: 'TB_GolgBos_05' },
+      ],
+    });
+
+    expect((mockElements.get('board-best-attack') as { textContent: string }).textContent).toBe(
+      'Best: 5/2',
     );
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;

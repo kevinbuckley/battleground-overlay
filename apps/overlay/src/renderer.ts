@@ -67,10 +67,22 @@ export function initRenderer(bridge: OverlayBridge): void {
   });
 
   bridge.onBoard((boardData: unknown) => {
-    const el = document.getElementById('board-count');
-    if (!el) return;
-    const b = boardData as { minions: unknown[] };
-    el.textContent = `Minions: ${b.minions.length}`;
+    const countEl = document.getElementById('board-count');
+    const bestEl = document.getElementById('board-best-attack');
+    if (!countEl && !bestEl) return;
+    const b = boardData as { minions: { attack: number; health: number; cardId: string }[] };
+    if (countEl) {
+      countEl.textContent = `Minions: ${b.minions.length}`;
+    }
+    if (bestEl && b.minions.length > 0) {
+      let best = b.minions[0]!;
+      for (let i = 1; i < b.minions.length; i++) {
+        if (b.minions[i].attack > best.attack) best = b.minions[i];
+      }
+      bestEl.textContent = `Best: ${best.attack}/${best.health}`;
+    } else if (bestEl) {
+      bestEl.textContent = '';
+    }
   });
 
   bridge.onOpponents((opponentsData: unknown) => {
