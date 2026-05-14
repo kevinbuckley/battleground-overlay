@@ -606,8 +606,8 @@ to `loop-ledger.md`.
 
 - [x] [S] `pipeline` shop-buy → board-add flow — in `packages/state/src/pipeline.integration.test.ts`, add 1 test: fire FULL_ENTITY for entity 200, then TAG_CHANGE CONTROLLER=playerId, then TAG_CHANGE ZONE=PLAY → state.player.board.minions has 1 entry with entityId 200 — `packages/state/src/pipeline.integration.test.ts` only (commit 8a103cd)
 - [ ] [S] `pipeline` tier-up gold-spend flow — in `packages/state/src/pipeline.integration.test.ts`, add 1 test: fire PLAYER_TECH_LEVEL=3 then RESOURCES_USED=4 on player → state.player.tier===3 AND state.player.gold consistent — `packages/state/src/pipeline.integration.test.ts` only
-- [ ] [S] `serializeGameState` opponents preserved — in `packages/state/src/serialize.test.ts`, add 1 test: state with 7 opponents → after `serializeGameState` + `deserializeGameState`, `result.opponents.length === 7` — `packages/state/src/serialize.test.ts` only
-- [ ] [S] `parseSession` empty file — in `packages/state/src/parseSession.test.ts`, add 1 test: writing an empty file then calling `parseSession(path)` returns `[]` — `packages/state/src/parseSession.test.ts` only
+- [x] [S] `serializeGameState` opponents preserved — in `packages/state/src/serialize.test.ts`, add 1 test: state with 7 opponents → after `serializeGameState` + `deserializeGameState`, `result.opponents.length === 7` — `packages/state/src/serialize.test.ts` only <!-- already at packages/state/src/serialize.test.ts:97 -->
+- [x] [S] `parseSession` empty file — in `packages/state/src/parseSession.test.ts`, add 1 test: writing an empty file then calling `parseSession(path)` returns `[]` — `packages/state/src/parseSession.test.ts` only <!-- already at packages/state/src/parseSession.test.ts:24 -->
 
 ## M52 — Overlay bootstrap extraction (make main.ts wire-up testable)
 
