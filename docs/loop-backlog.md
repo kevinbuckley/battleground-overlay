@@ -546,8 +546,8 @@ to `loop-ledger.md`.
 - [x] [S] `rerollScore` low-gold test — in `packages/advisor/src/heuristics/rerollScore.test.ts`, add 2 tests: state with `gold=0` returns `0`; state with `gold=10` and shop full returns a value ≤ 1 — `packages/advisor/src/heuristics/rerollScore.test.ts` only (commit e3be5eb)
 - [x] [S] `freezeScore` already-frozen short-circuit — in `packages/advisor/src/heuristics/freezeScore.test.ts`, add 1 test: state where `state.player.shop.frozen = true` returns `0` (no reason to freeze again) — `packages/advisor/src/heuristics/freezeScore.test.ts` only (commit ffcdbfe)
 - [x] [S] `tripleScore` no-board-match test — in `packages/advisor/src/heuristics/triple.test.ts`, add 1 test: shopCard with `cardId='X'` and board with two minions of `cardId='Y'` and `cardId='Z'` returns `0` — `packages/advisor/src/heuristics/triple.test.ts` only (commit 150bd41)
-- [ ] [S] `weightedWinScore` zero-weight test — in `packages/advisor/src/weightedScore.test.ts`, add 1 test: `weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, [0, 0, 0])` returns `0` (weights sum is zero → defensive return) — `packages/advisor/src/weightedScore.test.ts` only
-- [ ] [S] `lobbyWeights` all-eliminated test — in `packages/advisor/src/lobbyWeight.test.ts`, add 1 test: array of 3 opponents all with `eliminated: true` → `lobbyWeights` returns `[0, 0, 0]` and `totalLobbyWeight` returns `0` — `packages/advisor/src/lobbyWeight.test.ts` only
+- [x] [S] `weightedWinScore` zero-weight test — in `packages/advisor/src/weightedScore.test.ts`, add 1 test: `weightedWinScore({ winPct: 0.5, avgHpDelta: 0 }, [0, 0, 0])` returns `0` (weights sum is zero → defensive return) — `packages/advisor/src/weightedScore.test.ts` only (commit 88fb466)
+- [x] [S] `lobbyWeights` all-eliminated test — in `packages/advisor/src/lobbyWeight.test.ts`, add 1 test: array of 3 opponents all with `eliminated: true` → `lobbyWeights` returns `[0, 0, 0]` and `totalLobbyWeight` returns `0` — `packages/advisor/src/lobbyWeight.test.ts` only (commit 88fb466)
 
 ## M46 — Card-data integration
 

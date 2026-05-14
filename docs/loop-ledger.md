@@ -262,6 +262,10 @@ status. One line per task. Most-recent at the top.
 
 2026-05-12 08:30  [DONE]  M8: Scrubber — `Scrubber` class with `seek(n)`, `replay()`, `jump(n)`, `length` property, 7 tests (commit ebe1809)
 
+2026-05-13 00:15  [DONE]  M50: weightedWinScore + lobbyWeights tests — added 1 test to `weightedScore.test.ts` (3-element zero-weight array returns 0) and 1 test to `lobbyWeight.test.ts` (3 all-eliminated opponents → weights [0,0,0] and total 0); 20/20 tests pass (commit 88fb466)
+
+---
+
 Format:
 ```
 YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
