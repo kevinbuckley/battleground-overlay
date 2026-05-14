@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
 import type { Recommendation } from '@overlay/shared';
-import { getActionText, getConfidenceLabel, initRenderer } from './renderer';
+import { formatMinionLine, getActionText, getConfidenceLabel, initRenderer } from './renderer';
 
 function makeBuyRec(cardId: string): Recommendation {
   return {
@@ -849,5 +849,15 @@ describe('getConfidenceLabel', () => {
   it('returns "low" when c < 0.4', () => {
     expect(getConfidenceLabel(0.2)).toBe('low');
     expect(getConfidenceLabel(0)).toBe('low');
+  });
+});
+
+describe('formatMinionLine', () => {
+  it('returns "attack/health cardId" format', () => {
+    expect(formatMinionLine({ attack: 3, health: 4, cardId: 'X' })).toBe('`3/4 X`');
+  });
+
+  it('handles empty cardId with trailing space', () => {
+    expect(formatMinionLine({ attack: 0, health: 1, cardId: '' })).toBe('`0/1 `');
   });
 });

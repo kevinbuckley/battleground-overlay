@@ -8,6 +8,10 @@ export interface OverlayBridge {
   onOpponents(cb: (o: unknown[]) => void);
 }
 
+export function formatMinionLine(m: { attack: number; health: number; cardId: string }): string {
+  return `\`${m.attack}/${m.health} ${m.cardId}\``;
+}
+
 export function getConfidenceLabel(c: number): 'high' | 'medium' | 'low' {
   if (c >= 0.7) return 'high';
   if (c >= 0.4) return 'medium';
