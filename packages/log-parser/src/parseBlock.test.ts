@@ -18,6 +18,19 @@ describe('parseBlockStart', () => {
   it('returns null for unrelated lines', () => {
     expect(parseBlockStart('TAG_CHANGE Entity=1 tag=HEALTH value=30')).toBe(null);
   });
+
+  it('parses a BLOCK_START line with 4 leading spaces', () => {
+    const line =
+      '    BLOCK_START BlockType=TRIGGER Entity=GameEntity EffectCardId=TB_BaconShop_StartGame EffectIndex=0 Target=0 SubOption=-1 TriggerKeyword=NONE';
+    const result = parseBlockStart(line);
+    expect(result).toMatchObject({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      entity: 'GameEntity',
+      effectCardId: 'TB_BaconShop_StartGame',
+      effectIndex: 0,
+    });
+  });
 });
 
 describe('parseBlockEnd', () => {
