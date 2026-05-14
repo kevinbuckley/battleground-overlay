@@ -1,12 +1,19 @@
 import { describe, expect, it } from 'bun:test';
-import { tripleScore } from './triple';
 import type { Minion } from '@overlay/shared';
+import { tripleScore } from './triple';
 
 function makeMinion(cardId: string): Minion {
   return {
-    entityId: 0, cardId, attack: 1, health: 1,
-    taunt: false, divineShield: false, poisonous: false,
-    reborn: false, frozen: false, tribes: [],
+    entityId: 0,
+    cardId,
+    attack: 1,
+    health: 1,
+    taunt: false,
+    divineShield: false,
+    poisonous: false,
+    reborn: false,
+    frozen: false,
+    tribes: [],
   };
 }
 
@@ -23,5 +30,10 @@ describe('tripleScore', () => {
 
   it('returns 0 when no copies on board', () => {
     expect(tripleScore(makeMinion('CS2_168'), [])).toBe(0);
+  });
+
+  it('returns 0 when board has different cardIds', () => {
+    const board = [makeMinion('CS2_169'), makeMinion('CS2_170')];
+    expect(tripleScore(makeMinion('CS2_168'), board)).toBe(0);
   });
 });
