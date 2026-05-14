@@ -50,6 +50,22 @@ describe('formatAction', () => {
     });
     expect(formatAction(rec)).toBe('Reposition [0→2] (score 0.5)');
   });
+
+  it('all action types return non-empty strings', () => {
+    const actions: Recommendation['action'][] = [
+      { type: 'Buy', cardId: 'TEST', shopIndex: 0 },
+      { type: 'Sell', boardIndex: 1 },
+      { type: 'Freeze' },
+      { type: 'Reroll' },
+      { type: 'TierUp' },
+      { type: 'Reposition', fromIndex: 0, toIndex: 1 },
+    ];
+    for (const action of actions) {
+      const result = formatAction(makeRec(action));
+      expect(typeof result).toBe('string');
+      expect(result.length).toBeGreaterThan(0);
+    }
+  });
 });
 
 describe('advisorDiff', () => {
