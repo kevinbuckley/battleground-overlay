@@ -42,7 +42,11 @@ MAX_TIME_HOURS=12
 DEBUG=0
 ITER_TIMEOUT=720
 STUCK_THRESHOLD=3
+# Shell supervisor — cheap, runs every N iters; catches obvious stale tasks.
 SUPERVISE_EVERY=3
+# Haiku supervisor — semantic; runs every N iters; catches stale tasks where
+# the deliverable exists under a different name. Costs ~$0.15/pass.
+SUPERVISE_HAIKU_EVERY=15
 
 # Tracks the last successfully-extracted CHOSEN TASK across iterations, so
 # we can detect when the model picks the same failing task back-to-back.
@@ -204,19 +208,93 @@ push_if_ahead() {
 }
 
 # ---------------------------------------------------------------------------
-# Supervisor — runs every $SUPERVISE_EVERY iterations. Uses cloud Claude
-# Haiku for cheap, reliable Read/Bash/Grep tooling (opencode's tools were
-# silently broken). Constrained to only touch docs/loop-backlog.md; the
-# guard below reverts anything else. Budget-capped per pass.
+# Shell supervisor — runs every $SUPERVISE_EVERY iterations. Walks the next
+# 5 unchecked [S]/[M] tasks above the Quarantined section. Skips test-
+# addition tasks (cannot judge equivalence without LLM), then for "create
+# symbol X" tasks, greps production code for an export of X. If found,
+# flips [ ] → [x] with `<!-- already at path:line -->`. Free, ~1s, safe.
 # ---------------------------------------------------------------------------
-run_supervisor() {
+run_supervisor_shell() {
+  local n="$1"
+  log "  → supervisor-shell (after iter $n)"
+
+  local stale=0 looked=0
+  local max_look=5
+
+  local quarantine_line
+  quarantine_line=$(grep -n '^## Quarantined' "$REPO/docs/loop-backlog.md" \
+    | head -1 | cut -d: -f1)
+  [[ -z "$quarantine_line" ]] && quarantine_line=999999
+
+  while IFS=: read -r lineno line; do
+    [[ $looked -ge $max_look ]] && break
+    [[ "$lineno" -ge "$quarantine_line" ]] && break
+    looked=$((looked + 1))
+
+    # Skip test-addition tasks — Haiku handles those.
+    case "$line" in
+      *test*|*Test*|*.test.ts*) continue ;;
+    esac
+
+    local title
+    title=$(echo "$line" | awk -F'—' '{print $1}')
+    local sym
+    sym=$(echo "$title" | grep -oE '`[A-Za-z_][A-Za-z0-9_]*`' \
+            | head -1 | tr -d '`')
+    [[ -z "$sym" ]] && continue
+    case "$sym" in function|const|class|export|test|it|describe) continue ;; esac
+
+    local where
+    where=$(rg -n "^export (async )?(function|const|class) ${sym}\\b" \
+              packages/ apps/ scripts/ --type ts -g '!*.test.ts' 2>/dev/null \
+              | head -1)
+    if [[ -n "$where" ]]; then
+      local existing flipped
+      existing=$(sed -n "${lineno}p" "$REPO/docs/loop-backlog.md")
+      flipped=$(printf '%s' "$existing" \
+        | sed -E 's/^- \[ \]/- [x]/' \
+        | sed "s| *$| <!-- already at ${where%%:*}:${where#*:} -->|" \
+        | sed "s|:export.*$||")
+      awk -v ln="$lineno" -v new="$flipped" 'NR==ln{print new; next}1' \
+        "$REPO/docs/loop-backlog.md" > "$REPO/docs/loop-backlog.md.tmp" \
+        && mv "$REPO/docs/loop-backlog.md.tmp" "$REPO/docs/loop-backlog.md"
+      stale=$((stale + 1))
+      log "  ↪ stale: \`$sym\` (line $lineno) → ${where%%:*}"
+    fi
+  done < <(grep -nE '^- \[ \] \[[SM]\]' "$REPO/docs/loop-backlog.md")
+
+  if [[ $stale -gt 0 ]]; then
+    git -C "$REPO" add docs/loop-backlog.md
+    git -C "$REPO" commit -m "chore(supervise-shell): $stale stale task(s)" \
+      --quiet 2>/dev/null || true
+  fi
+
+  log "  SUPERVISE-SHELL: $stale stale, $looked looked at"
+
+  local depth
+  depth=$(grep -cE '^- \[ \] \[[SM]\]' "$REPO/docs/loop-backlog.md")
+  if [[ $depth -lt 10 ]]; then
+    log "  ⚠ backlog depth $depth unchecked — replenish soon"
+  fi
+
+  push_if_ahead "supervisor-shell"
+}
+
+# ---------------------------------------------------------------------------
+# Haiku supervisor — runs every $SUPERVISE_HAIKU_EVERY iterations. Catches
+# stale tasks the shell version misses (test already exists in a test file
+# under a different name; deliverable equivalent to existing code). Costs
+# ~$0.15/pass. Budget-capped. Existing revert guards constrain it to
+# docs/loop-backlog.md only.
+# ---------------------------------------------------------------------------
+run_supervisor_haiku() {
   local n="$1"
   if [[ ! -f "$SUPERVISE_PROMPT_FILE" ]]; then
-    log "  supervisor: prompt file missing — skipping"
+    log "  supervisor-haiku: prompt file missing — skipping"
     return 0
   fi
 
-  log "  → supervisor (Claude $SUPERVISE_MODEL, after iter $n, budget \$$SUPERVISE_BUDGET_USD)"
+  log "  → supervisor-haiku (Claude $SUPERVISE_MODEL, after iter $n, budget \$$SUPERVISE_BUDGET_USD)"
   local pre_head
   pre_head=$(git -C "$REPO" rev-parse HEAD)
 
@@ -400,7 +478,8 @@ log "  max iters       = $MAX_ITERS"
 log "  max time        = ${MAX_TIME_HOURS}h"
 log "  sleep           = ${SLEEP_BETWEEN}s"
 log "  stuck threshold = $STUCK_THRESHOLD"
-log "  supervise every = $SUPERVISE_EVERY iters"
+log "  supervise (shell) every  = $SUPERVISE_EVERY iters"
+log "  supervise (haiku) every  = $SUPERVISE_HAIKU_EVERY iters (budget \$$SUPERVISE_BUDGET_USD)"
 log "  log             = $LOG"
 log "  fixed log       = $FIXED_LOG"
 
@@ -429,7 +508,11 @@ for ((i=1; i<=MAX_ITERS; i++)); do
   run_iteration "$i" || log "  (run_iteration error swallowed; continuing)"
 
   if (( i % SUPERVISE_EVERY == 0 )); then
-    run_supervisor "$i" || log "  (run_supervisor error swallowed; continuing)"
+    run_supervisor_shell "$i" || log "  (supervisor-shell error swallowed; continuing)"
+  fi
+
+  if (( i % SUPERVISE_HAIKU_EVERY == 0 )); then
+    run_supervisor_haiku "$i" || log "  (supervisor-haiku error swallowed; continuing)"
   fi
 
   if (( i < MAX_ITERS )); then
