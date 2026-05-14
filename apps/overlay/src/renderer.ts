@@ -86,9 +86,16 @@ export function initRenderer(bridge: OverlayBridge): void {
   });
 
   bridge.onOpponents((opponentsData: unknown) => {
-    const el = document.getElementById('opponent-count');
-    if (!el) return;
-    const o = opponentsData as unknown[];
-    el.textContent = `Opponents: ${o.length}`;
+    const countEl = document.getElementById('opponent-count');
+    const aliveEl = document.getElementById('opponent-alive');
+    if (!countEl && !aliveEl) return;
+    const o = opponentsData as { eliminated: boolean }[];
+    if (countEl) {
+      countEl.textContent = `Opponents: ${o.length}`;
+    }
+    if (aliveEl) {
+      const alive = o.filter((opp) => !opp.eliminated).length;
+      aliveEl.textContent = `Alive: ${alive}/${o.length}`;
+    }
   });
 }

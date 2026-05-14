@@ -564,4 +564,74 @@ describe('initRenderer', () => {
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
+
+  it('onOpponents writes "Alive: N/total" to #opponent-alive', () => {
+    let opponentsCallback: ((o: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: (cb: (o: unknown[]) => void) => {
+        opponentsCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('opponent-count', { textContent: '' });
+    mockElements.set('opponent-alive', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    opponentsCallback!([
+      { eliminated: false },
+      { eliminated: false },
+      { eliminated: false },
+      { eliminated: true },
+      { eliminated: true },
+    ]);
+
+    expect((mockElements.get('opponent-alive') as { textContent: string }).textContent).toBe(
+      'Alive: 3/5',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onOpponents shows "Alive: 0/total" when all eliminated', () => {
+    let opponentsCallback: ((o: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: (cb: (o: unknown[]) => void) => {
+        opponentsCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('opponent-count', { textContent: '' });
+    mockElements.set('opponent-alive', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    opponentsCallback!([{ eliminated: true }, { eliminated: true }, { eliminated: true }]);
+
+    expect((mockElements.get('opponent-alive') as { textContent: string }).textContent).toBe(
+      'Alive: 0/3',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
 });
