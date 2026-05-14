@@ -10,6 +10,10 @@ describe('parseLine', () => {
     expect(parseLine('   ')).toBe(null);
   });
 
+  it('returns null for malformed TAG_CHANGE with no valid fields', () => {
+    expect(parseLine('TAG_CHANGE Entity= tag= value=')).toBe(null);
+  });
+
   it('parses ZONE_CHANGE_LIST lines', () => {
     const result = parseLine('ZONE_CHANGE_LIST ID=99');
     expect(result).toEqual({ kind: 'ZONE_CHANGE_LIST', id: 99 });
