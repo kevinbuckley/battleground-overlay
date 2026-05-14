@@ -227,4 +227,48 @@ describe('preload', () => {
 
     expect(opponentsArg).toEqual(opponentsData);
   });
+
+  it('onHsStatus is exposed on the bridge object', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onHsStatus: (cb: (s: string) => void) => void;
+    };
+
+    expect(typeof bridge.onHsStatus).toBe('function');
+  });
+
+  it('onHsStatus callback fires with payload when overlay:hs-status channel fires', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onHsStatus: (cb: (s: string) => void) => void;
+    };
+
+    let statusArg: string | null = null;
+    bridge.onHsStatus((s) => {
+      statusArg = s;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const hsStatusListener = listeners['overlay:hs-status']?.[0];
+
+    hsStatusListener?.(null, 'anchored');
+
+    expect(statusArg).toBe('anchored');
+  });
 });

@@ -27,5 +27,10 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(opponents);
       });
     },
+    onHsStatus(cb: (s: string) => void): void {
+      ipc.on('overlay:hs-status', (_event, status) => {
+        cb(status);
+      });
+    },
   });
 }
