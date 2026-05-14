@@ -22,6 +22,18 @@ describe('clamp', () => {
   test('returns n when within range', () => {
     expect(clamp(5, 0, 10)).toBe(5);
   });
+
+  test('returns lo when n equals lo', () => {
+    expect(clamp(5, 5, 10)).toBe(5);
+  });
+
+  test('returns hi when n equals hi', () => {
+    expect(clamp(10, 5, 10)).toBe(10);
+  });
+
+  test('returns NaN when n is NaN', () => {
+    expect(clamp(Number.NaN, 1, 3)).toBeNaN();
+  });
 });
 
 describe('lerp', () => {
