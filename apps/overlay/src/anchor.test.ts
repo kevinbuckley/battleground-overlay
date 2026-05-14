@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'bun:test';
-import { anchorToHearthstoneWithRetry, getHearthstoneBounds, isHearthstoneRunning } from './anchor';
+import {
+  anchorToHearthstoneWithRetry,
+  getAnchorStatus,
+  getHearthstoneBounds,
+  isHearthstoneRunning,
+  setAnchorStatus,
+} from './anchor';
 
 describe('anchor', () => {
   it('getHearthstoneBounds returns null when Hearthstone is not running', () => {
@@ -78,5 +84,22 @@ describe('anchor', () => {
     );
     expect(result).toBe(false);
     expect(callCount).toBe(3);
+  });
+
+  it('getAnchorStatus returns initial value of waiting', () => {
+    setAnchorStatus('waiting');
+    expect(getAnchorStatus()).toBe('waiting');
+  });
+
+  it('getAnchorStatus returns anchored after setAnchorStatus', () => {
+    setAnchorStatus('anchored');
+    expect(getAnchorStatus()).toBe('anchored');
+  });
+
+  it('getAnchorStatus reflects toggle from failed back to anchored', () => {
+    setAnchorStatus('failed');
+    expect(getAnchorStatus()).toBe('failed');
+    setAnchorStatus('anchored');
+    expect(getAnchorStatus()).toBe('anchored');
   });
 });

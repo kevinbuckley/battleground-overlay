@@ -96,6 +96,16 @@ export function isHearthstoneRunning(
   }
 }
 
+let anchorStatus: 'waiting' | 'anchored' | 'failed' = 'waiting';
+
+export function setAnchorStatus(s: 'waiting' | 'anchored' | 'failed'): void {
+  anchorStatus = s;
+}
+
+export function getAnchorStatus(): 'waiting' | 'anchored' | 'failed' {
+  return anchorStatus;
+}
+
 export async function anchorToHearthstoneWithRetry(
   win: BrowserWindow,
   opts?: {
