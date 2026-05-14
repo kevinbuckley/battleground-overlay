@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M55: formatMinionLine helper — added `formatMinionLine(m)` to `apps/overlay/src/renderer.ts` returning `\`${m.attack}/${m.health} ${m.cardId}\``; 2 tests (3/4 X → "`3/4 X`", 0/1 empty → "`0/1 `"); 34/34 tests pass (commit 9a1857e)
+
 2026-05-14 00:00  [DONE]  M55: Renderer top-3 recs list — added `<ul id="advice-list">` to `renderer.html`, modified `onRecs` handler in `renderer.ts` to populate up to 3 `<li>` children via `innerHTML` with `getActionText`; 3 new tests (1 rec → 1 li, 3 recs → 3 li, 5 recs → capped at 3); 894/894 tests pass (commit 8890ca1)
 
 2026-05-14 00:00  [DONE]  M55: Renderer confidence percent — added `<span id="advice-confidence"></span>` to `renderer.html`, modified `onRecs` handler in `renderer.ts` to set `#advice-confidence` textContent to `Math.round(top.confidence * 100) + '%'`; 2 new tests (0.84 → "84%", 0 → "0%"); 895/895 tests pass (commit 2d604d1)
