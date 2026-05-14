@@ -58,6 +58,14 @@ describe('round2', () => {
   test('rounds 2.005 to 2.01 (IEEE 754)', () => {
     expect(round2(2.005)).toBe(2.01);
   });
+
+  test('rounds 1.235 to 1.24', () => {
+    expect(round2(1.235)).toBe(1.24);
+  });
+
+  test('rounds 0 to 0', () => {
+    expect(round2(0)).toBe(0);
+  });
 });
 
 describe('isShoppingPhase', () => {
