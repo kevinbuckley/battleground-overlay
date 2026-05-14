@@ -20,6 +20,18 @@ describe('loadFixture', () => {
     // cleanup handled per-test since paths differ
   });
 
+  it('returns [] for an empty file', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'replay-test-'));
+    const path = join(dir, 'empty.log');
+    try {
+      writeFileSync(path, '');
+      const result = loadFixture(path);
+      expect(result).toEqual([]);
+    } finally {
+      rmSync(dir, { recursive: true });
+    }
+  });
+
   it('returns empty array for a file with no parseable lines', () => {
     const path = makeFixture(['garbage line 1', 'garbage line 2', '']);
     try {
