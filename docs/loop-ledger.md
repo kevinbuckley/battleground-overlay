@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M49: clamp boundary tests — added 3 tests to `utils.test.ts`: clamp(5,5,10)===5, clamp(10,5,10)===10, clamp(NaN,1,3) returns NaN; 22/22 tests pass (commit 6d4ed6e)
+
 2026-05-14 00:00  [DONE]  M48: formatAction all-action-types test — added 1 test to `advisorDiff.test.ts` iterating over all 6 action types (Buy, Sell, Freeze, Reroll, TierUp, Reposition) in a single `for` loop, asserting each returns a non-empty string; 22/22 tests pass (commit 98bb05a)
 
 2026-05-14 00:00  [DONE]  M48: loadFixture empty file test — added 1 test to `loadFixture.test.ts` writing an empty file and asserting `loadFixture(path)` returns `[]`; 4/4 tests pass (commit 5190102)

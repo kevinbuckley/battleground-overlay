@@ -579,12 +579,12 @@ to `loop-ledger.md`.
 - [x] [S] `formatState` includes opponents — in `apps/replay/src/stateViewer.test.ts`, add 1 test: state with 2 opponents → result contains both opponent identifiers (entityId or playerId stringified) — `apps/replay/src/stateViewer.test.ts` only (already exists)
 - [x] [S] `exportReport` zero-turns test — in `apps/replay/src/exportReport.test.ts`, add 1 test: `exportReport([])` returns a string (header only, no turns) without throwing — `apps/replay/src/exportReport.test.ts` only (commit manual)
 - [x] [S] `loadFixture` empty file test — in `apps/replay/src/loadFixture.test.ts`, add 1 test: writing an empty file to a temp path then calling `loadFixture(path)` returns `[]` — `apps/replay/src/loadFixture.test.ts` only (commit 4b0c8e1)
-- [ ] [S] `summarizeDiff` empty diffs test — in `apps/replay/src/advisorDiff.test.ts`, add 1 test: `summarizeDiff([])` returns a non-empty string (e.g. "No differences") — `apps/replay/src/advisorDiff.test.ts` only
+- [x] [S] `summarizeDiff` empty diffs test — in `apps/replay/src/advisorDiff.test.ts`, add 1 test: `summarizeDiff([])` returns a non-empty string (e.g. "No differences") — `apps/replay/src/advisorDiff.test.ts` only (already exists at line 121-123, returns 'No mismatches')
 - [x] [S] `formatAction` covers all action types — in `apps/replay/src/advisorDiff.test.ts`, add 1 test: `formatAction` on each of Buy, Sell, Freeze, Reroll, TierUp, Reposition returns a non-empty string (use `for` over each action type) — `apps/replay/src/advisorDiff.test.ts` only (commit 98bb05a)
 
 ## M49 — Shared utilities deeper coverage
 
-- [ ] [S] `clamp` boundary tests — in `packages/shared/src/utils.test.ts`, add 3 tests: `clamp(5,5,10) === 5`, `clamp(10,5,10) === 10`, `clamp(NaN,1,3)` returns NaN or 1 (assert whichever matches implementation) — `packages/shared/src/utils.test.ts` only
+- [x] [S] `clamp` boundary tests — in `packages/shared/src/utils.test.ts`, add 3 tests: `clamp(5,5,10) === 5`, `clamp(10,5,10) === 10`, `clamp(NaN,1,3)` returns NaN or 1 (assert whichever matches implementation) — `packages/shared/src/utils.test.ts` only (commit 6d4ed6e)
 - [ ] [S] `lerp` extremes — in `packages/shared/src/utils.test.ts`, add 2 tests: `lerp(0, 10, 0) === 0`, `lerp(0, 10, 1) === 10`, `lerp(0, 10, 0.5) === 5` — `packages/shared/src/utils.test.ts` only
 - [ ] [S] `round2` precision — in `packages/shared/src/utils.test.ts`, add 2 tests: `round2(1.235) === 1.24`, `round2(0) === 0` — `packages/shared/src/utils.test.ts` only
 - [ ] [S] `hpBucket` boundaries — in `packages/shared/src/utils.test.ts`, add 3 tests: `hpBucket(5) === 'critical'`, `hpBucket(6) === 'low'`, `hpBucket(15) === 'safe'` — `packages/shared/src/utils.test.ts` only
