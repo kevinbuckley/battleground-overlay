@@ -48,6 +48,11 @@ export function initRenderer(bridge: OverlayBridge): void {
       const items = capped.map((r) => `<li>${getActionText(r as Recommendation)}</li>`).join('');
       listEl.innerHTML = items;
     }
+    const confEl = document.getElementById('advice-confidence');
+    if (confEl && list.length > 0) {
+      const top = list[0] as Recommendation;
+      confEl.textContent = `${Math.round(top.confidence * 100)}%`;
+    }
   });
 
   bridge.onExplanation((text: string) => {

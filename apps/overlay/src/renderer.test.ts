@@ -761,4 +761,76 @@ describe('initRenderer', () => {
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
+
+  it('onRecs sets confidence percentage on #advice-confidence', () => {
+    let recsCallback: ((r: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: (cb: (r: unknown[]) => void) => {
+        recsCallback = cb;
+      },
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('advice-action', { textContent: '' });
+    mockElements.set('advice-reason', { textContent: '' });
+    mockElements.set('advice-confidence', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+
+    const rec = makeBuyRec('TB_GolgBos_04');
+    (rec as { confidence: number }).confidence = 0.84;
+    recsCallback!([rec]);
+
+    expect((mockElements.get('advice-confidence') as { textContent: string }).textContent).toBe(
+      '84%',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onRecs sets "0%" when confidence is 0', () => {
+    let recsCallback: ((r: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: (cb: (r: unknown[]) => void) => {
+        recsCallback = cb;
+      },
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onOpponents: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string }>();
+    mockElements.set('advice-action', { textContent: '' });
+    mockElements.set('advice-reason', { textContent: '' });
+    mockElements.set('advice-confidence', { textContent: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+
+    const rec = makeBuyRec('TB_GolgBos_04');
+    (rec as { confidence: number }).confidence = 0;
+    recsCallback!([rec]);
+
+    expect((mockElements.get('advice-confidence') as { textContent: string }).textContent).toBe(
+      '0%',
+    );
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
 });
