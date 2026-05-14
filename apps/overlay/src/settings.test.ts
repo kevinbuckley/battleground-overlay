@@ -125,6 +125,11 @@ describe('settings', () => {
     }
   });
 
+  it('loadSettings returns defaults when path is an empty string', () => {
+    const s = loadSettings('');
+    expect(s).toEqual(defaultSettings());
+  });
+
   it('getDefaultSettingsPath returns a path ending with overlay-settings.json', () => {
     const path = getDefaultSettingsPath(() => '/fake/home');
     expect(path.endsWith('overlay-settings.json')).toBe(true);

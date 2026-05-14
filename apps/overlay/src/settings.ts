@@ -22,6 +22,10 @@ export function defaultSettings(): OverlaySettings {
 const SETTINGS_FILENAME = 'overlay-settings.json';
 
 export function loadSettings(path: string): OverlaySettings {
+  if (path === '') {
+    return defaultSettings();
+  }
+
   const filePath = path.endsWith(SETTINGS_FILENAME) ? path : join(path, SETTINGS_FILENAME);
 
   if (!existsSync(filePath)) {
