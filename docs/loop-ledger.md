@@ -346,6 +346,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M56: runDoctor orchestrator — created `apps/overlay/src/doctor.ts` exporting `async function runDoctor(deps)` that aggregates `isHsRunning`, `verifyConfig`, and `checkMlx` results into a single `DoctorResult`; 3 tests (all-true, hs-false, config-fail); 3/3 tests pass (commit e9f055d)
 
+2026-05-14 00:00  [DONE]  M56: formatDoctorReport — added `formatDoctorReport(r: DoctorResult): string` to `apps/overlay/src/doctor.ts` returning multi-line string with `✓`/`✗` per check, missing sections listed after config line, error shown after mlx line; 3 tests (all-ok 3 checkmarks, one failure 2 checkmarks+1 cross, missing sections text present); 6/6 tests pass (commit 9c44a8d)
+
 ---
 
 Format:
