@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtempSync, mkdirSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { findActiveLogDir } from './findActiveLogDir';
@@ -13,6 +13,18 @@ describe('findActiveLogDir', () => {
 
     const result = findActiveLogDir(base);
     expect(result).toBe(join(base, 'Hearthstone_2024-03-15'));
+
+    rmSync(base, { recursive: true });
+  });
+
+  it('filters non-Hearthstone dirs', () => {
+    const base = mkdtempSync(join(tmpdir(), 'hs-logs-filter-'));
+    mkdirSync(join(base, 'Hearthstone_A'));
+    mkdirSync(join(base, 'OtherApp_B'));
+    mkdirSync(join(base, 'Hearthstone_B'));
+
+    const result = findActiveLogDir(base);
+    expect(result).toBe(join(base, 'Hearthstone_B'));
 
     rmSync(base, { recursive: true });
   });
