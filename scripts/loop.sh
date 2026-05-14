@@ -24,6 +24,12 @@ SUPERVISE_PROMPT_FILE="$REPO/scripts/supervise-prompt.md"
 MODEL="mlx//Users/kbux/.cache/mlx/Qwen3.6-35B-A3B-4bit"
 MLX_URL="http://localhost:8080/v1/models"
 
+# Supervisor uses cloud Claude (Haiku) instead of local Qwen — much more
+# reliable Read/Bash/Grep tooling. Budget cap protects against runaway spend.
+SUPERVISE_MODEL="haiku"
+SUPERVISE_BUDGET_USD="0.25"
+SUPERVISE_TIMEOUT=240
+
 LOG_DIR="$REPO/logs"
 mkdir -p "$LOG_DIR"
 STAMP=$(date +%Y%m%d-%H%M)
@@ -37,7 +43,6 @@ DEBUG=0
 ITER_TIMEOUT=720
 STUCK_THRESHOLD=3
 SUPERVISE_EVERY=3
-SUPERVISE_TIMEOUT=180
 
 # Tracks the last successfully-extracted CHOSEN TASK across iterations, so
 # we can detect when the model picks the same failing task back-to-back.
@@ -68,6 +73,9 @@ preflight() {
 
   command -v opencode >/dev/null 2>&1 \
     || { log "FAIL: opencode not in PATH"; fail=1; }
+
+  command -v claude >/dev/null 2>&1 \
+    || { log "FAIL: claude not in PATH (supervisor uses it)"; fail=1; }
 
   command -v bun >/dev/null 2>&1 \
     || { log "FAIL: bun not in PATH"; fail=1; }
@@ -196,8 +204,10 @@ push_if_ahead() {
 }
 
 # ---------------------------------------------------------------------------
-# Supervisor — runs every $SUPERVISE_EVERY iterations. Constrained to
-# only touch docs/loop-backlog.md; the guard below reverts anything else.
+# Supervisor — runs every $SUPERVISE_EVERY iterations. Uses cloud Claude
+# Haiku for cheap, reliable Read/Bash/Grep tooling (opencode's tools were
+# silently broken). Constrained to only touch docs/loop-backlog.md; the
+# guard below reverts anything else. Budget-capped per pass.
 # ---------------------------------------------------------------------------
 run_supervisor() {
   local n="$1"
@@ -206,7 +216,7 @@ run_supervisor() {
     return 0
   fi
 
-  log "  → supervisor pass (after iter $n)"
+  log "  → supervisor (Claude $SUPERVISE_MODEL, after iter $n, budget \$$SUPERVISE_BUDGET_USD)"
   local pre_head
   pre_head=$(git -C "$REPO" rev-parse HEAD)
 
@@ -215,8 +225,13 @@ run_supervisor() {
   prompt=$(cat "$SUPERVISE_PROMPT_FILE")
 
   cd "$REPO"
-  gtimeout "$SUPERVISE_TIMEOUT" opencode run -m "$MODEL" "$prompt" \
-    > "$sup_log" 2>&1 || log "  supervisor: opencode exited non-zero (continuing)"
+  gtimeout "$SUPERVISE_TIMEOUT" claude -p \
+    --model "$SUPERVISE_MODEL" \
+    --max-budget-usd "$SUPERVISE_BUDGET_USD" \
+    --dangerously-skip-permissions \
+    --output-format text \
+    "$prompt" > "$sup_log" 2>&1 \
+    || log "  supervisor: claude exited non-zero (continuing)"
 
   # Revert any uncommitted non-backlog changes the supervisor made.
   local dirty_bad
@@ -248,7 +263,9 @@ run_supervisor() {
       log "  ✓ $summary"
     fi
   else
-    log "  supervisor: no changes"
+    local summary
+    summary=$(grep -oE 'SUPERVISE: .*' "$sup_log" | tail -1 || echo 'SUPERVISE: (no marker)')
+    log "  supervisor: no changes — $summary"
   fi
 
   push_if_ahead "supervisor"
