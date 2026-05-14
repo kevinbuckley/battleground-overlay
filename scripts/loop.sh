@@ -110,6 +110,7 @@ preflight() {
 normalize_chosen() {
   echo "$1" \
     | tr -d '\\' \
+    | sed -E 's/^[[:space:]`*]+//' \
     | sed -E 's/^- \[[^]]*\] \[[A-Z]\] *//' \
     | tr -s '[:space:]' ' ' \
     | sed -E 's/^ +//; s/ +$//'
