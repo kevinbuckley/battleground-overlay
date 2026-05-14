@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { verifyHsLoggingConfig } from './hsLogConfig';
+import { getHsLogConfigPath, verifyHsLoggingConfig } from './hsLogConfig';
 
 describe('verifyHsLoggingConfig', () => {
   it('file with all 6 sections returns ok=true, missingSections=[]', () => {
@@ -31,5 +31,15 @@ describe('verifyHsLoggingConfig', () => {
     });
     expect(result.ok).toBe(false);
     expect(result.missingSections.length).toBeGreaterThan(0);
+  });
+
+  it('returns string ending with log.config', () => {
+    const result = getHsLogConfigPath('/tmp/testuser');
+    expect(result.endsWith('log.config')).toBe(true);
+  });
+
+  it('passing /tmp/x returns string starting with /tmp/x/', () => {
+    const result = getHsLogConfigPath('/tmp/x');
+    expect(result.startsWith('/tmp/x/')).toBe(true);
   });
 });

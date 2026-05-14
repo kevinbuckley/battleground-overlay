@@ -1,4 +1,6 @@
 import { readFileSync } from 'node:fs';
+import { homedir as getHomedir } from 'node:os';
+import { join } from 'node:path';
 
 const REQUIRED_SECTIONS = ['Power', 'Zone', 'Bob', 'LoadingScreen', 'Asset', 'Net.Mgr'];
 
@@ -21,4 +23,9 @@ export function verifyHsLoggingConfig(
   }
 
   return { ok: missing.length === 0, missingSections: missing };
+}
+
+export function getHsLogConfigPath(homedir: string | undefined = undefined): string {
+  const base = homedir ?? getHomedir();
+  return join(base, 'Library/Preferences/Blizzard/Hearthstone/log.config');
 }
