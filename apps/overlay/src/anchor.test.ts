@@ -18,4 +18,10 @@ describe('anchor', () => {
       expect(result.height).toBeGreaterThan(0);
     }
   });
+
+  it('getHearthstoneBounds called 3 times in a row does not throw', () => {
+    expect(() => getHearthstoneBounds()).not.toThrow();
+    expect(() => getHearthstoneBounds()).not.toThrow();
+    expect(() => getHearthstoneBounds()).not.toThrow();
+  });
 });

@@ -1,7 +1,7 @@
 import type { GameState, Recommendation } from '@overlay/shared';
 
 export function exportReport(turns: { state: GameState; recs: Recommendation[] }[]): string {
-  const lines: string[] = [];
+  const lines: string[] = ['Battlegrounds Session Report'];
 
   for (const { state, recs } of turns) {
     lines.push(`## Turn ${state.turn}`);

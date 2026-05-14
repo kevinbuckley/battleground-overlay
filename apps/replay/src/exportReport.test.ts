@@ -141,4 +141,10 @@ describe('exportReport', () => {
     expect(result).toContain('Tier 6');
     expect(result).toContain('HP 20');
   });
+
+  it('exportReport([]) returns a string without throwing', () => {
+    const result = exportReport([]);
+    expect(typeof result).toBe('string');
+    expect(result.length).toBeGreaterThan(0);
+  });
 });
