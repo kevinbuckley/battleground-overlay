@@ -344,6 +344,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M50: findActiveLogDir filters non-Hearthstone dirs — added 1 test to `findActiveLogDir.test.ts` verifying that a temp dir with `Hearthstone_A`, `OtherApp_B`, and `Hearthstone_B` returns the path ending in `Hearthstone_B` (ignores non-Hearthstone dirs); 3/3 tests pass (commit 4a8b1e6)
 
+2026-05-14 00:00  [DONE]  M56: runDoctor orchestrator — created `apps/overlay/src/doctor.ts` exporting `async function runDoctor(deps)` that aggregates `isHsRunning`, `verifyConfig`, and `checkMlx` results into a single `DoctorResult`; 3 tests (all-true, hs-false, config-fail); 3/3 tests pass (commit e9f055d)
+
 ---
 
 Format:
