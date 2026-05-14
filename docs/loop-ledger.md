@@ -304,6 +304,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M52: bootstrapOverlay factory — created `apps/overlay/src/bootstrap.ts` exporting `bootstrapOverlay(win, deps?)` that calls `startCoordinator(win)` then awaits `streamFactory ?? wireLogStream` with coordinator's `onEvent`, returns `{ coordinator, streamHandle }`; 3 tests (returns coordinator+streamHandle keys, streamFactory invoked once with function arg, null streamFactory → null handle with coordinator present); 870/870 tests pass (commit 1313ba8)
 
+2026-05-14 00:00  [DONE]  M52: registerIpcHandlers extraction — extracted 6 `ipcMain.handle` calls from `main.ts` into `registerIpcHandlers(ipc, deps)` in new `ipcHandlers.ts`; updated `main.ts` to call the extracted function; 3 tests (registers 6 channels, set-interactive calls setInteractive, set-advice calls setAdvice); 870/870 tests pass (commit 8cf9391)
+
 2026-05-14 00:00  [DONE]  M51: pipeline shop-buy → board-add flow — added 1 integration test to `pipeline.integration.test.ts` firing FULL_ENTITY + CONTROLLER + ZONE=PLAY, asserting 1 minion on player board with entityId 200; 863/863 tests pass (commit 8a103cd)
 
 2026-05-14 00:00  [DONE]  M50: findActiveLogDir filters non-Hearthstone dirs — added 1 test to `findActiveLogDir.test.ts` verifying that a temp dir with `Hearthstone_A`, `OtherApp_B`, and `Hearthstone_B` returns the path ending in `Hearthstone_B` (ignores non-Hearthstone dirs); 3/3 tests pass (commit 4a8b1e6)
