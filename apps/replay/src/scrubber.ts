@@ -63,4 +63,8 @@ export class Scrubber {
     this._currentIndex++;
     return this._currentIndex;
   }
+
+  reset(): void {
+    this._currentIndex = 0;
+  }
 }

@@ -182,4 +182,30 @@ describe('Scrubber', () => {
       cleanup(path);
     }
   });
+
+  it('reset() after stepForward() returns to tick 0', () => {
+    const path = makeFixture([
+      'TAG_CHANGE Entity=0 tag=HEALTH value=30',
+      'TAG_CHANGE Entity=0 tag=RESOURCES value=3',
+    ]);
+    try {
+      const events = loadFixture(path);
+      const s = new Scrubber(events);
+      s.stepForward();
+      expect(s.currentIndex).toBe(1);
+      s.stepForward();
+      expect(s.currentIndex).toBe(2);
+      s.reset();
+      expect(s.currentIndex).toBe(0);
+    } finally {
+      cleanup(path);
+    }
+  });
+
+  it('reset() on a fresh scrubber is a no-op', () => {
+    const s = new Scrubber([]);
+    expect(s.currentIndex).toBe(0);
+    s.reset();
+    expect(s.currentIndex).toBe(0);
+  });
 });
