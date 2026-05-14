@@ -21,7 +21,9 @@ describe('parseTagChange', () => {
   });
 
   it('parses with quoted entity names', () => {
-    expect(parseTagChange('TAG_CHANGE Entity=[name=Murloc Tidecaller id=42] tag=ATK value=3')).toEqual({
+    expect(
+      parseTagChange('TAG_CHANGE Entity=[name=Murloc Tidecaller id=42] tag=ATK value=3'),
+    ).toEqual({
       kind: 'TAG_CHANGE',
       entity: '[name=Murloc Tidecaller id=42]',
       tag: 'ATK',
@@ -32,5 +34,14 @@ describe('parseTagChange', () => {
   it('returns null for non-tag-change line', () => {
     expect(parseTagChange('BLOCK_START ...')).toBe(null);
     expect(parseTagChange('')).toBe(null);
+  });
+
+  it('parses quoted value with quotes included in value field', () => {
+    expect(parseTagChange('TAG_CHANGE Entity=5 tag=ZONE value="PLAY"')).toEqual({
+      kind: 'TAG_CHANGE',
+      entity: '5',
+      tag: 'ZONE',
+      value: '"PLAY"',
+    });
   });
 });
