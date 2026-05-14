@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-14 00:00  [DONE]  M47: Renderer damage min/max display — updated `onDamage` handler in `renderer.ts` to format `#damage-forecast` as `Win: <P>% (<min>-<max> dmg)` with fallback to 0 when minDmg/maxDmg are missing; 2 new tests (min/max dmg included, missing fields fallback to 0) + 1 existing test updated; 21/21 tests pass (commit f64bf62)
+
 2026-05-14 00:00  [DONE]  M46: patchVersion non-empty test — added 1 test to `patchVersion.test.ts` asserting `patchVersion()` returns a string with `length > 0`; 2/2 tests pass (commit 752d385)
 
 2026-05-14 00:00  [DONE]  M46: patchDiff no-change test — added 1 test to `patchDiff.test.ts` asserting that `patchDiff(cards, cards)` (same array twice) returns `{ added: [], removed: [], statChanges: [] }`; 837/837 tests pass (commit 893bf3e)
