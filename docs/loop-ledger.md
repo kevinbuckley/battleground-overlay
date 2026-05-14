@@ -30,6 +30,8 @@
 
 2026-05-14 00:00  [DONE]  M53: wireLogStreamWithRetry — added `wireLogStreamWithRetry(onEvent, opts)` to `apps/overlay/src/logStream.ts` that retries `wireLogStream` up to `maxAttempts` (default 3) with `retryMs` (default 2000ms) between attempts; accepts optional `wireFn` for test injection; 3 tests (first-succeed, maxAttempts=1 null, retries exactly 2 times); 882/882 tests pass (commit 9bf2cb8)
 
+2026-05-14 00:00  [DONE]  M53: isHearthstoneRunning helper — added `isHearthstoneRunning(execFn)` to `apps/overlay/src/anchor.ts` that runs `pgrep -x Hearthstone` and returns true if non-empty stdout, false on empty/throw; 3 tests (PID returns true, empty returns false, throw returns false); 885/885 tests pass (commit c51e15c)
+
 ---
 status. One line per task. Most-recent at the top.
 
