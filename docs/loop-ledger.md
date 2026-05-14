@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M48: loadFixture empty file test — added 1 test to `loadFixture.test.ts` writing an empty file and asserting `loadFixture(path)` returns `[]`; 4/4 tests pass (commit 5190102)
+
 2026-05-14 00:00  [DONE]  M47: getHearthstoneBounds idempotency test + exportReport header — added 1 test to `anchor.test.ts` verifying 3 consecutive calls don't throw; added "Battlegrounds Session Report" header to `exportReport` so `exportReport([])` returns non-empty string; 2 new tests, 847/847 tests pass (commit 90525ce)
 
 Append-only log of tasks the autonomous builder has picked, with
