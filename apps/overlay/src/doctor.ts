@@ -27,3 +27,17 @@ export async function runDoctor(deps: {
     mlxError,
   };
 }
+
+export function formatDoctorReport(r: DoctorResult): string {
+  const lines: string[] = [];
+  lines.push(`${r.hsRunning ? '✓' : '✗'} Hearthstone running: ${r.hsRunning}`);
+  lines.push(`${r.configOk ? '✓' : '✗'} Config OK: ${r.configOk}`);
+  if (!r.configOk && r.missingSections.length > 0) {
+    lines.push(`  Missing: ${r.missingSections.join(', ')}`);
+  }
+  lines.push(`${r.mlxOk ? '✓' : '✗'} MLX server: ${r.mlxOk}`);
+  if (!r.mlxOk && r.mlxError) {
+    lines.push(`  Error: ${r.mlxError}`);
+  }
+  return lines.join('\n');
+}
