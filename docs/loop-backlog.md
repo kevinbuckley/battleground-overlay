@@ -552,7 +552,7 @@ to `loop-ledger.md`.
 ## M46 — Card-data integration
 
 - [x] [S] `getCardName` missing card test — in `packages/card-data/src/indexes.test.ts`, add 1 test: `getCardName('NONEXISTENT_CARD_ID_XYZ')` returns `'NONEXISTENT_CARD_ID_XYZ'` (falls back to the id string, doesn't throw) — `packages/card-data/src/indexes.test.ts` only (already exists at indexes.test.ts:66-68)
-- [ ] [S] `getCardsByTier` boundary tests — in `packages/card-data/src/indexes.test.ts`, add 2 tests: `getCardsByTier(0)` returns `[]`; `getCardsByTier(7)` returns `[]` (beyond max tier) — `packages/card-data/src/indexes.test.ts` only
+- [x] [S] `getCardsByTier` boundary tests — in `packages/card-data/src/indexes.test.ts`, add 2 tests: `getCardsByTier(0)` returns `[]`; `getCardsByTier(7)` returns `[]` (beyond max tier) — `packages/card-data/src/indexes.test.ts` only (commit 8421eb4)
 - [ ] [S] `getCardsByTribe` case-sensitivity test — in `packages/card-data/src/indexes.test.ts`, add 1 test: `getCardsByTribe('murloc').length === getCardsByTribe('MURLOC').length` (verify documented behavior — write whichever case matches the implementation) — `packages/card-data/src/indexes.test.ts` only
 - [ ] [S] `isBattlegroundsMinion` non-minion test — in `packages/card-data/src/isBattlegroundsPool.test.ts`, add 1 test: a `Card` with `type: 'SPELL'` returns `false` from `isBattlegroundsMinion` — `packages/card-data/src/isBattlegroundsPool.test.ts` only
 - [ ] [S] `patchDiff` no-change test — in `packages/card-data/src/patchDiff.test.ts`, add 1 test: `patchDiff(cards, cards)` (same array twice) returns an object whose `added`, `removed`, and `changed` arrays are all empty — `packages/card-data/src/patchDiff.test.ts` only

@@ -3,6 +3,8 @@
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
+2026-05-14 00:00  [DONE]  M46: getCardsByTier boundary tests — added 2 tests to `indexes.test.ts`: tier 0 returns [], tier 7 returns []; 834/834 tests pass (commit 8421eb4)
+
 2026-05-13 23:45  [DONE]  M45: sellScore empty-board test — added 1 test to `sellScore.test.ts` asserting `Number.isFinite(sellScore(minion, [], initialState()))` is true; 7/7 tests pass (commit 8df04f9)
 
 2026-05-13 23:55  [DONE]  M45: freezeScore already-frozen short-circuit — added `if (player.shop.frozen) return 0` guard to `freezeScore.ts` + 1 test in `freezeScore.test.ts` asserting frozen shop returns 0; 829/829 tests pass (commit ffcdbfe)
