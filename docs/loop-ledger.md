@@ -22,6 +22,8 @@
 
 2026-05-14 00:00  [DONE]  M47: getHearthstoneBounds idempotency test + exportReport header — added 1 test to `anchor.test.ts` verifying 3 consecutive calls don't throw; added "Battlegrounds Session Report" header to `exportReport` so `exportReport([])` returns non-empty string; 2 new tests, 847/847 tests pass (commit 90525ce)
 
+2026-05-14 00:00  [DONE]  M54: formatAnchorStatusBanner helper — added `formatAnchorStatusBanner(s)` to `apps/overlay/src/anchor.ts` returning `''` for `'anchored'`, `'Waiting for Hearthstone…'` for `'waiting'`, `'Hearthstone not detected — overlay disabled'` for `'failed'`; 3 tests (anchored→'', waiting→message, failed→message); 15/15 tests pass (commit 20b9dbc)
+
 2026-05-14 00:00  [DONE]  M54: anchorToHearthstoneWithRetry — added async retry helper to `anchor.ts` that retries `anchorToHearthstone` up to `maxAttempts` (default 5) with `retryMs` (default 1000) between attempts, accepts stub-able `anchorFn` for testing; 3 tests (first-succeed, maxAttempts=1 fail, 3 calls with all-fail); 888/888 tests pass (commit f8d1084)
 
 2026-05-14 00:00  [DONE]  M54: setAnchorStatus/getAnchorStatus — added module-level state to `anchor.ts` with exported `setAnchorStatus(s: 'waiting'|'anchored'|'failed')` and `getAnchorStatus(): 'waiting'|'anchored'|'failed'`; 3 tests (initial waiting, set to anchored returns anchored, toggle failed→anchored returns anchored); 888/888 tests pass (commit df4d989)
