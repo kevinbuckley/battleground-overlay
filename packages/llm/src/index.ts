@@ -10,6 +10,7 @@ const LLM_TIMEOUT_MS = 1000;
 export { chatCompletion } from './client';
 export { hashState, LlmCache } from './cache';
 export { buildExplainPrompt } from './buildPrompt';
+export { checkMlxServer } from './healthCheck';
 
 export async function explain(rec: Recommendation, state: GameState): Promise<string> {
   const cacheKey = hashState(state);

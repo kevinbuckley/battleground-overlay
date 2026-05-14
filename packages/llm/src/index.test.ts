@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { Recommendation } from '@overlay/shared';
 import { initialState } from '@overlay/state';
-import { explain } from './index';
+import { checkMlxServer, explain } from './index';
 
 function makeState(): ReturnType<typeof initialState> {
   const s = initialState();
@@ -46,5 +46,11 @@ describe('explain', () => {
     const rec = makeRec();
     const result = await explain(rec, state);
     expect(typeof result).toBe('string');
+  });
+});
+
+describe('checkMlxServer export', () => {
+  it('is a function', () => {
+    expect(typeof checkMlxServer).toBe('function');
   });
 });
