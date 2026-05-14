@@ -69,4 +69,30 @@ describe('pipeline integration', () => {
     expect(state.player.gold).toBe(4);
     expect(state.player.tier).toBe(2);
   });
+
+  it('shop-buy → board-add flow: FULL_ENTITY + CONTROLLER + ZONE=PLAY', () => {
+    const pipeline = createPipeline();
+
+    // Start the game
+    pipeline.onEvent(blockStart('TRIGGER', 'TB_BaconShop_StartGame', '1'));
+
+    // Create entity 200 in the system
+    pipeline.onEvent({
+      kind: 'FULL_ENTITY',
+      id: 200,
+      cardId: 'TB_BaconShop_Min1',
+    } as import('@overlay/log-parser').FullEntity);
+
+    // Assign controller to player (playerId = 0 by default)
+    pipeline.onEvent(tagChange('200', 'CONTROLLER', '0'));
+
+    // Move entity to PLAY zone (shop buy)
+    pipeline.onEvent(tagChange('200', 'ZONE', 'PLAY'));
+
+    const state = pipeline.getState();
+
+    expect(state.player.board.minions).toHaveLength(1);
+    expect(state.player.board.minions[0]?.entityId).toBe(200);
+    expect(state.player.board.minions[0]?.cardId).toBe('TB_BaconShop_Min1');
+  });
 });
