@@ -28,6 +28,8 @@
 
 2026-05-14 00:00  [DONE]  M53: waitForLogFile poller — created `packages/log-parser/src/waitForLogFile.ts` exporting async poller with configurable intervalMs/timeoutMs/existsFn; 3 tests (immediate true, timeout false, counter-based true); exported from index; 876/876 tests pass (commit 8b5b598)
 
+2026-05-14 00:00  [DONE]  M53: wireLogStreamWithRetry — added `wireLogStreamWithRetry(onEvent, opts)` to `apps/overlay/src/logStream.ts` that retries `wireLogStream` up to `maxAttempts` (default 3) with `retryMs` (default 2000ms) between attempts; accepts optional `wireFn` for test injection; 3 tests (first-succeed, maxAttempts=1 null, retries exactly 2 times); 882/882 tests pass (commit 9bf2cb8)
+
 ---
 status. One line per task. Most-recent at the top.
 
