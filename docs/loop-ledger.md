@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M49: formatRecommendation score rounding — added 1 test to `recommendation.test.ts` verifying score 0.123456 rounds to "0.12" in formatted output; 7/7 tests pass (commit c4334dc)
 
+2026-05-14 00:00  [DONE]  M50: parseBlockStart indented form — added 1 test to `parseBlock.test.ts` verifying a BLOCK_START line with 4 leading spaces parses correctly to a BlockStart event (`.trim()` handles it); 7/7 tests pass (commit a647ce2)
+
 2026-05-14 00:00  [DONE]  M50: tokenizeLine garbage prefix test — added 1 test to `tokenize.test.ts` verifying that a timestamp-prefixed line `"2024-01-01 00:00:00.000 LOG: TAG_CHANGE Entity=1 tag=HEALTH value=30"` returns a TokenizedLine with `kind: '2024-01-01'` (current behavior — first word is the date prefix, not TAG_CHANGE); 4/4 tests pass (commit eb8af4a)
 
 2026-05-14 00:00  [DONE]  M50: parseTagChange quoted value — added 1 test to `parseTagChange.test.ts` verifying that `parseLine('TAG_CHANGE Entity=5 tag=ZONE value="PLAY"')` returns a TagChange with `value: '"PLAY"'` (quotes included, no stripping); 5/5 tests pass (commit e18beed)
