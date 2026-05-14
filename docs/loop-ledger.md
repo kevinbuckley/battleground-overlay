@@ -22,6 +22,8 @@
 
 2026-05-14 00:00  [DONE]  M47: getHearthstoneBounds idempotency test + exportReport header — added 1 test to `anchor.test.ts` verifying 3 consecutive calls don't throw; added "Battlegrounds Session Report" header to `exportReport` so `exportReport([])` returns non-empty string; 2 new tests, 847/847 tests pass (commit 90525ce)
 
+2026-05-14 00:00  [DONE]  M54: anchorToHearthstoneWithRetry — added async retry helper to `anchor.ts` that retries `anchorToHearthstone` up to `maxAttempts` (default 5) with `retryMs` (default 1000) between attempts, accepts stub-able `anchorFn` for testing; 3 tests (first-succeed, maxAttempts=1 fail, 3 calls with all-fail); 888/888 tests pass (commit f8d1084)
+
 2026-05-14 00:00  [DONE]  M52: getDefaultSettingsPath — added `getDefaultSettingsPath(getHomedir)` to `apps/overlay/src/settings.ts` returning `path.join(homedir, 'Library/Application Support/battleground-overlay', 'overlay-settings.json')`; 2 tests (ends with filename, custom homedir prefix); 872/872 tests pass (commit 7e16572)
 
 2026-05-14 00:00  [DONE]  M52: loadSettings empty-string path — added early-return guard `if (path === '')` to `loadSettings` in `settings.ts` + 1 test asserting `loadSettings('')` deep-equals `defaultSettings()`; 873/873 tests pass (commit 8e22c1c)
