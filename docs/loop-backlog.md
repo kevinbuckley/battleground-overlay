@@ -574,7 +574,7 @@ to `loop-ledger.md`.
 ## M48 — Replay app enhancements
 
 - [ ] [S] `Scrubber.length` getter — in `apps/replay/src/scrubber.ts`, add a `get length(): number` property to the `Scrubber` class returning the number of events; 2 tests in `scrubber.test.ts`: `new Scrubber([e1, e2, e3]).length === 3`; `new Scrubber([]).length === 0` — `apps/replay/src/scrubber.ts` + `apps/replay/src/scrubber.test.ts`
-- [ ] [S] `Scrubber.reset()` method — in `apps/replay/src/scrubber.ts`, add `reset(): void` method that returns the scrubber to tick 0; 2 tests: after `stepForward()` twice then `reset()`, current tick is 0; calling `reset()` on a fresh scrubber is a no-op — `apps/replay/src/scrubber.ts` + `apps/replay/src/scrubber.test.ts`
+- [x] [S] `Scrubber.reset()` method — in `apps/replay/src/scrubber.ts`, add `reset(): void` method that returns the scrubber to tick 0; 2 tests: after `stepForward()` twice then `reset()`, current tick is 0; calling `reset()` on a fresh scrubber is a no-op — `apps/replay/src/scrubber.ts` + `apps/replay/src/scrubber.test.ts` (commit 213aa0a)
 - [ ] [S] `formatState` empty-state test — in `apps/replay/src/stateViewer.test.ts`, add 1 test: `formatState(initialState())` returns a non-empty string containing `"Turn"` — `apps/replay/src/stateViewer.test.ts` only
 - [ ] [S] `formatState` includes opponents — in `apps/replay/src/stateViewer.test.ts`, add 1 test: state with 2 opponents → result contains both opponent identifiers (entityId or playerId stringified) — `apps/replay/src/stateViewer.test.ts` only
 - [ ] [S] `exportReport` zero-turns test — in `apps/replay/src/exportReport.test.ts`, add 1 test: `exportReport([])` returns a string (header only, no turns) without throwing — `apps/replay/src/exportReport.test.ts` only

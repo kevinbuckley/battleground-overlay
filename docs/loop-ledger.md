@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M48: Scrubber reset() method — added `reset(): void` to `Scrubber` class that sets `_currentIndex = 0`; 2 tests (after 2x stepForward then reset → currentIndex=0, reset on fresh scrubber is no-op); 13/13 tests pass (commit 213aa0a)
+
 Append-only log of tasks the autonomous builder has picked, with
 status. One line per task. Most-recent at the top.
 
