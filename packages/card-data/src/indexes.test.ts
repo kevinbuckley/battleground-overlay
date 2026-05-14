@@ -30,6 +30,12 @@ describe('getCardsByTribe', () => {
     const b = getCardsByTribe('Beast');
     expect(a).toBe(b);
   });
+
+  it('case-sensitive: lowercase tribe returns different result than uppercase', () => {
+    const upper = getCardsByTribe('Beast');
+    const lower = getCardsByTribe('beast');
+    expect(upper).not.toBe(lower);
+  });
 });
 
 describe('getCardsByTier', () => {
