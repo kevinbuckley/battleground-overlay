@@ -42,5 +42,10 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(state);
       });
     },
+    onStartupBanner(cb: (s: string) => void): void {
+      ipc.on('overlay:startup-banner', (_event, banner) => {
+        cb(banner);
+      });
+    },
   });
 }

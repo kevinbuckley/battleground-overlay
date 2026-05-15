@@ -1062,3 +1062,53 @@ describe('formatMinionLine', () => {
     expect(formatMinionLine({ attack: 0, health: 1, cardId: '' })).toBe('`0/1 `');
   });
 });
+
+describe('initRenderer onStartupBanner', () => {
+  it('sets #startup-banner text and adds .visible class', () => {
+    let bannerCallback: ((s: string) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onShop: () => {},
+      onOpponents: () => {},
+      onHsStatus: () => {},
+      onState: () => {},
+      onStartupBanner: (cb: (s: string) => void) => {
+        bannerCallback = cb;
+      },
+    };
+
+    const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
+    const banner = { textContent: '', classList: new Set<string>() };
+    mockElements.set('startup-banner', banner);
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id)
+          ? {
+              ...mockElements.get(id),
+              set textContent(v: string) {
+                mockElements.get(id)!.textContent = v;
+              },
+              get textContent() {
+                return mockElements.get(id)!.textContent;
+              },
+              classList: {
+                add(c: string) {
+                  mockElements.get(id)!.classList.add(c);
+                },
+              },
+            }
+          : null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    bannerCallback!('HS:✓ Config:✗ MLX:✓');
+
+    expect(banner.textContent).toBe('HS:✓ Config:✗ MLX:✓');
+    expect(banner.classList.has('visible')).toBe(true);
+  });
+});

@@ -356,4 +356,28 @@ describe('preload', () => {
 
     expect(received).toBe(rawPayload);
   });
+
+  it('onStartupBanner subscribes to overlay:startup-banner channel', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const bridge = mockCb._getExposed()!.value as {
+      onStartupBanner: (cb: (s: string) => void) => void;
+    };
+
+    let received: string | null = null;
+    bridge.onStartupBanner((s) => {
+      received = s;
+    });
+
+    const listener = mockIpc._getListeners()['overlay:startup-banner']?.[0];
+    listener?.(null, 'HS:✓ Config:✓ MLX:✓');
+
+    expect(received).toBe('HS:✓ Config:✓ MLX:✓');
+  });
 });

@@ -6,10 +6,10 @@ import { createOverlayWindow } from './createOverlayWindow';
 import { setExplanation } from './explanationPanel';
 import { registerIpcHandlers } from './ipcHandlers';
 import { setInteractive } from './overlayState';
-import { loadSettings } from './settings';
+import { getDefaultSettingsPath, loadSettings } from './settings';
 
 async function createWindow(): Promise<void> {
-  const win = createOverlayWindow();
+  const win = createOverlayWindow(undefined, getDefaultSettingsPath());
   await bootstrapOverlay(win);
 }
 

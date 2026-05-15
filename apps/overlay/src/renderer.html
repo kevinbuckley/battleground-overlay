@@ -74,9 +74,19 @@
       color: #a0d0ff;
       margin-bottom: 4px;
     }
+    #startup-banner {
+      font-size: 11px;
+      color: #ffb74d;
+      margin-bottom: 4px;
+      display: none;
+    }
+    #startup-banner.visible {
+      display: block;
+    }
   </style>
 </head>
 <body>
+  <div id="startup-banner"></div>
   <div id="hs-status"></div>
   <div id="game-info"></div>
   <div id="advice-action"></div>
