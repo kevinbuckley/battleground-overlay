@@ -26,4 +26,23 @@ describe('parseFullEntity', () => {
     expect(parseFullEntity('TAG_CHANGE Entity=1 tag=HEALTH value=30')).toBe(null);
     expect(parseFullEntity('')).toBe(null);
   });
+
+  it('handles missing cardId field in Creating line', () => {
+    const line = 'FULL_ENTITY - Creating ID=99';
+    expect(parseFullEntity(line)).toEqual({
+      kind: 'FULL_ENTITY',
+      id: 99,
+      cardId: '',
+    });
+  });
+
+  it('handles missing cardId field in Updating line', () => {
+    const line = 'FULL_ENTITY - Updating Card=[name=Murloc Tidecaller id=42]';
+    expect(parseFullEntity(line)).toEqual({
+      kind: 'FULL_ENTITY',
+      id: 42,
+      cardId: '',
+      name: 'Murloc Tidecaller',
+    });
+  });
 });
