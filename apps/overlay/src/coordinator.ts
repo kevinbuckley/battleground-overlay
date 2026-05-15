@@ -1,7 +1,7 @@
 import { recommend } from '@overlay/advisor';
 import { explain } from '@overlay/llm';
 import type { HsEvent } from '@overlay/log-parser';
-import type { GameState } from '@overlay/shared';
+import type { GameState, Recommendation } from '@overlay/shared';
 import { appendSessionEvent, setBoardPanel } from '@overlay/shared';
 import { type Pipeline, createPipeline } from '@overlay/state';
 import type { BrowserWindow } from 'electron';
@@ -13,6 +13,10 @@ export interface Coordinator {
   onEvent: (event: HsEvent) => void;
   getState: () => GameState;
   stop: () => void;
+}
+
+export function getRecsForBridge(allRecs: Recommendation[], max = 3): Recommendation[] {
+  return allRecs.slice(0, max);
 }
 
 export interface CoordinatorOpts {

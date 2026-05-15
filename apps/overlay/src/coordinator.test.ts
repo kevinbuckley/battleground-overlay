@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it } from 'bun:test';
 import { clearBoardPanel, getBoardPanel } from '@overlay/shared';
+import type { Recommendation } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 import { clearAdvice, getAdvice } from './advicePanel';
-import { startCoordinator } from './coordinator';
+import { getRecsForBridge, startCoordinator } from './coordinator';
 import { stopBridge } from './ipcBridge';
 
 function makeMockWin() {
@@ -483,5 +484,63 @@ describe('coordinator', () => {
     } finally {
       globalThis.fetch = originalFetch;
     }
+  });
+
+  describe('getRecsForBridge', () => {
+    it('slices 5 recs to max=3 → length 3', () => {
+      const recs: Recommendation[] = [
+        {
+          action: { type: 'Buy', cardId: 'A', shopIndex: 0 },
+          score: 0.9,
+          confidence: 0.9,
+          reason: '',
+        },
+        {
+          action: { type: 'Buy', cardId: 'B', shopIndex: 1 },
+          score: 0.8,
+          confidence: 0.8,
+          reason: '',
+        },
+        {
+          action: { type: 'Buy', cardId: 'C', shopIndex: 2 },
+          score: 0.7,
+          confidence: 0.7,
+          reason: '',
+        },
+        {
+          action: { type: 'Buy', cardId: 'D', shopIndex: 3 },
+          score: 0.6,
+          confidence: 0.6,
+          reason: '',
+        },
+        {
+          action: { type: 'Buy', cardId: 'E', shopIndex: 4 },
+          score: 0.5,
+          confidence: 0.5,
+          reason: '',
+        },
+      ];
+      const result = getRecsForBridge(recs, 3);
+      expect(result.length).toBe(3);
+    });
+
+    it('slices 2 recs to max=3 → length 2', () => {
+      const recs: Recommendation[] = [
+        {
+          action: { type: 'Buy', cardId: 'A', shopIndex: 0 },
+          score: 0.9,
+          confidence: 0.9,
+          reason: '',
+        },
+        { action: { type: 'Sell', boardIndex: 0 }, score: 0.5, confidence: 0.5, reason: '' },
+      ];
+      const result = getRecsForBridge(recs, 3);
+      expect(result.length).toBe(2);
+    });
+
+    it('empty array → length 0', () => {
+      const result = getRecsForBridge([], 3);
+      expect(result.length).toBe(0);
+    });
   });
 });
