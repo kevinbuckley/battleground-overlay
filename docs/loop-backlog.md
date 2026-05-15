@@ -785,7 +785,7 @@ by hand before first use.
 
 ## M72 — Advisor: `sellScore` golden-minion protection
 
-- [ ] [S] `sellScore` does not recommend selling a golden — add an early-return in `packages/advisor/src/heuristics/sellScore.ts`: if `minion.golden === true` return `0` regardless of other criteria (golden minions are always valuable); 2 tests: golden minion with bad stats → `sellScore` returns `0`; non-golden minion with same bad stats → `sellScore` returns > 0 — `packages/advisor/src/heuristics/sellScore.ts` + `packages/advisor/src/heuristics/sellScore.test.ts`
+- [x] [S] `sellScore` does not recommend selling a golden — add an early-return in `packages/advisor/src/heuristics/sellScore.ts`: if `minion.golden === true` return `0` regardless of other criteria (golden minions are always valuable); 2 tests: golden minion with bad stats → `sellScore` returns `0`; non-golden minion with same bad stats → `sellScore` returns > 0 — `packages/advisor/src/heuristics/sellScore.ts` + `packages/advisor/src/heuristics/sellScore.test.ts` (commit 844057f)
 
 ## M73 — Advisor: `rerollScore` max-board guard
 

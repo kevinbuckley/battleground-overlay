@@ -575,3 +575,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 00:00  [DONE]  M65: serialize top-level fields — add `lobbySize` and `anomaly` to `serializeGameState` and `deserializeGameState` with backward-compat defaults (lobbySize=8, anomaly=null); 3 tests (lobbySize round-trip, anomaly round-trip, old format graceful fallback); 1071/1071 tests pass (commit 76bfa2e)
 
 2026-05-15 11:48  [DONE]  recommend empty-shop + all-opponents-eliminated tests — locked behavior with 2 new tests; already implemented, tests confirmed green (commit f692986)
+
+2026-05-15 12:00  [DONE]  M72: sellScore golden-minion protection — early-return 0 for golden minions, 2 new tests (golden returns 0, non-golden returns > 0); 1078/1078 tests pass (commit 844057f)
