@@ -122,4 +122,32 @@ describe('rerollScore', () => {
     const score = rerollScore(state);
     expect(score).toBeLessThanOrEqual(1);
   });
+
+  it('returns 0 when board is full (7 minions)', () => {
+    const board = [
+      makeMinion(1, 'A', 1, 1),
+      makeMinion(2, 'B', 2, 2),
+      makeMinion(3, 'C', 3, 3),
+      makeMinion(4, 'D', 1, 2),
+      makeMinion(5, 'E', 2, 3),
+      makeMinion(6, 'F', 3, 1),
+      makeMinion(7, 'G', 1, 3),
+    ];
+    const state = makeStateWithShop([makeMinion(8, 'SHOP1', 2, 2)], board, 30, 3, 1);
+    expect(rerollScore(state)).toBe(0);
+  });
+
+  it('returns non-zero when board has 6 minions (room to buy)', () => {
+    const board = [
+      makeMinion(1, 'A', 1, 1),
+      makeMinion(2, 'B', 2, 2),
+      makeMinion(3, 'C', 3, 3),
+      makeMinion(4, 'D', 1, 2),
+      makeMinion(5, 'E', 2, 3),
+      makeMinion(6, 'F', 3, 1),
+    ];
+    const state = makeStateWithShop([makeMinion(7, 'SHOP1', 2, 2)], board, 30, 3, 1);
+    const score = rerollScore(state);
+    expect(score).toBeGreaterThan(0);
+  });
 });

@@ -12,6 +12,7 @@ import { tripleScore } from './triple';
 
 export function rerollScore(state: GameState): number {
   const { shop, gold, hero } = state.player;
+  if (state.player.board.minions.length >= 7) return 0;
   if (shop.minions.length === 0) return 0;
 
   // 1. Check triple potential across all shop minions
