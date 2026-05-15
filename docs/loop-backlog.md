@@ -779,9 +779,9 @@ by hand before first use.
 
 ## M71 — Advisor: `tierCurveScore` boundary tests
 
-- [ ] [S] `tierCurveScore` maxed-tier short-circuit test — add 2 tests to `packages/advisor/src/heuristics/tierCurve.test.ts`: `tierCurveScore(12, 40, 10, 6, 0)` returns `0` (already tier 6); `tierCurveScore(1, 40, 0, 2, 6)` returns `0` (can't afford) — `packages/advisor/src/heuristics/tierCurve.test.ts` only
+- [x] [S] `tierCurveScore` maxed-tier short-circuit test — existing tests at lines 6, 10 already cover maxed-tier (tier 6 → 0) and can't afford (gold < cost → 0); locked by existing tests — `packages/advisor/src/heuristics/tierCurve.test.ts` only (already covered)
 
-- [ ] [S] `tierCurveScore` low-HP penalty test — add 2 tests: `tierCurveScore(4, 15, 10, 2, 5)` with minHp=30 for tier 3 → score is ≤ 0.5 (hp < minHp halves score); `tierCurveScore(4, 40, 10, 2, 5)` → score is > 0.5 — `packages/advisor/src/heuristics/tierCurve.test.ts` only
+- [x] [S] `tierCurveScore` low-HP penalty test — existing test at lines 22-26 (`lowHp = tierCurveScore(4, 20, 10, 2, 3)` vs `highHp = tierCurveScore(4, 35, 10, 2, 3)`, asserts `lowHp ≈ highHp * 0.5`) already covers the low-HP penalty; locked by existing test — `packages/advisor/src/heuristics/tierCurve.test.ts` only (already covered)
 
 ## M72 — Advisor: `sellScore` golden-minion protection
 
@@ -789,7 +789,7 @@ by hand before first use.
 
 ## M73 — Advisor: `rerollScore` max-board guard
 
-- [ ] [S] `rerollScore` returns 0 when board is full — add guard to `packages/advisor/src/heuristics/rerollScore.ts`: if `state.player.board.minions.length >= 7` return `0` (no room to buy anything from a reroll); 2 tests: board with 7 minions → `rerollScore` returns `0`; board with 6 minions → `rerollScore` may return non-zero — `packages/advisor/src/heuristics/rerollScore.ts` + `packages/advisor/src/heuristics/rerollScore.test.ts`
+- [x] [S] `rerollScore` returns 0 when board is full — added guard to `packages/advisor/src/heuristics/rerollScore.ts`: if `state.player.board.minions.length >= 7` return `0`; 2 tests: board with 7 minions → `rerollScore` returns `0`; board with 6 minions → `rerollScore` returns `1.0` — `packages/advisor/src/heuristics/rerollScore.ts` + `packages/advisor/src/heuristics/rerollScore.test.ts` (commit d45c988)
 
 ## M74 — Advisor: `enumerateBuyCandidates` board-full guard
 
