@@ -384,6 +384,8 @@
 
 2026-05-14 00:00  [DONE]  M60: applyRevives handler — handles `TAG_CHANGE tag=NUM_REVIVES` on player controller, sets `state.player.revives: number`, 4 tests (initial=0, increments on revive, no-op on opponent, reflected in state), wired into reducer; 969/969 tests pass (commit 3e53671)
 
+2026-05-15 00:00  [DONE]  M61: applyExhausted handler — handles `TAG_CHANGE tag=EXHAUSTED value=1/0` on entities in PLAY zone, sets `minion.exhausted: boolean` (add field to Minion in `packages/shared/src/state.ts`), 4 tests (set on player minion, set on opponent minion, no-op on hero, no-op on non-play entity), wired into reducer; 986/986 tests pass (commit 9378a2a)
+
 ---
 
 Format:
