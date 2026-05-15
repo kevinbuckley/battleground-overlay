@@ -83,6 +83,7 @@ export interface OpponentState {
   tier: number;
   eliminated: boolean;
   turnsPlayed: number;
+  revives: number;
 }
 
 export interface GameState {

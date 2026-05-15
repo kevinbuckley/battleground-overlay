@@ -44,6 +44,7 @@ import { applyMinionsKilled } from './reducer/minionsKilled';
 import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
+import { applyOpponentRevives } from './reducer/opponentRevives';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyOpponentTurnsPlayed } from './reducer/opponentTurnsPlayed';
 import { applyPlayerDeath } from './reducer/playerDeath';
@@ -300,7 +301,11 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyPlayerTurnsPlayed(state, event);
       }
       if (event.tag === 'NUM_REVIVES') {
-        return applyRevives(state, event);
+        const afterRevives = applyRevives(state, event);
+        if (afterRevives !== state) {
+          return afterRevives;
+        }
+        return applyOpponentRevives(state, event);
       }
       if (event.tag === 'NUM_BOUNTY_CARDS') {
         return applyBountyCards(state, event);
