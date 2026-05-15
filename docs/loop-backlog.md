@@ -706,6 +706,12 @@ by hand before first use.
 - [x] [S] `applyTurnTimer` — handles `TAG_CHANGE tag=TIMEOUT` on player controller → sets `state.player.turnTimer: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=15, updates on turn start, no-op on opponent, reflects remaining time) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/turnTimer.ts` + test (commit 6e305c9)
 - [x] [S] `applyOpponentRevives` — handles `TAG_CHANGE tag=NUM_REVIVES` on opponent controllers → sets `state.opponents[i].revives: number` (add field to OpponentState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments on opponent revive, no-op on player, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/opponentRevives.ts` + test (commit abac9f0)
 
+## M62 — Missing tag handlers (continued)
+
+- [x] [S] `applyNumGameTurns` — handles `TAG_CHANGE tag=NUM_GAME_TURNS` on player controller → sets `state.player.numGameTurns: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments each game turn, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numGameTurns.ts` + test (commit 9a07276)
+- [ ] [S] `applyNumMinionsTraded` — handles `TAG_CHANGE tag=NUM_MINIONS_TRADED_THIS_TURN` on player controller → sets `state.player.minionsTradedThisTurn: number` (add field to PlayerState); wire into reducer; 4 tests (initial=0, increments on combat trades, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numMinionsTraded.ts` + test
+- [ ] [S] `applyNumChoices` — handles `TAG_CHANGE tag=NUM_CHOICES` on player controller → sets `state.player.numChoices: number` (add field to PlayerState); wire into reducer; 4 tests (initial=0, updates on discover, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numChoices.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
