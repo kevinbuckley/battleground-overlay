@@ -7,6 +7,7 @@ import {
   defaultSettings,
   getDefaultSettingsPath,
   loadSettings,
+  mergeSettings,
   saveSettings,
 } from './settings';
 
@@ -173,5 +174,49 @@ describe('settings', () => {
     } finally {
       teardown();
     }
+  });
+
+  it('mergeSettings with empty patch returns object equal to base', () => {
+    const base: OverlaySettings = {
+      opacity: 0.7,
+      x: 100,
+      y: 200,
+      hotkeys: { toggle: 'F1', reload: 'F2', hide: 'F3' },
+    };
+
+    const result = mergeSettings(base, {});
+
+    expect(result).toEqual(base);
+  });
+
+  it('mergeSettings with partial opacity overrides only opacity', () => {
+    const base: OverlaySettings = {
+      opacity: 0.85,
+      x: 0,
+      y: 0,
+      hotkeys: { toggle: 'Alt+B', reload: 'Alt+R', hide: 'Alt+H' },
+    };
+
+    const result = mergeSettings(base, { opacity: 0.5 });
+
+    expect(result.opacity).toBe(0.5);
+    expect(result.x).toBe(0);
+    expect(result.y).toBe(0);
+    expect(result.hotkeys).toEqual(defaultSettings().hotkeys);
+  });
+
+  it('mergeSettings with partial hotkeys overrides only the specified hotkey', () => {
+    const base: OverlaySettings = {
+      opacity: 0.85,
+      x: 0,
+      y: 0,
+      hotkeys: { toggle: 'Alt+B', reload: 'Alt+R', hide: 'Alt+H' },
+    };
+
+    const result = mergeSettings(base, { hotkeys: { toggle: 'F1' } });
+
+    expect(result.hotkeys.toggle).toBe('F1');
+    expect(result.hotkeys.reload).toBe('Alt+R');
+    expect(result.hotkeys.hide).toBe('Alt+H');
   });
 });

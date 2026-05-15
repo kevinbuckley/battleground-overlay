@@ -62,6 +62,22 @@ export function getDefaultSettingsPath(getHomedir = homedir): string {
   return join(getHomedir(), 'Library/Application Support/battleground-overlay', SETTINGS_FILENAME);
 }
 
+export function mergeSettings(
+  base: OverlaySettings,
+  patch: Partial<OverlaySettings>,
+): OverlaySettings {
+  return {
+    opacity: patch.opacity ?? base.opacity,
+    x: patch.x ?? base.x,
+    y: patch.y ?? base.y,
+    hotkeys: {
+      toggle: patch.hotkeys?.toggle ?? base.hotkeys.toggle,
+      reload: patch.hotkeys?.reload ?? base.hotkeys.reload,
+      hide: patch.hotkeys?.hide ?? base.hotkeys.hide,
+    },
+  };
+}
+
 export function saveSettings(path: string, s: OverlaySettings): void {
   const filePath = path.endsWith(SETTINGS_FILENAME) ? path : join(path, SETTINGS_FILENAME);
 
