@@ -13,6 +13,8 @@ export interface Coordinator {
   onEvent: (event: HsEvent) => void;
   getState: () => GameState;
   stop: () => void;
+  setHsStatus: (s: 'waiting' | 'anchored' | 'failed') => void;
+  getHsStatus: () => 'waiting' | 'anchored' | 'failed';
 }
 
 export function getRecsForBridge(allRecs: Recommendation[], max = 3): Recommendation[] {
@@ -40,6 +42,7 @@ export interface CoordinatorOpts {
 export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Coordinator {
   const pipeline: Pipeline = createPipeline();
   let previousTurn: number | null = null;
+  let hsStatus: 'waiting' | 'anchored' | 'failed' = 'waiting';
 
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
@@ -90,6 +93,20 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
     }
   };
 
+  const coordinator: Coordinator = {
+    onEvent: pipeline.onEvent,
+    getState: pipeline.getState,
+    setHsStatus(s: 'waiting' | 'anchored' | 'failed'): void {
+      hsStatus = s;
+    },
+    getHsStatus(): 'waiting' | 'anchored' | 'failed' {
+      return hsStatus;
+    },
+    stop(): void {
+      stopBridge();
+    },
+  };
+
   // Start the IPC bridge so the renderer gets state/recs updates
   startBridge(
     win,
@@ -103,14 +120,8 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       }
     },
     () => null,
+    coordinator.getHsStatus,
   );
 
-  const coordinator: Coordinator = {
-    onEvent: pipeline.onEvent,
-    getState: pipeline.getState,
-    stop(): void {
-      stopBridge();
-    },
-  };
   return coordinator;
 }
