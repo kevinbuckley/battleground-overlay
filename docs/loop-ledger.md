@@ -392,6 +392,8 @@
 
 2026-05-15 00:00  [DONE]  M63: applyDeathrattlesTriggered — handles `TAG_CHANGE tag=NUM_DEATHRATTLES_TRIGGERED_THIS_TURN` on player controller, sets `state.player.deathrattlesTriggeredThisTurn: number` (add field to PlayerState), 4 tests (initial=0, updates on tag, no-op on opponent, no-op on non-player entity), wired into reducer; 1020/1020 tests pass (commit 92cac7c)
 
+2026-05-15 00:00  [DONE]  M63: applyMinionsDied — handles `TAG_CHANGE tag=NUM_MINIONS_DIED_THIS_TURN` on player controller, sets `state.player.minionsDiedThisTurn: number` (add field to PlayerState), 4 tests (initial=0, increments on minion death, no-op on opponent, reflected in state), wired into reducer; 1028/1028 tests pass (commit 29437de)
+
 2026-05-15 00:00  [DONE]  M61: applyMagnetic handler — handles `TAG_CHANGE tag=MAGNETIC value=1/0` on entities in PLAY zone, sets `minion.magnetic: boolean` (add field to Minion in `packages/shared/src/state.ts`), 4 tests (set on player minion, set on opponent minion, no-op on hero, no-op on non-play entity), wired into reducer; 987/987 tests pass (commit 4225db9)
 
 ---
