@@ -729,6 +729,48 @@ by hand before first use.
 
 - [x] [S] OpponentState in budgetScorer — update `packages/advisor/src/budgetScorer.ts` to include opponent tracking fields when scoring (e.g., use `opponent.minionsOnBoard` for board size projection); 2 tests: opponent with tracked stats scores correctly, opponent with default stats scores correctly — `packages/advisor/src/budgetScorer.ts` + test (commit 46a3457)
 
+## M115 — End-to-end: card names in advice
+
+- [ ] [S] `ipcBridge` enriches recs with card name — in `apps/overlay/src/ipcBridge.ts`, before sending `overlay:recs-update`, map each rec: if `action.type === 'Buy'`, look up `getCardById(action.cardId)` from `@overlay/card-data` and attach `action.cardName = card?.name ?? action.cardId`; do the same for board-update minions (add `name` field); 2 tests in `apps/overlay/src/ipcBridge.test.ts`: stub `getCardById` returning `{ name: 'Alleycat' }` → sent rec has `action.cardName === 'Alleycat'`; `getCardById` returns `undefined` → `action.cardName` falls back to `action.cardId` — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+
+- [ ] [S] `getActionText` uses `cardName` when available — in `apps/overlay/src/renderer.ts`, update `getActionText`: for `Buy`, return `` `Buy ${action.cardName ?? action.cardId}` `` instead of `` `Buy ${action.cardId}` ``; 2 tests in `apps/overlay/src/renderer.test.ts`: rec with `action.type='Buy', action.cardId='TB_001', action.cardName='Alleycat'` → `getActionText` returns `'Buy Alleycat'`; rec without `cardName` → returns `'Buy TB_001'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
+## M116 — End-to-end: shop display in overlay
+
+- [ ] [S] `ipcBridge` sends shop update — in `apps/overlay/src/ipcBridge.ts`, inside the poll interval, add `win.webContents.send('overlay:shop-update', state.player.shop.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health })))` after the board-update send; 2 tests: state with 3 shop minions → `overlay:shop-update` sent with array length 3; empty shop → sent with `[]` — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+
+- [ ] [S] Preload wires `onShop` — in `apps/overlay/src/preload.ts`, add `onShop(cb: (s: unknown[]) => void): void` that registers `ipc.on('overlay:shop-update', (_e, shop) => cb(shop))`; 1 test in `apps/overlay/src/preload.test.ts`: emitting `'overlay:shop-update'` with a 3-element array → callback receives array of length 3 — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
+
+- [ ] [S] `initRenderer` displays shop minions — in `apps/overlay/src/renderer.ts`, add `onShop(cb: (s: unknown[]) => void): void` to `OverlayBridge`; inside `initRenderer` call `bridge.onShop((shop) => { const el = document.getElementById('shop-minions'); if (!el) return; const minions = shop as {cardId:string;attack:number;health:number}[]; el.innerHTML = minions.map(m => \`<li>\${m.attack}/\${m.health} \${m.cardId}</li>\`).join(''); })`; add `<ul id="shop-minions"></ul>` to `renderer.html`; 2 tests: shop with 2 minions → `#shop-minions` has 2 `<li>` items; empty shop → innerHTML is `''` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+## M117 — End-to-end: bootstrap wires doctor + anchor
+
+- [ ] [S] `coordinator` adds `setHsStatus`/`getHsStatus` methods — the `Coordinator` interface already has these in its type (line 653 is marked [x]) but `startCoordinator` does not initialize `hsStatus`; add `let hsStatus: 'waiting'|'anchored'|'failed' = 'waiting'` inside `startCoordinator`, expose `setHsStatus` and `getHsStatus` on the returned coordinator object; 2 tests in `apps/overlay/src/coordinator.test.ts`: initial `coordinator.getHsStatus()` returns `'waiting'`; after `setHsStatus('anchored')` returns `'anchored'` — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+
+- [ ] [S] `bootstrapOverlay` calls `runDoctor` on startup — in `apps/overlay/src/bootstrap.ts`, after creating the coordinator, import `runDoctor`, `isHearthstoneRunning` from `./anchor`, `verifyHsLoggingConfig` from `./hsLogConfig`, `checkMlxServer` from `@overlay/llm`; call `runDoctor({isHsRunning: isHearthstoneRunning, verifyConfig: verifyHsLoggingConfig, checkMlx: checkMlxServer})`; pass `opts?.logFn ?? appendSessionEvent` with kind `'doctor'`; 2 tests: stub `runDoctor` all-true → logFn called with kind `'doctor'`; all-false → still called — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+- [ ] [S] `bootstrapOverlay` uses `wireLogStreamWithRetry` — in `apps/overlay/src/bootstrap.ts`, replace the call to `wireLogStream` with `wireLogStreamWithRetry(coordinator.onEvent, { maxAttempts: 3, retryMs: 500, wireFn: deps?.streamFactory })` so HS log is retried 3× before giving up; 2 tests: stream that fails twice then succeeds → `streamHandle` is non-null; always-fails stream → `streamHandle` is null — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+## M118 — End-to-end: startup banner in renderer
+
+- [ ] [S] `bootstrapOverlay` sends startup banner IPC — in `apps/overlay/src/bootstrap.ts`, after `runDoctor` resolves, call `win.webContents.send('overlay:startup-banner', formatStartupBanner(doctorResult))`; import `formatStartupBanner` from `./doctor`; 2 tests: all-true doctor result → `webContents.send` called with channel `'overlay:startup-banner'` and string containing `'HS:✓'`; all-false → string containing `'HS:✗'` — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+- [ ] [S] Preload wires `onStartupBanner` — in `apps/overlay/src/preload.ts`, add `onStartupBanner(cb: (s: string) => void): void` that registers `ipc.on('overlay:startup-banner', (_e, s) => cb(s))`; 1 test: emitting `'overlay:startup-banner'` with `'HS:✓ Config:✓ MLX:✓'` → callback receives that exact string — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
+
+- [ ] [S] `initRenderer` shows startup banner — add `onStartupBanner(cb: (s: string) => void): void` to `OverlayBridge` in `apps/overlay/src/renderer.ts`; in `initRenderer` call `bridge.onStartupBanner(s => { const el = document.getElementById('startup-banner'); if (el) { el.textContent = s; el.classList.add('visible'); } })`; add `<div id="startup-banner"></div>` with CSS `display:none; .visible { display:block; font-size:11px; color:#888; }` to `renderer.html`; 2 tests: callback sets `#startup-banner` text; adds `visible` class — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+## M119 — End-to-end: settings + hotkeys wired
+
+- [ ] [S] `createOverlayWindow` uses hotkeys from settings — in `apps/overlay/src/createOverlayWindow.ts`, change the `registerHotkeys` call to use `settings.hotkeys` instead of `defaultHotkeyConfig()`; add `hotkeys` field to the `Settings` type in `apps/overlay/src/settings.ts` with default `{ toggle: 'Alt+B', reload: 'Alt+R', hide: 'Alt+H' }`; 2 tests in the `createOverlayWindow` test: settings with `hotkeys.toggle='Alt+G'` → stub `registerHotkeys` called with `cfg.toggle === 'Alt+G'`; default settings → `cfg.toggle === 'Alt+B'` — `apps/overlay/src/createOverlayWindow.ts` + `apps/overlay/src/settings.ts` + existing test file
+
+## M120 — Polish: confidence color + action labels
+
+- [ ] [S] `initRenderer` sets confidence CSS class — in `apps/overlay/src/renderer.ts`, after setting `#advice-confidence` text, also set `confEl.className = getConfidenceLabel(top.confidence)` so CSS can color it green/yellow/red; 3 tests in `apps/overlay/src/renderer.test.ts`: confidence 0.8 → `#advice-confidence` className `'high'`; confidence 0.5 → `'medium'`; confidence 0.2 → `'low'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] CSS confidence colors in renderer.html — add to `apps/overlay/src/renderer.html` the CSS rules `#advice-confidence.high { color: #00e676; }`, `#advice-confidence.medium { color: #ffd740; }`, `#advice-confidence.low { color: #ff5252; }`; 1 test in `apps/overlay/src/renderer.test.ts`: the HTML file contents include `advice-confidence.high` — read renderer.html in test and assert substring — `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] `getActionText` for Sell shows cardId not index — in `apps/overlay/src/renderer.ts`, update the `Sell` case of `getActionText` to return `` `Sell ${action.cardId ?? '#' + action.boardIndex}` `` (prefer cardId when available, fall back to index); 2 tests: Sell with `cardId='BOT_445'` → `'Sell BOT_445'`; Sell with only `boardIndex=2` → `'Sell #2'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
