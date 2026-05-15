@@ -38,6 +38,7 @@ export function initialState(): GameState {
       revives: 0,
       bountyCards: 0,
       victories: 0,
+      gameType: null,
       entityRegistry: new Map(),
     },
     opponents: [],

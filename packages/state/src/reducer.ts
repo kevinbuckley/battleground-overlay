@@ -21,6 +21,7 @@ import { applyElite } from './reducer/elite';
 import { applyFatigue } from './reducer/fatigue';
 import { applyFrozenMinion } from './reducer/frozenMinion';
 import { applyGameOver } from './reducer/gameOver';
+import { applyGameType } from './reducer/gameType';
 import { applyGold } from './reducer/gold';
 import { applyGoldSpent } from './reducer/goldSpent';
 import { applyGoldenMinion } from './reducer/goldenMinion';
@@ -236,6 +237,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'FATIGUE' || event.tag === 'FATIGUE_COST') {
         return applyFatigue(state, event);
+      }
+      if (event.tag === 'GAME_TYPE') {
+        return applyGameType(state, event);
       }
       if (event.tag === 'DISCOVER') {
         return applyDiscover(state, event);

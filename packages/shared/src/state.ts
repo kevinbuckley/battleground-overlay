@@ -67,6 +67,7 @@ export interface PlayerState {
   revives: number;
   bountyCards: number;
   victories: number;
+  gameType: string | null;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
