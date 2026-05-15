@@ -62,4 +62,12 @@ describe('parseTagChange', () => {
       value: 'HAND',
     });
   });
+
+  it('returns null for line without tag= field', () => {
+    expect(parseTagChange('TAG_CHANGE Entity=5 value=30')).toBe(null);
+  });
+
+  it('returns null for partial TAG_CHANGE line missing tag and value', () => {
+    expect(parseTagChange('TAG_CHANGE Entity=foo')).toBe(null);
+  });
 });
