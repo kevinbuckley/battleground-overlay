@@ -3,7 +3,7 @@ import { clearBoardPanel, getBoardPanel } from '@overlay/shared';
 import type { Recommendation } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 import { clearAdvice, getAdvice } from './advicePanel';
-import { getRecsForBridge, startCoordinator } from './coordinator';
+import { getRecsForBridge, logTurnSnapshot, startCoordinator } from './coordinator';
 import { stopBridge } from './ipcBridge';
 
 function makeMockWin() {
@@ -484,6 +484,30 @@ describe('coordinator', () => {
     } finally {
       globalThis.fetch = originalFetch;
     }
+  });
+
+  describe('logTurnSnapshot', () => {
+    it('calls logFn with kind state-snapshot', () => {
+      const calls: { kind: string; payload: unknown }[] = [];
+      const logSpy = (kind: string, payload: unknown) => {
+        calls.push({ kind, payload });
+      };
+      const initialState = require('@overlay/state').initialState();
+      logTurnSnapshot(initialState, logSpy);
+      expect(calls.length).toBe(1);
+      expect(calls[0]?.kind).toBe('state-snapshot');
+    });
+
+    it('payload contains boardSize equal to state.player.board.minions.length', () => {
+      const calls: { kind: string; payload: unknown }[] = [];
+      const logSpy = (kind: string, payload: unknown) => {
+        calls.push({ kind, payload });
+      };
+      const initialState = require('@overlay/state').initialState();
+      logTurnSnapshot(initialState, logSpy);
+      const payload = calls[0]?.payload as { boardSize: number };
+      expect(payload.boardSize).toBe(initialState.player.board.minions.length);
+    });
   });
 
   describe('getRecsForBridge', () => {

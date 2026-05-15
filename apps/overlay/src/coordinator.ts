@@ -19,6 +19,20 @@ export function getRecsForBridge(allRecs: Recommendation[], max = 3): Recommenda
   return allRecs.slice(0, max);
 }
 
+export function logTurnSnapshot(
+  state: GameState,
+  logFn: (kind: string, payload: unknown) => void,
+): void {
+  logFn('state-snapshot', {
+    turn: state.turn,
+    phase: state.phase,
+    gold: state.player.gold,
+    tier: state.player.tier,
+    boardSize: state.player.board.minions.length,
+    shopSize: state.player.shop.minions.length,
+  });
+}
+
 export interface CoordinatorOpts {
   logFn?: (kind: string, payload: unknown) => void;
 }
