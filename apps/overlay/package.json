@@ -3,9 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "main": "./src/main.ts",
+  "main": "dist/main.cjs",
   "scripts": {
-    "dev": "electron ."
+    "dev": "node build.mjs && electron .",
+    "build": "node build.mjs"
   },
   "dependencies": {
     "@overlay/advisor": "workspace:*",
