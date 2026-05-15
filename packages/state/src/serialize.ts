@@ -131,6 +131,27 @@ function serializeOpponent(o: {
   };
   tier: number;
   eliminated: boolean;
+  turnsPlayed: number;
+  revives: number;
+  turnsInGame: number;
+  totalCardsPlayed: number;
+  totalCardsDrawn: number;
+  minionsOnBoard: number;
+  minionsKilledThisTurn: number;
+  cardsDrawnThisTurn: number;
+  cardsGivenThisTurn: number;
+  cardsPlayedThisTurn: number;
+  deckSize: number;
+  combo: number;
+  bountyCards: number;
+  victories: number;
+  gameType: string | null;
+  turnTimer: number;
+  numGameTurns: number;
+  numChoices: number;
+  deathrattlesTriggeredThisTurn: number;
+  minionsDiedThisTurn: number;
+  minionsTradedThisTurn: number;
 }): object {
   return {
     entityId: o.entityId,
@@ -141,6 +162,27 @@ function serializeOpponent(o: {
     },
     tier: o.tier,
     eliminated: o.eliminated,
+    turnsPlayed: o.turnsPlayed,
+    revives: o.revives,
+    turnsInGame: o.turnsInGame,
+    totalCardsPlayed: o.totalCardsPlayed,
+    totalCardsDrawn: o.totalCardsDrawn,
+    minionsOnBoard: o.minionsOnBoard,
+    minionsKilledThisTurn: o.minionsKilledThisTurn,
+    cardsDrawnThisTurn: o.cardsDrawnThisTurn,
+    cardsGivenThisTurn: o.cardsGivenThisTurn,
+    cardsPlayedThisTurn: o.cardsPlayedThisTurn,
+    deckSize: o.deckSize,
+    combo: o.combo,
+    bountyCards: o.bountyCards,
+    victories: o.victories,
+    gameType: o.gameType,
+    turnTimer: o.turnTimer,
+    numGameTurns: o.numGameTurns,
+    numChoices: o.numChoices,
+    deathrattlesTriggeredThisTurn: o.deathrattlesTriggeredThisTurn,
+    minionsDiedThisTurn: o.minionsDiedThisTurn,
+    minionsTradedThisTurn: o.minionsTradedThisTurn,
   };
 }
 
@@ -294,6 +336,27 @@ function deserializeOpponent(o: object): {
   };
   tier: number;
   eliminated: boolean;
+  turnsPlayed: number;
+  revives: number;
+  turnsInGame: number;
+  totalCardsPlayed: number;
+  totalCardsDrawn: number;
+  minionsOnBoard: number;
+  minionsKilledThisTurn: number;
+  cardsDrawnThisTurn: number;
+  cardsGivenThisTurn: number;
+  cardsPlayedThisTurn: number;
+  deckSize: number;
+  combo: number;
+  bountyCards: number;
+  victories: number;
+  gameType: string | null;
+  turnTimer: number;
+  numGameTurns: number;
+  numChoices: number;
+  deathrattlesTriggeredThisTurn: number;
+  minionsDiedThisTurn: number;
+  minionsTradedThisTurn: number;
 } {
   return {
     entityId: (o as { entityId: number }).entityId,
@@ -306,6 +369,28 @@ function deserializeOpponent(o: object): {
     },
     tier: (o as { tier: number }).tier,
     eliminated: (o as { eliminated: boolean }).eliminated,
+    turnsPlayed: (o as { turnsPlayed: number }).turnsPlayed ?? 0,
+    revives: (o as { revives: number }).revives ?? 0,
+    turnsInGame: (o as { turnsInGame: number }).turnsInGame ?? 0,
+    totalCardsPlayed: (o as { totalCardsPlayed: number }).totalCardsPlayed ?? 0,
+    totalCardsDrawn: (o as { totalCardsDrawn: number }).totalCardsDrawn ?? 0,
+    minionsOnBoard: (o as { minionsOnBoard: number }).minionsOnBoard ?? 0,
+    minionsKilledThisTurn: (o as { minionsKilledThisTurn: number }).minionsKilledThisTurn ?? 0,
+    cardsDrawnThisTurn: (o as { cardsDrawnThisTurn: number }).cardsDrawnThisTurn ?? 0,
+    cardsGivenThisTurn: (o as { cardsGivenThisTurn: number }).cardsGivenThisTurn ?? 0,
+    cardsPlayedThisTurn: (o as { cardsPlayedThisTurn: number }).cardsPlayedThisTurn ?? 0,
+    deckSize: (o as { deckSize: number }).deckSize ?? 0,
+    combo: (o as { combo: number }).combo ?? 0,
+    bountyCards: (o as { bountyCards: number }).bountyCards ?? 0,
+    victories: (o as { victories: number }).victories ?? 0,
+    gameType: (o as { gameType: string | null }).gameType ?? null,
+    turnTimer: (o as { turnTimer: number }).turnTimer ?? 0,
+    numGameTurns: (o as { numGameTurns: number }).numGameTurns ?? 0,
+    numChoices: (o as { numChoices: number }).numChoices ?? 0,
+    deathrattlesTriggeredThisTurn:
+      (o as { deathrattlesTriggeredThisTurn: number }).deathrattlesTriggeredThisTurn ?? 0,
+    minionsDiedThisTurn: (o as { minionsDiedThisTurn: number }).minionsDiedThisTurn ?? 0,
+    minionsTradedThisTurn: (o as { minionsTradedThisTurn: number }).minionsTradedThisTurn ?? 0,
   };
 }
 

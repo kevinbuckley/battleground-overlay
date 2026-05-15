@@ -164,4 +164,195 @@ describe('serializeGameState', () => {
     expect(entry!.zone).toBe('PLAY');
     expect(entry!.controller).toBe(0);
   });
+
+  it('round-trips opponent tracking fields', () => {
+    const state = initialState();
+    state.opponents = [
+      {
+        entityId: 3,
+        playerId: 1,
+        hero: { entityId: 3, cardId: 'HERO01', hp: 30, armor: 0 },
+        board: { minions: [] },
+        tier: 5,
+        eliminated: false,
+        turnsPlayed: 8,
+        revives: 1,
+        turnsInGame: 12,
+        totalCardsPlayed: 15,
+        totalCardsDrawn: 20,
+        minionsOnBoard: 3,
+        minionsKilledThisTurn: 2,
+        cardsDrawnThisTurn: 3,
+        cardsGivenThisTurn: 1,
+        cardsPlayedThisTurn: 2,
+        deckSize: 18,
+        combo: 2,
+        bountyCards: 3,
+        victories: 1,
+        gameType: 'BATTLEGROUNDS',
+        turnTimer: 15,
+        numGameTurns: 12,
+        numChoices: 3,
+        deathrattlesTriggeredThisTurn: 1,
+        minionsDiedThisTurn: 2,
+        minionsTradedThisTurn: 3,
+      },
+      {
+        entityId: 4,
+        playerId: 2,
+        hero: { entityId: 4, cardId: 'HERO02', hp: 15, armor: 10 },
+        board: { minions: [] },
+        tier: 3,
+        eliminated: true,
+        turnsPlayed: 4,
+        revives: 0,
+        turnsInGame: 6,
+        totalCardsPlayed: 5,
+        totalCardsDrawn: 8,
+        minionsOnBoard: 0,
+        minionsKilledThisTurn: 0,
+        cardsDrawnThisTurn: 0,
+        cardsGivenThisTurn: 0,
+        cardsPlayedThisTurn: 0,
+        deckSize: 25,
+        combo: 0,
+        bountyCards: 0,
+        victories: 0,
+        gameType: null,
+        turnTimer: 0,
+        numGameTurns: 6,
+        numChoices: 0,
+        deathrattlesTriggeredThisTurn: 0,
+        minionsDiedThisTurn: 0,
+        minionsTradedThisTurn: 0,
+      },
+    ];
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+
+    expect(restored.opponents.length).toBe(2);
+    expect(restored.opponents[0].turnsPlayed).toBe(8);
+    expect(restored.opponents[0].revives).toBe(1);
+    expect(restored.opponents[0].turnsInGame).toBe(12);
+    expect(restored.opponents[0].totalCardsPlayed).toBe(15);
+    expect(restored.opponents[0].totalCardsDrawn).toBe(20);
+    expect(restored.opponents[0].minionsOnBoard).toBe(3);
+    expect(restored.opponents[0].minionsKilledThisTurn).toBe(2);
+    expect(restored.opponents[0].cardsDrawnThisTurn).toBe(3);
+    expect(restored.opponents[0].cardsGivenThisTurn).toBe(1);
+    expect(restored.opponents[0].cardsPlayedThisTurn).toBe(2);
+    expect(restored.opponents[0].deckSize).toBe(18);
+    expect(restored.opponents[0].combo).toBe(2);
+    expect(restored.opponents[0].bountyCards).toBe(3);
+    expect(restored.opponents[0].victories).toBe(1);
+    expect(restored.opponents[0].gameType).toBe('BATTLEGROUNDS');
+    expect(restored.opponents[0].turnTimer).toBe(15);
+    expect(restored.opponents[0].numGameTurns).toBe(12);
+    expect(restored.opponents[0].numChoices).toBe(3);
+    expect(restored.opponents[0].deathrattlesTriggeredThisTurn).toBe(1);
+    expect(restored.opponents[0].minionsDiedThisTurn).toBe(2);
+    expect(restored.opponents[0].minionsTradedThisTurn).toBe(3);
+    expect(restored.opponents[1].eliminated).toBe(true);
+    expect(restored.opponents[1].gameType).toBeNull();
+  });
+
+  it('deserializes old format without opponent fields gracefully', () => {
+    const oldJson = JSON.stringify({
+      turn: 3,
+      phase: 'shopping',
+      player: {
+        entityId: 0,
+        playerId: 0,
+        hero: { entityId: 0, cardId: 'HERO01', hp: 30, armor: 0 },
+        board: { minions: [] },
+        shop: { minions: [], frozen: false, rollCost: 1 },
+        hand: [],
+        gold: 3,
+        tier: 3,
+        tierUpCost: 3,
+        eliminated: false,
+        pendingTriple: null,
+        heroPowerUsedThisTurn: false,
+        entityRegistry: [],
+      },
+      opponents: [
+        {
+          entityId: 3,
+          playerId: 1,
+          hero: { entityId: 3, cardId: 'HERO01', hp: 30, armor: 0 },
+          board: { minions: [] },
+          tier: 3,
+          eliminated: false,
+        },
+      ],
+    });
+    const restored = deserializeGameState(oldJson);
+    expect(restored.opponents.length).toBe(1);
+    expect(restored.opponents[0].turnsPlayed).toBe(0);
+    expect(restored.opponents[0].turnsInGame).toBe(0);
+    expect(restored.opponents[0].gameType).toBeNull();
+  });
+
+  it('round-trips opponent with non-default values for all 22 fields', () => {
+    const state = initialState();
+    state.opponents = [
+      {
+        entityId: 100,
+        playerId: 5,
+        hero: { entityId: 100, cardId: 'MECH_0x00', hp: 25, armor: 7 },
+        board: { minions: [] },
+        tier: 6,
+        eliminated: false,
+        turnsPlayed: 10,
+        revives: 2,
+        turnsInGame: 15,
+        totalCardsPlayed: 22,
+        totalCardsDrawn: 30,
+        minionsOnBoard: 4,
+        minionsKilledThisTurn: 3,
+        cardsDrawnThisTurn: 5,
+        cardsGivenThisTurn: 2,
+        cardsPlayedThisTurn: 4,
+        deckSize: 12,
+        combo: 3,
+        bountyCards: 5,
+        victories: 2,
+        gameType: 'BATTLEGROUNDS',
+        turnTimer: 10,
+        numGameTurns: 15,
+        numChoices: 5,
+        deathrattlesTriggeredThisTurn: 2,
+        minionsDiedThisTurn: 4,
+        minionsTradedThisTurn: 5,
+      },
+    ];
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+    const o = restored.opponents[0];
+    expect(o.entityId).toBe(100);
+    expect(o.playerId).toBe(5);
+    expect(o.tier).toBe(6);
+    expect(o.eliminated).toBe(false);
+    expect(o.turnsPlayed).toBe(10);
+    expect(o.revives).toBe(2);
+    expect(o.turnsInGame).toBe(15);
+    expect(o.totalCardsPlayed).toBe(22);
+    expect(o.totalCardsDrawn).toBe(30);
+    expect(o.minionsOnBoard).toBe(4);
+    expect(o.minionsKilledThisTurn).toBe(3);
+    expect(o.cardsDrawnThisTurn).toBe(5);
+    expect(o.cardsGivenThisTurn).toBe(2);
+    expect(o.cardsPlayedThisTurn).toBe(4);
+    expect(o.deckSize).toBe(12);
+    expect(o.combo).toBe(3);
+    expect(o.bountyCards).toBe(5);
+    expect(o.victories).toBe(2);
+    expect(o.gameType).toBe('BATTLEGROUNDS');
+    expect(o.turnTimer).toBe(10);
+    expect(o.numGameTurns).toBe(15);
+    expect(o.numChoices).toBe(5);
+    expect(o.deathrattlesTriggeredThisTurn).toBe(2);
+    expect(o.minionsDiedThisTurn).toBe(4);
+    expect(o.minionsTradedThisTurn).toBe(5);
+  });
 });
