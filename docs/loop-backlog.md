@@ -677,7 +677,7 @@ them because they require running Electron against a live OS. Do them
 by hand before first use.
 
 - [x] [S] Build pipeline: write `apps/overlay/build.mjs` (esbuild) that bundles `main.ts` → `dist/main.cjs`, `preload.ts` → `dist/preload.js`, `renderer.ts` → `dist/renderer-bundle.js`; copy `renderer.html` to `dist/`. Update `apps/overlay/package.json` `main` field to `dist/main.cjs` and `scripts.dev` to `node build.mjs && electron .` — `apps/overlay/build.mjs` + `apps/overlay/package.json` (commit f7629ea)
-- [ ] Preload wiring: update `getWindowOptions()` in `createOverlayWindow.ts` to include `webPreferences.preload: resolve(__dirname, 'preload.js')` (path relative to bundled dist).
+- [x] [S] Preload wiring: update `getWindowOptions()` in `createOverlayWindow.ts` to include `webPreferences.preload: resolve(__dirname, 'preload.js')` (path relative to bundled dist) — `apps/overlay/src/createOverlayWindow.ts` update (commit 8d71091)
 - [ ] Wire `bootstrapOverlay` into `main.ts`: replace `await wireLogStream(() => {})` with `await bootstrapOverlay(win)`; this is the actual go-live change.
 - [ ] First-launch checklist: run `scripts/enable-hs-logging.sh`, restart Hearthstone, grant Accessibility permission to Electron in System Settings → Privacy → Accessibility, start MLX server (`scripts/start-mlx-server.sh`), then `bun run dev:overlay`.
 - [ ] Record a real Power.log fixture during a BG match and drop it in `fixtures/turn-1-bootstrap.log` for the parser regression tests (also in Quarantined).

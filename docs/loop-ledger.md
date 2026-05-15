@@ -69,6 +69,10 @@
 2026-05-14 00:00  [DONE]  M53: isHearthstoneRunning helper — added `isHearthstoneRunning(execFn)` to `apps/overlay/src/anchor.ts` that runs `pgrep -x Hearthstone` and returns true if non-empty stdout, false on empty/throw; 3 tests (PID returns true, empty returns false, throw returns false); 885/885 tests pass (commit c51e15c)
 
 ---
+2026-05-14 00:00  [DONE]  M62: Preload wiring — added `preload: resolve(__dirname, 'preload.js')` to `webPreferences` in `getWindowOptions()` in `apps/overlay/src/createOverlayWindow.ts`; 943/943 tests pass (commit 8d71091)
+
+---
+
 status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M47: Renderer opponent-eliminated indicator — extended `onOpponents` in `renderer.ts` to count eliminated opponents and write `Alive: N/total` to `#opponent-alive`; added `<div id="opponent-alive">` to `renderer.html`; 2 new tests (5 opponents 2 eliminated → `Alive: 3/5`, all eliminated → `Alive: 0/3`); 24/24 tests pass (commit bc74ab4)
