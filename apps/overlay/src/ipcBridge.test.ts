@@ -1,6 +1,11 @@
 import { afterEach, describe, expect, it } from 'bun:test';
 import type { GameState, Recommendation } from '@overlay/shared';
-import { startBridge, stopBridge } from './ipcBridge';
+import {
+  enrichRecommendationCardName,
+  startBridge,
+  stopBridge,
+  toBoardUpdateMinion,
+} from './ipcBridge';
 
 function makeMockWin() {
   const sends: { channel: string; args: unknown[] }[] = [];
@@ -88,7 +93,12 @@ describe('ipcBridge', () => {
     )._getSends();
     const recsChannels = sends.filter((s) => s.channel === 'overlay:recs-update');
     expect(recsChannels.length).toBeGreaterThanOrEqual(1);
-    expect(recsChannels[0].args[0]).toEqual(recs);
+    expect(recsChannels[0].args[0]).toEqual([
+      {
+        ...recs[0],
+        action: { type: 'Buy', cardId: 'test_123', shopIndex: 0, cardName: 'test_123' },
+      },
+    ]);
   });
 
   it('startBridge does not push overlay:recs-update when getRecs returns null', async () => {
@@ -168,12 +178,83 @@ describe('ipcBridge', () => {
     };
     expect(boardPayload.minions).toHaveLength(2);
     expect(boardPayload.minions[0].cardId).toBe('CS1_129');
+    expect(boardPayload.minions[0].name).toBe('CS1_129');
     expect(boardPayload.minions[0].attack).toBe(3);
     expect(boardPayload.minions[0].health).toBe(2);
     expect(boardPayload.minions[0].taunt).toBe(true);
     expect(boardPayload.minions[0].divineShield).toBe(false);
     expect(boardPayload.minions[1].cardId).toBe('NEW1_030');
+    expect(boardPayload.minions[1].name).toBe('NEW1_030');
     expect(boardPayload.minions[1].divineShield).toBe(true);
+  });
+
+  it('enrichRecommendationCardName uses the looked-up card name for Buy actions', () => {
+    const rec: Recommendation = {
+      action: { type: 'Buy', cardId: 'TB_001', shopIndex: 0 },
+      score: 0.9,
+      confidence: 0.9,
+      reason: '',
+    };
+
+    const enriched = enrichRecommendationCardName(rec, () => ({ name: 'Alleycat' }));
+
+    expect(enriched.action).toEqual({
+      type: 'Buy',
+      cardId: 'TB_001',
+      shopIndex: 0,
+      cardName: 'Alleycat',
+    });
+  });
+
+  it('enrichRecommendationCardName falls back to cardId when no card is found', () => {
+    const rec: Recommendation = {
+      action: { type: 'Buy', cardId: 'TB_001', shopIndex: 0 },
+      score: 0.9,
+      confidence: 0.9,
+      reason: '',
+    };
+
+    const enriched = enrichRecommendationCardName(rec, () => undefined);
+
+    expect(enriched.action).toEqual({
+      type: 'Buy',
+      cardId: 'TB_001',
+      shopIndex: 0,
+      cardName: 'TB_001',
+    });
+  });
+
+  it('toBoardUpdateMinion adds a looked-up card name', () => {
+    const state = makeMockState();
+    state.player.board.minions = [
+      {
+        entityId: 1,
+        cardId: 'TB_001',
+        attack: 1,
+        health: 1,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        elite: false,
+        lifesteal: false,
+        cost: 0,
+        tribes: [],
+        spellPower: 0,
+        exhausted: false,
+        magnetic: false,
+        immune: false,
+        charge: false,
+      },
+    ];
+
+    expect(toBoardUpdateMinion(state.player.board.minions[0], () => ({ name: 'Alleycat' })).name).toBe(
+      'Alleycat',
+    );
   });
 
   it('startBridge pushes overlay:opponents-update with opponent shape', async () => {

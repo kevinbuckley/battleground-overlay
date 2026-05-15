@@ -1,5 +1,5 @@
-export type BuyAction = { type: 'Buy'; cardId: string; shopIndex: number };
-export type SellAction = { type: 'Sell'; boardIndex: number };
+export type BuyAction = { type: 'Buy'; cardId: string; shopIndex: number; cardName?: string };
+export type SellAction = { type: 'Sell'; boardIndex: number; cardId?: string };
 export type FreezeAction = { type: 'Freeze' };
 export type RerollAction = { type: 'Reroll' };
 export type TierUpAction = { type: 'TierUp' };
