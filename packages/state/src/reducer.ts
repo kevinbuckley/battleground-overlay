@@ -43,6 +43,7 @@ import { applyOpponentTier } from './reducer/opponentTier';
 import { applyOpponentTurnsPlayed } from './reducer/opponentTurnsPlayed';
 import { applyPlayerDeath } from './reducer/playerDeath';
 import { applyPlayerLost } from './reducer/playerLost';
+import { applyPlayerTurnsPlayed } from './reducer/playerTurnsPlayed';
 import { applyPoisonous } from './reducer/poisonous';
 import { applyRace } from './reducer/race';
 import { applyReborn } from './reducer/reborn';
@@ -274,6 +275,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'COMBO') {
         return applyCombo(state, event);
+      }
+      if (event.tag === 'NUM_TURNS_PLAYED') {
+        return applyPlayerTurnsPlayed(state, event);
       }
       return applyTripleBonus(state, event);
 

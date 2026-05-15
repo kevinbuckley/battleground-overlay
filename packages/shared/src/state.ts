@@ -63,6 +63,10 @@ export interface PlayerState {
   shopSize: number;
   discoveredCardId: string | null;
   combo: number;
+  turnsPlayed: number;
+  revives: number;
+  bountyCards: number;
+  victories: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
