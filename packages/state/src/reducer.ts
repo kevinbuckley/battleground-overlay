@@ -4,6 +4,7 @@ import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyAttackBuff } from './reducer/attackBuff';
 
+import { applyBountyCards } from './reducer/bountyCards';
 import { applyCardCost } from './reducer/cardCost';
 import { applyCardId } from './reducer/cardId';
 import { applyCardsDrawn } from './reducer/cardsDrawn';
@@ -62,6 +63,7 @@ import { applyTrinket } from './reducer/trinket';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
 import { applyTurnsInGame } from './reducer/turnsInGame';
+import { applyVictories } from './reducer/victories';
 import { applyWindfury } from './reducer/windfury';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
@@ -282,6 +284,12 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_REVIVES') {
         return applyRevives(state, event);
+      }
+      if (event.tag === 'NUM_BOUNTY_CARDS') {
+        return applyBountyCards(state, event);
+      }
+      if (event.tag === 'NUM_VICTORIES') {
+        return applyVictories(state, event);
       }
       return applyTripleBonus(state, event);
 
