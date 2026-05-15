@@ -794,7 +794,7 @@ by hand before first use.
 ## M74 — Advisor: `enumerateBuyCandidates` board-full guard
 
 
-- [ ] [S] `enumerateSellCandidates` returns empty when board is empty — add guard at top of `enumerateSellCandidates` in `packages/advisor/src/candidates.ts`: if `state.player.board.minions.length === 0` return `[]`; 1 test: empty board → returns `[]` — `packages/advisor/src/candidates.ts` + `packages/advisor/src/candidates.test.ts`
+- [x] [S] `enumerateSellCandidates` returns empty when board is empty — add guard at top of `enumerateSellCandidates` in `packages/advisor/src/candidates.ts`: if `state.player.board.minions.length === 0` return `[]`; 1 test: empty board → returns `[]` — `packages/advisor/src/candidates.ts` + `packages/advisor/src/candidates.test.ts` (commit 1999989)
 
 ## M75 — Log parser: multi-value TAG_CHANGE values with spaces
 

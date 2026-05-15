@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 12:45  [DONE]  M74: enumerateSellCandidates empty-board guard — added early-return `if (state.player.board.minions.length === 0) return []` to `enumerateSellCandidates`; 1 test already existed (empty board → returns []); 1084/1084 tests pass (commit 1999989)
+
 2026-05-15 12:30  [DONE]  M74: parseTagChange malformed lines — 3 tests: empty string, line without tag=, partial line all return null; 9/9 tests pass (commit 0e3e4c0)
 
 2026-05-15 00:00  [DONE]  M70: recommend all-opponents-eliminated test — add 1 test to `packages/advisor/src/recommend.test.ts` verifying `recommend` returns an array (not throw) when all opponents have `eliminated: true`; 1076/1076 tests pass (commit f692986)
