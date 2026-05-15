@@ -42,6 +42,7 @@ import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyMinionsKilled } from './reducer/minionsKilled';
 import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
+import { applyNumChoices } from './reducer/numChoices';
 import { applyNumGameTurns } from './reducer/numGameTurns';
 import { applyNumMinionsTraded } from './reducer/numMinionsTraded';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
@@ -323,6 +324,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_MINIONS_TRADED_THIS_TURN') {
         return applyNumMinionsTraded(state, event);
+      }
+      if (event.tag === 'NUM_CHOICES') {
+        return applyNumChoices(state, event);
       }
       return applyTripleBonus(state, event);
 
