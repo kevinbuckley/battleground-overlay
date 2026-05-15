@@ -43,6 +43,7 @@ export function initialState(): GameState {
       numGameTurns: 0,
       minionsTradedThisTurn: 0,
       numChoices: 0,
+      gameTurn: 1,
       entityRegistry: new Map(),
     },
     opponents: [],
