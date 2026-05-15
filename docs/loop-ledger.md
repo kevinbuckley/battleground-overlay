@@ -386,6 +386,8 @@
 
 2026-05-15 00:00  [DONE]  M61: applyExhausted handler — handles `TAG_CHANGE tag=EXHAUSTED value=1/0` on entities in PLAY zone, sets `minion.exhausted: boolean` (add field to Minion in `packages/shared/src/state.ts`), 4 tests (set on player minion, set on opponent minion, no-op on hero, no-op on non-play entity), wired into reducer; 986/986 tests pass (commit 9378a2a)
 
+2026-05-15 00:00  [DONE]  M61: applyMagnetic handler — handles `TAG_CHANGE tag=MAGNETIC value=1/0` on entities in PLAY zone, sets `minion.magnetic: boolean` (add field to Minion in `packages/shared/src/state.ts`), 4 tests (set on player minion, set on opponent minion, no-op on hero, no-op on non-play entity), wired into reducer; 987/987 tests pass (commit 4225db9)
+
 ---
 
 Format:
