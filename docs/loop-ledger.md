@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 12:55  [DONE]  M78: streamEvents handles empty file — 1 test to `stream.test.ts`: streaming an empty file → `onEvent` never called, `StreamHandle` is non-null; 1091/1091 tests pass (commit 38df1ea)
+
 2026-05-15 12:55  [DONE]  M77: streamEvents skips unparseable lines — 2 tests to `stream.test.ts`: one valid + one garbage → onEvent called exactly once; only garbage → onEvent never called; 1090/1090 tests pass (commit e97a603)
 
 2026-05-15 12:50  [DONE]  M75: parseShowEntity robustness — added 2 tests to `parseShowEntity.test.ts`: valid line with BOT_445 parses correctly, line missing CardID returns null; 5/5 tests pass (commit ddc05f5)

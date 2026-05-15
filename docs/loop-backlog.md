@@ -812,7 +812,7 @@ by hand before first use.
 
 - [x] [S] `streamEvents` skips unparseable lines silently — in `packages/log-parser/src/stream.ts`, the `parseSingleLine` function returns `null` for unrecognised lines; add 2 tests to `packages/log-parser/src/stream.test.ts`: a file containing one valid TAG_CHANGE line and one garbage line → `onEvent` called exactly once; a file with only garbage lines → `onEvent` never called — `packages/log-parser/src/stream.test.ts` only (commit e97a603)
 
-- [ ] [S] `streamEvents` handles empty file — add 1 test to `packages/log-parser/src/stream.test.ts`: streaming an empty file → `onEvent` is never called and the returned `StreamHandle` is non-null (does not throw) — `packages/log-parser/src/stream.test.ts` only
+- [x] [S] `streamEvents` handles empty file — add 1 test to `packages/log-parser/src/stream.test.ts`: streaming an empty file → `onEvent` is never called and the returned `StreamHandle` is non-null (does not throw) — `packages/log-parser/src/stream.test.ts` only (commit 38df1ea)
 
 ## M78 — State: `turnPhase` shopping/combat detection
 
