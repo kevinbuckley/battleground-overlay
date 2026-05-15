@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 12:30  [DONE]  M74: parseTagChange malformed lines — 3 tests: empty string, line without tag=, partial line all return null; 9/9 tests pass (commit 0e3e4c0)
+
 2026-05-15 00:00  [DONE]  M70: recommend all-opponents-eliminated test — add 1 test to `packages/advisor/src/recommend.test.ts` verifying `recommend` returns an array (not throw) when all opponents have `eliminated: true`; 1076/1076 tests pass (commit f692986)
 
 2026-05-15 00:00  [DONE]  M69: logTurnSnapshot helper — add exported `logTurnSnapshot(state, logFn)` to `apps/overlay/src/coordinator.ts` that logs `state-snapshot` with turn/phase/gold/tier/boardSize/shopSize; 2 tests (kind is 'state-snapshot', payload contains boardSize); 1075/1075 tests pass (commit 0324050)
