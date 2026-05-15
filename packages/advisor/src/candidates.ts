@@ -67,6 +67,8 @@ export function enumerateBuyCandidates(state: GameState): BuyCandidate[] {
  * removed (as if sold).
  */
 export function enumerateSellCandidates(state: GameState): SellCandidate[] {
+  if (state.player.board.minions.length === 0) return [];
+
   const currentBoard = state.player.board;
   const minions = currentBoard.minions;
 
