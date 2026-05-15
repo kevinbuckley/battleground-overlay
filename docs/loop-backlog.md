@@ -748,7 +748,7 @@ by hand before first use.
 ## M65 — Serialization completeness (PlayerState full-fidelity round-trip)
 
 
-- [ ] [S] `serializeGameState` top-level fields — `serializeGameState` currently omits `lobbySize` and `anomaly`; add both to the serialized object and restore in `deserializeGameState`; 3 tests: `lobbySize=6` survives round-trip; `anomaly='SomeAnomaly'` survives round-trip; `anomaly=null` survives round-trip — `packages/state/src/serialize.ts` + `packages/state/src/serialize.test.ts`
+- [x] [S] `serializeGameState` top-level fields — `serializeGameState` currently omits `lobbySize` and `anomaly`; add both to the serialized object and restore in `deserializeGameState`; 3 tests: `lobbySize=6` survives round-trip; `anomaly='SomeAnomaly'` survives round-trip; `anomaly=null` survives round-trip — `packages/state/src/serialize.ts` + `packages/state/src/serialize.test.ts` (commit 76bfa2e)
 
 ## M66 — Renderer: HS-status display
 
