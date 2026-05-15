@@ -374,6 +374,8 @@
 
 2026-05-14 00:00  [DONE]  M59: findHsLogDirCandidates lister — added `findHsLogDirCandidates(baseDir)` to `packages/log-parser/src/findActiveLogDir.ts` that returns all `Hearthstone_*` subdirectory names under baseDir, refactored `findActiveLogDir` to use it; 3 new tests (empty dir, filtered dirs, nonexistent dir); 940/940 tests pass (commit 6ce94a7)
 
+2026-05-14 00:00  [DONE]  M60: applySpellPower handler — handles `TAG_CHANGE tag=SPELL_POWER` on entities in PLAY zone → updates `minion.spellPower: number` (add field to Minion in `packages/shared/src/state.ts`); wire into reducer, 4 tests (updates player board minion, updates opponent board minion, no-op on hero, no-op on non-play entity); 961/961 tests pass (commit d466164)
+
 ---
 
 Format:
