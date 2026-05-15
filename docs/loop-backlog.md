@@ -725,7 +725,7 @@ by hand before first use.
 ## M64 — OpponentState completeness
 
 
-- [ ] [S] OpponentState serialization — update `serializeGameState` and `deserializeGameState` in `packages/state/src/serialize.ts` to properly serialize/deserialize the new OpponentState fields; 3 tests: serialize state with 2 opponents having non-default values, deserialize, assert all fields match — `packages/state/src/serialize.ts` + test
+- [x] [S] OpponentState serialization — update `serializeGameState` and `deserializeGameState` in `packages/state/src/serialize.ts` to properly serialize/deserialize the new OpponentState fields; 3 tests: serialize state with 2 opponents having non-default values, deserialize, assert all fields match — `packages/state/src/serialize.ts` + test (commit 06980c1)
 
 - [ ] [S] OpponentState in pipeline integration — add 1 test to `packages/state/src/pipeline.integration.test.ts`: fire `TAG_CHANGE tag=NUM_TURNS_IN_GAME value=5` on opponent entity, assert `state.opponents[0].turnsInGame === 5` — `packages/state/src/pipeline.integration.test.ts`
 
