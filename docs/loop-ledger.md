@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 00:00  [DONE]  M64: OpponentState field parity — add 18 missing tracking fields to OpponentState interface (turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numGameTurns, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn), create `initialOpponentState()` helper, 22 tests; 1063/1063 tests pass (commit 7be7db6)
+
 2026-05-15 00:00  [DONE]  M63: applyTotalCardsDrawn — handles `TAG_CHANGE tag=NUM_CARDS_DRAWN` on player controller, sets `state.player.totalCardsDrawn: number` (add field to PlayerState), 4 tests (initial=0, increments on card draw, no-op on opponent, reflected in state), wired into reducer; 1036/1036 tests pass (commit e1aedcf)
 
 2026-05-15 00:00  [DONE]  M63: applyTotalCardsPlayed — handles `TAG_CHANGE tag=NUM_CARDS_PLAYED` on player controller, sets `state.player.totalCardsPlayed: number` (add field to PlayerState), 4 tests (initial=0, increments on card play, no-op on opponent, reflected in state), wired into reducer; 1032/1032 tests pass (commit b91498f)

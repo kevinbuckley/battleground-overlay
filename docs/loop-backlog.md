@@ -720,6 +720,18 @@ by hand before first use.
 - [x] [S] `applyTotalCardsPlayed` — handles `TAG_CHANGE tag=NUM_CARDS_PLAYED` on player controller → sets `state.player.totalCardsPlayed: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments on card play, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/totalCardsPlayed.ts` + test (commit b91498f)
 - [x] [S] `applyTotalCardsDrawn` — handles `TAG_CHANGE tag=NUM_CARDS_DRAWN` on player controller → sets `state.player.totalCardsDrawn: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments on card draw, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/totalCardsDrawn.ts` + test (commit e1aedcf)
 
+- [x] [M] OpponentState field parity — add missing tracking fields to OpponentState in `packages/shared/src/state.ts` (turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numGameTurns, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn); update `initialState()` to initialize them; add 22 tests (one per field, initial value check) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + test (commit 7be7db6)
+
+## M64 — OpponentState completeness
+
+- [ ] [M] OpponentState tag handlers — for each of the 18 new OpponentState fields, create a corresponding `applyOpponent<Field>` handler in `packages/state/src/reducer/` that handles the relevant `TAG_CHANGE` on opponent controller, wires into reducer, and writes 4 tests each (initial value, updates correctly, no-op on player, reflected in state); fields: turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numGameTurns, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/opponent<Field>.ts` + tests
+
+- [ ] [S] OpponentState serialization — update `serializeGameState` and `deserializeGameState` in `packages/state/src/serialize.ts` to properly serialize/deserialize the new OpponentState fields; 3 tests: serialize state with 2 opponents having non-default values, deserialize, assert all fields match — `packages/state/src/serialize.ts` + test
+
+- [ ] [S] OpponentState in pipeline integration — add 1 test to `packages/state/src/pipeline.integration.test.ts`: fire `TAG_CHANGE tag=NUM_TURNS_IN_GAME value=5` on opponent entity, assert `state.opponents[0].turnsInGame === 5` — `packages/state/src/pipeline.integration.test.ts`
+
+- [ ] [S] OpponentState in budgetScorer — update `packages/advisor/src/budgetScorer.ts` to include opponent tracking fields when scoring (e.g., use `opponent.minionsOnBoard` for board size projection); 2 tests: opponent with tracked stats scores correctly, opponent with default stats scores correctly — `packages/advisor/src/budgetScorer.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
