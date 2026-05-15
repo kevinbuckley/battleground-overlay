@@ -1,6 +1,6 @@
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
 import type { HotkeyConfig } from './hotkeys';
 
 export type OverlaySettings = {
@@ -64,6 +64,8 @@ export function getDefaultSettingsPath(getHomedir = homedir): string {
 
 export function saveSettings(path: string, s: OverlaySettings): void {
   const filePath = path.endsWith(SETTINGS_FILENAME) ? path : join(path, SETTINGS_FILENAME);
+
+  mkdirSync(dirname(filePath), { recursive: true });
 
   writeFileSync(filePath, JSON.stringify(s, null, 2), 'utf-8');
 }

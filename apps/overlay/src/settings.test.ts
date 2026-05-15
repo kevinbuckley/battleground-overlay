@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import {
@@ -138,5 +138,40 @@ describe('settings', () => {
   it('getDefaultSettingsPath with custom homedir returns path starting with that homedir', () => {
     const path = getDefaultSettingsPath(() => '/tmp/test');
     expect(path.startsWith('/tmp/test/')).toBe(true);
+  });
+
+  it('saveSettings creates parent directories when they do not exist', () => {
+    const dir = setup();
+    try {
+      const nestedPath = join(dir, 'sub', 'sub2');
+      const original: OverlaySettings = {
+        opacity: 0.7,
+        x: 50,
+        y: 100,
+        hotkeys: { toggle: 'F1', reload: 'F2', hide: 'F3' },
+      };
+
+      saveSettings(nestedPath, original);
+
+      const loaded = loadSettings(nestedPath);
+      expect(loaded).toEqual(original);
+    } finally {
+      teardown();
+    }
+  });
+
+  it('saveSettings with nested subpath creates the file at the nested location', () => {
+    const dir = setup();
+    try {
+      const nestedPath = join(dir, 'a', 'b', 'c');
+      const original: OverlaySettings = defaultSettings();
+
+      saveSettings(nestedPath, original);
+
+      const fullPath = join(nestedPath, 'overlay-settings.json');
+      expect(existsSync(fullPath)).toBe(true);
+    } finally {
+      teardown();
+    }
   });
 });
