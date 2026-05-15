@@ -228,6 +228,33 @@ describe('preload', () => {
     expect(opponentsArg).toEqual(opponentsData);
   });
 
+  it('onShop callback fires with payload when overlay:shop-update channel fires', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onShop: (cb: (s: unknown[]) => void) => void;
+    };
+
+    let shopArg: unknown[] | null = null;
+    bridge.onShop((s) => {
+      shopArg = s;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const shopListener = listeners['overlay:shop-update']?.[0];
+
+    shopListener?.(null, [{ cardId: 'A' }, { cardId: 'B' }, { cardId: 'C' }]);
+
+    expect(shopArg).toHaveLength(3);
+  });
+
   it('onHsStatus is exposed on the bridge object', () => {
     const mockIpc = makeMockIpc();
     const mockCb = makeMockContextBridge();

@@ -607,3 +607,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 00:00  [DONE]  M115: getActionText uses cardName when available — renderer Buy labels prefer action.cardName with cardId fallback; 1104/1104 tests pass
 
 2026-05-15 00:00  [DONE]  M116: ipcBridge sends shop update — bridge now sends overlay:shop-update with shop minion cardId/stats; 1106/1106 tests pass
+
+2026-05-15 00:00  [DONE]  M116: preload wires onShop — exposed overlay:shop-update through preload bridge; 1107/1107 tests pass
