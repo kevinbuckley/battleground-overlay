@@ -103,6 +103,21 @@ describe('streamEvents', () => {
     rmSync(dir, { recursive: true });
   });
 
+  it('streams an empty file — onEvent never called, handle is non-null', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, '');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+
+    expect(handle).not.toBeNull();
+    expect(events).toHaveLength(0);
+
+    handle.close();
+    rmSync(dir, { recursive: true });
+  });
+
   it('skips unparseable lines — one valid + one garbage → onEvent called exactly once', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
     const file = join(dir, 'Power.log');
