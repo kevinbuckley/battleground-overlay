@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M58: saveSettings creates parent dir — added `mkdirSync(dirname(filePath), { recursive: true })` before `writeFileSync` in `apps/overlay/src/settings.ts`; 2 tests (nested subpath save+load round-trip, file exists at nested location); 13/13 tests pass (commit cb6c63e)
 
+2026-05-14 00:00  [DONE]  M59: mergeSettings helper — added `mergeSettings(base, patch)` to `apps/overlay/src/settings.ts` that returns a new `OverlaySettings` with shallow override (hotkeys merged field-by-field); 3 tests (empty patch → deep-equals base, partial opacity → opacity 0.5 others unchanged, partial hotkeys → toggle 'F1' with reload/hide unchanged); 16/16 tests pass (commit f17e64b)
+
 2026-05-14 00:00  [DONE]  M58: Overlay state defaults — added `setCurrentSettings(s: OverlaySettings)` and `getCurrentSettings(): OverlaySettings | null` to `apps/overlay/src/overlayState.ts` with module-level state; 3 tests (initial null, setter then getter returns same object, setter twice returns second); 9/9 tests pass (commit eb544eb)
 
 2026-05-14 00:00  [DONE]  M56: checkMlxServer health probe — created `packages/llm/src/healthCheck.ts` exporting `async function checkMlxServer(fetchFn, url)` that probes `http://localhost:8080/v1/models`; returns `{ok:true}` on 200, `{ok:false, error}` on non-200/throw; 3 tests + export from index + index.test export test; 914/914 tests pass (commit 919344a)
