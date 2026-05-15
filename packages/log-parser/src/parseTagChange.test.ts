@@ -44,4 +44,22 @@ describe('parseTagChange', () => {
       value: '"PLAY"',
     });
   });
+
+  it('handles entity names containing spaces', () => {
+    expect(parseTagChange('TAG_CHANGE Entity=Some Player tag=ZONE value=PLAY')).toEqual({
+      kind: 'TAG_CHANGE',
+      entity: 'Some Player',
+      tag: 'ZONE',
+      value: 'PLAY',
+    });
+  });
+
+  it('parses numeric entity with space-containing tag value', () => {
+    expect(parseTagChange('TAG_CHANGE Entity=1 tag=ZONE value=HAND')).toEqual({
+      kind: 'TAG_CHANGE',
+      entity: '1',
+      tag: 'ZONE',
+      value: 'HAND',
+    });
+  });
 });
