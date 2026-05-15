@@ -36,6 +36,7 @@ import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
 import { applyHeroPowerCost } from './reducer/heroPowerCost';
 import { applyLifesteal } from './reducer/lifesteal';
 import { applyLobbySize } from './reducer/lobbySize';
+import { applyMagnetic } from './reducer/magnetic';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyMinionsKilled } from './reducer/minionsKilled';
@@ -223,6 +224,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'EXHAUSTED') {
         return applyExhausted(state, event);
+      }
+      if (event.tag === 'MAGNETIC') {
+        return applyMagnetic(state, event);
       }
       if (event.tag === 'SPELL_POWER') {
         return applySpellPower(state, event);

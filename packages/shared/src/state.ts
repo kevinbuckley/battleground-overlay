@@ -17,6 +17,7 @@ export interface Minion {
   tribes: string[];
   spellPower: number;
   exhausted: boolean;
+  magnetic: boolean;
 }
 
 export interface Board {

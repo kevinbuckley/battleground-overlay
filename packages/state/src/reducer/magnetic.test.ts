@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { TagChange } from '@overlay/log-parser';
 import { initialState } from '../initialState';
-import { applyExhausted } from './exhausted';
+import { applyMagnetic } from './magnetic';
 
 function makeTagChange(entity: string, tag: string, value: string): TagChange {
   return { kind: 'TAG_CHANGE', entity, tag, value };
@@ -12,7 +12,7 @@ function makePlayerMinion(
   cardId: string,
   attack: number,
   health: number,
-  exhausted = false,
+  magnetic = false,
 ) {
   return {
     entityId,
@@ -32,8 +32,8 @@ function makePlayerMinion(
     cost: 0,
     tribes: [],
     spellPower: 0,
-    exhausted,
-    magnetic: false,
+    exhausted: false,
+    magnetic,
   };
 }
 
@@ -41,7 +41,7 @@ function makeStateWithPlayerMinion(
   entityId: number,
   attack: number,
   health: number,
-  exhausted = false,
+  magnetic = false,
 ) {
   const base = initialState();
   return {
@@ -50,7 +50,7 @@ function makeStateWithPlayerMinion(
       ...base.player,
       board: {
         ...base.player.board,
-        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, exhausted)],
+        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, magnetic)],
       },
     },
   };
@@ -61,14 +61,14 @@ function makeStateWithOpponentMinion(
   entityId: number,
   attack: number,
   health: number,
-  exhausted = false,
+  magnetic = false,
 ) {
   const base = initialState();
   const opp = {
     entityId: 100 + oppIndex,
     playerId: oppIndex + 1,
     hero: { entityId: 100 + oppIndex, cardId: 'TestHero', hp: 40, armor: 0 },
-    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, exhausted)] },
+    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, magnetic)] },
     tier: 3,
     eliminated: false,
     turnsPlayed: 0,
@@ -79,39 +79,39 @@ function makeStateWithOpponentMinion(
   };
 }
 
-describe('applyExhausted', () => {
-  it('sets exhausted on player minion when value=1', () => {
+describe('applyMagnetic', () => {
+  it('sets magnetic on player minion when value=1', () => {
     const state = makeStateWithPlayerMinion(1, 2, 3, false);
-    const event = makeTagChange('1', 'EXHAUSTED', '1');
-    const result = applyExhausted(state, event);
-    expect(result.player.board.minions[0].exhausted).toBe(true);
+    const event = makeTagChange('1', 'MAGNETIC', '1');
+    const result = applyMagnetic(state, event);
+    expect(result.player.board.minions[0].magnetic).toBe(true);
   });
 
-  it('clears exhausted on player minion when value=0', () => {
+  it('clears magnetic on player minion when value=0', () => {
     const state = makeStateWithPlayerMinion(1, 2, 3, true);
-    const event = makeTagChange('1', 'EXHAUSTED', '0');
-    const result = applyExhausted(state, event);
-    expect(result.player.board.minions[0].exhausted).toBe(false);
+    const event = makeTagChange('1', 'MAGNETIC', '0');
+    const result = applyMagnetic(state, event);
+    expect(result.player.board.minions[0].magnetic).toBe(false);
   });
 
   it('no-op on hero (entity not on any board)', () => {
     const state = initialState();
-    const event = makeTagChange(String(state.player.hero.entityId), 'EXHAUSTED', '1');
-    const result = applyExhausted(state, event);
+    const event = makeTagChange(String(state.player.hero.entityId), 'MAGNETIC', '1');
+    const result = applyMagnetic(state, event);
     expect(result).toBe(state);
   });
 
   it('no-op on non-play entity (entity not found on any board)', () => {
     const state = initialState();
-    const event = makeTagChange('999', 'EXHAUSTED', '1');
-    const result = applyExhausted(state, event);
+    const event = makeTagChange('999', 'MAGNETIC', '1');
+    const result = applyMagnetic(state, event);
     expect(result).toBe(state);
   });
 
-  it('sets exhausted on opponent minion when value=1', () => {
+  it('sets magnetic on opponent minion when value=1', () => {
     const state = makeStateWithOpponentMinion(0, 10, 2, 3, false);
-    const event = makeTagChange('10', 'EXHAUSTED', '1');
-    const result = applyExhausted(state, event);
-    expect(result.opponents[0].board.minions[0].exhausted).toBe(true);
+    const event = makeTagChange('10', 'MAGNETIC', '1');
+    const result = applyMagnetic(state, event);
+    expect(result.opponents[0].board.minions[0].magnetic).toBe(true);
   });
 });
