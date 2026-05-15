@@ -32,5 +32,10 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(status);
       });
     },
+    onState(cb: (s: unknown) => void): void {
+      ipc.on('overlay:state-update', (_event, state) => {
+        cb(state);
+      });
+    },
   });
 }

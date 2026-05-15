@@ -764,7 +764,7 @@ by hand before first use.
 
 ## M68 — Preload: wire onState channel
 
-- [ ] [S] `onState` in preload — in `apps/overlay/src/preload.ts`, add `onState(cb: (s: unknown) => void): void` to the `setupPreload` bridge, registering `ipc.on('overlay:state-update', (_event, state) => { cb(state); })`; 2 tests in `apps/overlay/src/preload.test.ts`: `onState` callback is invoked when `ipc` emits `'overlay:state-update'` with a payload; callback receives the payload unchanged — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
+- [x] [S] `onState` in preload — in `apps/overlay/src/preload.ts`, add `onState(cb: (s: unknown) => void): void` to the `setupPreload` bridge, registering `ipc.on('overlay:state-update', (_event, state) => { cb(state); })`; 2 tests in `apps/overlay/src/preload.test.ts`: `onState` callback is invoked when `ipc` emits `'overlay:state-update'` with a payload; callback receives the payload unchanged — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
 
 ## M69 — Coordinator: per-turn state snapshot logging
 

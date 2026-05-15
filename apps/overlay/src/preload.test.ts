@@ -271,4 +271,62 @@ describe('preload', () => {
 
     expect(statusArg).toBe('anchored');
   });
+
+  it('onState callback is invoked when ipc emits overlay:state-update with a payload', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onState: (cb: (s: unknown) => void) => void;
+    };
+
+    expect(typeof bridge.onState).toBe('function');
+
+    let stateArg: unknown | null = null;
+    bridge.onState((s) => {
+      stateArg = s;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const stateListener = listeners['overlay:state-update']?.[0];
+
+    const statePayload = { turn: 3, phase: 'shopping', player: { gold: 5, tier: 2 } };
+    stateListener?.(null, statePayload);
+
+    expect(stateArg).toEqual(statePayload);
+  });
+
+  it('onState callback receives the payload unchanged', () => {
+    const mockIpc = makeMockIpc();
+    const mockCb = makeMockContextBridge();
+
+    setupPreload(
+      mockCb as unknown as typeof import('electron').contextBridge,
+      mockIpc as unknown as import('electron').IpcRenderer,
+    );
+
+    const exposed = mockCb._getExposed();
+    const bridge = exposed!.value as {
+      onState: (cb: (s: unknown) => void) => void;
+    };
+
+    let received: unknown | null = null;
+    bridge.onState((s) => {
+      received = s;
+    });
+
+    const listeners = mockIpc._getListeners();
+    const stateListener = listeners['overlay:state-update']?.[0];
+
+    const rawPayload = { turn: 7, phase: 'combat', player: { gold: 10, tier: 5 }, opponents: [] };
+    stateListener?.(null, rawPayload);
+
+    expect(received).toBe(rawPayload);
+  });
 });
