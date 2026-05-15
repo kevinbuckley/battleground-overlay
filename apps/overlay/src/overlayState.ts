@@ -1,7 +1,9 @@
 import type { GameState } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
+import type { OverlaySettings } from './settings';
 
 let overlayWin: BrowserWindow | null = null;
+let currentSettings: OverlaySettings | null = null;
 
 export function setOverlayWin(win: BrowserWindow): void {
   overlayWin = win;
@@ -23,4 +25,12 @@ export function getGold(state: GameState): number {
 
 export function getTier(state: GameState): number {
   return state.player?.tier ?? 0;
+}
+
+export function setCurrentSettings(s: OverlaySettings): void {
+  currentSettings = s;
+}
+
+export function getCurrentSettings(): OverlaySettings | null {
+  return currentSettings;
 }

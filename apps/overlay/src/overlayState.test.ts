@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'bun:test';
 import type { GameState } from '@overlay/shared';
-import { getOverlayWin, setInteractive } from './overlayState';
+import {
+  getCurrentSettings,
+  getOverlayWin,
+  setCurrentSettings,
+  setInteractive,
+} from './overlayState';
 import { getGold, getTier } from './overlayState';
+import { defaultSettings } from './settings';
 
 describe('overlayState', () => {
   it('getOverlayWin returns null when no window is set', () => {
@@ -94,6 +100,26 @@ describe('overlayState', () => {
         anomaly: null,
       } as GameState;
       expect(getTier(state)).toBe(0);
+    });
+  });
+
+  describe('setCurrentSettings / getCurrentSettings', () => {
+    it('initial getter returns null', () => {
+      expect(getCurrentSettings()).toBeNull();
+    });
+
+    it('setter then getter returns the same object', () => {
+      const settings = defaultSettings();
+      setCurrentSettings(settings);
+      expect(getCurrentSettings()).toBe(settings);
+    });
+
+    it('setter twice returns the second', () => {
+      const first = defaultSettings();
+      const second = { ...defaultSettings(), opacity: 0.9 };
+      setCurrentSettings(first);
+      setCurrentSettings(second);
+      expect(getCurrentSettings()).toBe(second);
     });
   });
 });
