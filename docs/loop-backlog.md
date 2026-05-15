@@ -742,3 +742,239 @@ by hand before first use.
 - [Q] [S] `pipeline` opponent-elimination flow — in `packages/state/src/pipeline.integration.test.ts`, add 1 test: fire a sequence of events that creates an opponent then sets their `HEALTH = 0` → final state has that opponent with `eliminated: true` — `packages/state/src/pipeline.integration.test.ts` only  <!-- failed iter 14 -->
 - [Q] [S] `loadCardsSafe` fallback — add to `packages/card-data/src/loadCards.ts` an exported function `loadCardsSafe(path?: string): Card[]` that wraps `loadCards` in try/catch and returns `[]` on error; 2 tests: a valid invocation returns array; calling with `loadCardsSafe('/tmp/definitely-not-a-real-file.json')` returns `[]` without throwing — `packages/card-data/src/loadCards.ts` + `packages/card-data/src/loadCards.test.ts`  <!-- failed iter 9 -->
 - [Q] [M] OpponentState tag handlers — for each of the 18 new OpponentState fields, create a corresponding `applyOpponent<Field>` handler in `packages/state/src/reducer/` that handles the relevant `TAG_CHANGE` on opponent controller, wires into reducer, and writes 4 tests each (initial value, updates correctly, no-op on player, reflected in state); fields: turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numGameTurns, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/opponent<Field>.ts` + tests  <!-- failed iter 43 -->
+
+---
+
+## M65 — Serialization completeness (PlayerState full-fidelity round-trip)
+
+- [ ] [S] `serializePlayer` extended fields — in `packages/state/src/serialize.ts`, the `serializePlayer` function omits ~25 `PlayerState` fields (handSize, trinketUsed, cardsPlayedThisTurn, cardsGivenThisTurn, deckSize, heroPowerCardId, heroPowerCost, turnsInGame, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, goldSpentThisTurn, shopSize, discoveredCardId, combo, turnsPlayed, revives, bountyCards, victories, gameType, turnTimer, numGameTurns, minionsTradedThisTurn, numChoices, gameTurn, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, totalCardsPlayed, totalCardsDrawn); add all missing fields to both `serializePlayer` and `deserializePlayer` so a full round-trip restores them; 3 tests: serialize `initialState().player` then deserialize → `handSize` equals 0; serialize with `player.gold=7, shopSize=5` → deserialize restores both; serialize `heroPowerCardId='HERO_01'` → deserialize restores it — `packages/state/src/serialize.ts` + `packages/state/src/serialize.test.ts`
+
+- [ ] [S] `serializeGameState` top-level fields — `serializeGameState` currently omits `lobbySize` and `anomaly`; add both to the serialized object and restore in `deserializeGameState`; 3 tests: `lobbySize=6` survives round-trip; `anomaly='SomeAnomaly'` survives round-trip; `anomaly=null` survives round-trip — `packages/state/src/serialize.ts` + `packages/state/src/serialize.test.ts`
+
+## M66 — Renderer: HS-status display
+
+- [ ] [S] `OverlayBridge.onHsStatus` wiring in renderer — in `apps/overlay/src/renderer.ts`, (1) add `onHsStatus(cb: (s: string) => void): void` to the `OverlayBridge` interface; (2) add a call `bridge.onHsStatus((status: string) => { const el = document.getElementById('hs-status'); if (el) el.textContent = status; })` inside `initRenderer`; 3 tests: `onHsStatus` callback sets `#hs-status` text content to `'waiting'`; sets to `'anchored'`; sets to `'failed'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] `#hs-status` element in renderer.html — add `<div id="hs-status"></div>` to `apps/overlay/src/renderer.html` immediately after `<div id="advice-action"></div>`; add CSS rule `#hs-status { font-size: 11px; color: #888; margin-bottom: 4px; }` in the `<style>` block; 1 test: the file contains `id="hs-status"` — `apps/overlay/src/renderer.html` only (no new test file; add assertion to existing `apps/overlay/src/renderer.test.ts`)
+
+## M67 — Renderer: turn/phase/gold/tier display
+
+- [ ] [S] `onState` callback in `OverlayBridge` and `initRenderer` — add `onState(cb: (s: unknown) => void): void` to `OverlayBridge` in `apps/overlay/src/renderer.ts`; inside `initRenderer`, call `bridge.onState((raw: unknown) => { const s = raw as { turn: number; phase: string; player: { gold: number; tier: number } }; const el = document.getElementById('game-info'); if (el) el.textContent = \`T${s.turn} ${s.phase} | Gold:${s.player.gold} Tier:${s.player.tier}\`; })`; 3 tests: state with `turn=3, phase='shopping', player.gold=5, player.tier=2` → `#game-info` text contains `'T3'`; contains `'Gold:5'`; contains `'Tier:2'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] `#game-info` element in renderer.html — add `<div id="game-info"></div>` to `apps/overlay/src/renderer.html` with CSS `#game-info { font-size: 11px; color: #a0d0ff; margin-bottom: 4px; }`; add IPC send of `'overlay:state-update'` payload to `startBridge` (it already sends this — verify the renderer receives it via `onState`); 1 test: HTML contains `id="game-info"` — `apps/overlay/src/renderer.html` + assertion in `apps/overlay/src/renderer.test.ts`
+
+## M68 — Preload: wire onState channel
+
+- [ ] [S] `onState` in preload — in `apps/overlay/src/preload.ts`, add `onState(cb: (s: unknown) => void): void` to the `setupPreload` bridge, registering `ipc.on('overlay:state-update', (_event, state) => { cb(state); })`; 2 tests in `apps/overlay/src/preload.test.ts`: `onState` callback is invoked when `ipc` emits `'overlay:state-update'` with a payload; callback receives the payload unchanged — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
+
+## M69 — Coordinator: per-turn state snapshot logging
+
+- [ ] [S] `logTurnSnapshot` helper — add to `apps/overlay/src/coordinator.ts` an exported function `logTurnSnapshot(state: GameState, logFn: (kind: string, payload: unknown) => void): void` that calls `logFn('state-snapshot', { turn: state.turn, phase: state.phase, gold: state.player.gold, tier: state.player.tier, boardSize: state.player.board.minions.length, shopSize: state.player.shop.minions.length })`; 2 tests: calling it with a stub logFn verifies kind is `'state-snapshot'`; payload contains `boardSize` equal to `state.player.board.minions.length` — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+
+- [ ] [S] Coordinator calls `logTurnSnapshot` on phase change — in `startCoordinator` in `apps/overlay/src/coordinator.ts`, after updating `previousTurn`, also detect when `state.phase` changes from the previous value and call `logTurnSnapshot`; track `previousPhase` analogously to `previousTurn`; 2 tests: phase transition from `'shopping'` to `'combat'` triggers one log call with kind `'state-snapshot'`; no transition → no call — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+
+## M70 — Advisor: `recommend` guard for empty shop
+
+- [ ] [S] `recommend` returns empty array for empty shop mid-shopping — confirm `recommend` with `state.player.shop.minions = []` and `state.phase = 'shopping'` returns `[]` (or at least no Buy recs); currently `scoreBuysWithSim` calls `enumerateBuyCandidates` which returns `[]` when shop is empty, so sim buy recs is `[]`, but heuristic buy recs also maps over an empty array — add 1 test to `packages/advisor/src/recommend.test.ts`: `recommend(state)` with empty shop returns no `Buy` actions — `packages/advisor/src/recommend.test.ts` only (no production change needed if already correct; add test to confirm and lock behavior)
+
+- [ ] [S] `recommend` does not crash when all opponents are eliminated — add 2 tests to `packages/advisor/src/recommend.test.ts`: state where `opponents` is empty → `recommend` returns an array (not throw); state where all opponents have `eliminated: true` → `recommend` returns array without throw — `packages/advisor/src/recommend.test.ts` only
+
+- [ ] [S] `recommend` phase guard — add to `packages/advisor/src/recommend.ts` a guard at the top: if `state.phase === 'combat' || state.phase === 'end' || state.phase === 'lobby'`, return `[]` immediately (no shopping advice during combat); 3 tests: `phase='combat'` → empty array; `phase='end'` → empty array; `phase='lobby'` → empty array — `packages/advisor/src/recommend.ts` + `packages/advisor/src/recommend.test.ts`
+
+## M71 — Advisor: `tierCurveScore` boundary tests
+
+- [ ] [S] `tierCurveScore` maxed-tier short-circuit test — add 2 tests to `packages/advisor/src/heuristics/tierCurve.test.ts`: `tierCurveScore(12, 40, 10, 6, 0)` returns `0` (already tier 6); `tierCurveScore(1, 40, 0, 2, 6)` returns `0` (can't afford) — `packages/advisor/src/heuristics/tierCurve.test.ts` only
+
+- [ ] [S] `tierCurveScore` low-HP penalty test — add 2 tests: `tierCurveScore(4, 15, 10, 2, 5)` with minHp=30 for tier 3 → score is ≤ 0.5 (hp < minHp halves score); `tierCurveScore(4, 40, 10, 2, 5)` → score is > 0.5 — `packages/advisor/src/heuristics/tierCurve.test.ts` only
+
+## M72 — Advisor: `sellScore` golden-minion protection
+
+- [ ] [S] `sellScore` does not recommend selling a golden — add an early-return in `packages/advisor/src/heuristics/sellScore.ts`: if `minion.golden === true` return `0` regardless of other criteria (golden minions are always valuable); 2 tests: golden minion with bad stats → `sellScore` returns `0`; non-golden minion with same bad stats → `sellScore` returns > 0 — `packages/advisor/src/heuristics/sellScore.ts` + `packages/advisor/src/heuristics/sellScore.test.ts`
+
+## M73 — Advisor: `rerollScore` max-board guard
+
+- [ ] [S] `rerollScore` returns 0 when board is full — add guard to `packages/advisor/src/heuristics/rerollScore.ts`: if `state.player.board.minions.length >= 7` return `0` (no room to buy anything from a reroll); 2 tests: board with 7 minions → `rerollScore` returns `0`; board with 6 minions → `rerollScore` may return non-zero — `packages/advisor/src/heuristics/rerollScore.ts` + `packages/advisor/src/heuristics/rerollScore.test.ts`
+
+## M74 — Advisor: `enumerateBuyCandidates` board-full guard
+
+- [ ] [S] `enumerateBuyCandidates` returns empty when board is full — add guard at top of `enumerateBuyCandidates` in `packages/advisor/src/candidates.ts`: if `state.player.board.minions.length >= 7` return `[]` (can't buy with a full board); 2 tests: board with 7 minions → returns `[]`; board with 6 minions and shop with 1 minion → returns 1 candidate — `packages/advisor/src/candidates.ts` + `packages/advisor/src/candidates.test.ts`
+
+- [ ] [S] `enumerateSellCandidates` returns empty when board is empty — add guard at top of `enumerateSellCandidates` in `packages/advisor/src/candidates.ts`: if `state.player.board.minions.length === 0` return `[]`; 1 test: empty board → returns `[]` — `packages/advisor/src/candidates.ts` + `packages/advisor/src/candidates.test.ts`
+
+## M75 — Log parser: multi-value TAG_CHANGE values with spaces
+
+- [ ] [S] `parseTagChange` handles values containing spaces — the current regex `value=(\S+)` rejects values like `TAG_CHANGE Entity=GameEntity tag=STEP value=MAIN_READY` only if STEP has spaces, but values like `MAIN_READY` don't; however entity names CAN contain spaces (e.g. `Entity=Zeddy` vs `Entity=Some Player Name`). Add 2 tests to `packages/log-parser/src/parseTagChange.test.ts`: line `'TAG_CHANGE Entity=Some Player tag=ZONE value=PLAY'` — entity is `'Some Player'`; line `'TAG_CHANGE Entity=1 tag=ZONE value=HAND'` parses correctly — `packages/log-parser/src/parseTagChange.test.ts` only (no production change if tests already pass; add to lock behavior)
+
+- [ ] [S] `parseTagChange` returns null on malformed lines — add 3 tests: empty string → `null`; line without `tag=` → `null`; partial line `'TAG_CHANGE Entity=foo'` → `null` — `packages/log-parser/src/parseTagChange.test.ts` only
+
+## M76 — Log parser: `parseFullEntity` robustness
+
+- [ ] [S] `parseFullEntity` handles missing cardId field — add 2 tests to `packages/log-parser/src/parseFullEntity.test.ts`: line with `FULL_ENTITY` but no `CardID=` → returns entity with `cardId = ''`; line `'FULL_ENTITY - Creating ID=5 CardID=TB_BaconShop_HERO_01'` → `id=5`, `cardId='TB_BaconShop_HERO_01'` — `packages/log-parser/src/parseFullEntity.test.ts` only
+
+- [ ] [S] `parseShowEntity` robustness — add 2 tests to `packages/log-parser/src/parseShowEntity.test.ts`: valid line `'SHOW_ENTITY - Updating Entity=3 CardID=BOT_445'` → `entity='3'`, `cardId='BOT_445'`; line missing `CardID` → returns `null` — `packages/log-parser/src/parseShowEntity.test.ts` only
+
+## M77 — Log parser: `streamEvents` error handling
+
+- [ ] [S] `streamEvents` skips unparseable lines silently — in `packages/log-parser/src/stream.ts`, the `parseSingleLine` function returns `null` for unrecognised lines; add 2 tests to `packages/log-parser/src/stream.test.ts`: a file containing one valid TAG_CHANGE line and one garbage line → `onEvent` called exactly once; a file with only garbage lines → `onEvent` never called — `packages/log-parser/src/stream.test.ts` only
+
+- [ ] [S] `streamEvents` handles empty file — add 1 test to `packages/log-parser/src/stream.test.ts`: streaming an empty file → `onEvent` is never called and the returned `StreamHandle` is non-null (does not throw) — `packages/log-parser/src/stream.test.ts` only
+
+## M78 — State: `turnPhase` shopping/combat detection
+
+- [ ] [S] `applyTurnPhase` transitions to `'combat'` on `MAIN_COMBAT` STEP — in `packages/state/src/reducer/turnPhase.ts`, confirm (or add) that `value === 'MAIN_COMBAT'` sets `state.phase = 'combat'`; add 3 tests to `packages/state/src/reducer/turnPhase.test.ts`: STEP=MAIN_COMBAT → phase `'combat'`; STEP=MAIN_READY → phase `'shopping'`; STEP=FINAL_GAMEOVER → phase `'end'` — `packages/state/src/reducer/turnPhase.ts` + `packages/state/src/reducer/turnPhase.test.ts`
+
+## M79 — State: `shopRefresh` minion tracking
+
+- [ ] [S] `applyShopRefresh` populates `player.shop.minions` — read `packages/state/src/reducer/shopRefresh.ts` to confirm it handles `ZONE_CHANGE_LIST`; add 2 tests to `packages/state/src/reducer/shopRefresh.test.ts`: a `ZONE_CHANGE_LIST` event with id=1 sets `state.player.shop` to a non-default state (minions array changes); two sequential events → second one updates shop — `packages/state/src/reducer/shopRefresh.ts` + `packages/state/src/reducer/shopRefresh.test.ts`
+
+## M80 — State: `entityRegistry` population
+
+- [ ] [S] `entityRegistry` populated by `applyMinionPlaced` — in `packages/state/src/reducer/minionPlaced.ts`, confirm the function adds to `player.entityRegistry` when a minion is placed; add 3 tests to `packages/state/src/reducer/minionPlaced.test.ts`: placing a FULL_ENTITY with id=10 → `entityRegistry.get(10)` is defined; placing with cardId='BOT_445' → `entityRegistry.get(id).cardId === 'BOT_445'`; placing twice with same id updates registry — `packages/state/src/reducer/minionPlaced.ts` + `packages/state/src/reducer/minionPlaced.test.ts`
+
+- [ ] [S] `entityRegistry` cleared on new game — add 1 test: when `BLOCK_START effectCardId='TB_BaconShop_StartGame'` triggers (sets `turn=1, phase='shopping'`), the entity registry should remain accessible (not crash); calling `reducer` on a state with a pre-populated `entityRegistry` and then the start-game block → state is returned without throwing — `packages/state/src/reducer.test.ts` only
+
+## M81 — Coordinator: `startCoordinator` passes `getHsStatus` to bridge
+
+- [ ] [S] `startCoordinator` passes `getHsStatus` to `startBridge` — in `apps/overlay/src/coordinator.ts`, the call to `startBridge` currently passes `() => null` as the 4th arg and no 5th arg; update to pass `coordinator.getHsStatus` as the 5th argument so the bridge sends hs-status to the renderer; 2 tests: after `setHsStatus('anchored')`, the stub `startBridge` receives a getter that returns `'anchored'`; after `setHsStatus('failed')`, getter returns `'failed'` — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+
+## M82 — Bootstrap: run doctor on startup and log result
+
+- [ ] [S] `bootstrapOverlay` calls `runDoctor` and logs result — in `apps/overlay/src/bootstrap.ts`, after creating the coordinator, call `runDoctor` with real deps (`isHearthstoneRunning`, `verifyHsLoggingConfig`, `checkMlxServer`) and pass the formatted banner to `opts?.logFn ?? appendSessionEvent` with kind `'doctor'`; import `runDoctor`, `formatDoctorReport` from `./doctor`, `isHearthstoneRunning` from `./anchor`, `verifyHsLoggingConfig`, `getHsLogConfigPath` from `./hsLogConfig`, `checkMlxServer` from `@overlay/llm`; 3 tests: stub `runDoctor` that returns all-true → `logFn` called once with kind `'doctor'`; all-false → still called once; `logFn` not provided → uses default (no throw) — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+## M83 — Bootstrap: anchor retry on startup
+
+- [ ] [S] `bootstrapOverlay` calls `anchorToHearthstoneWithRetry` — in `apps/overlay/src/bootstrap.ts`, after creating the coordinator, call `anchorToHearthstoneWithRetry(win, { maxAttempts: 3, retryMs: 500 })` and then call `coordinator.setHsStatus(result ? 'anchored' : 'failed')`; 2 tests: stub `anchorFn` that succeeds → coordinator status set to `'anchored'`; stub returns false → status set to `'failed'` — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+## M84 — Settings: IPC handler for `settings:save`
+
+- [ ] [S] `settings:save` IPC handler — in `apps/overlay/src/ipcHandlers.ts`, add handler for channel `'settings:save'` that calls `saveSettings(args[0] as string, args[1] as OverlaySettings)` and returns `true`; add `saveSettings` to the `deps.settings` interface; 2 tests: handler calls `saveSettings` with the provided path and settings; handler returns `true` — `apps/overlay/src/ipcHandlers.ts` + `apps/overlay/src/ipcHandlers.test.ts`
+
+## M85 — Hotkeys: load hotkeys from settings on startup
+
+- [ ] [S] `createOverlayWindow` applies hotkeys from settings — in `apps/overlay/src/createOverlayWindow.ts`, the call to `registerHotkeys(win, cfg, ...)` uses `defaultHotkeyConfig()`; change it to use `settings.hotkeys` from the loaded settings object instead; 2 tests: settings with custom `toggle='Alt+G'` → stub `registerHotkeys` called with `cfg.toggle === 'Alt+G'`; default settings → `cfg.toggle === 'Alt+B'` — `apps/overlay/src/createOverlayWindow.ts` + existing test file
+
+## M86 — Renderer: confidence label display
+
+- [ ] [S] `initRenderer` sets confidence CSS class — in `apps/overlay/src/renderer.ts`, after setting `#advice-confidence` text, also set its `className` to `getConfidenceLabel(top.confidence)` so CSS can color it; 3 tests: confidence 0.8 → className is `'high'`; confidence 0.5 → `'medium'`; confidence 0.2 → `'low'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+
+- [ ] [S] CSS confidence colors in renderer.html — add CSS rules `#advice-confidence.high { color: #00e676; }`, `#advice-confidence.medium { color: #ffd740; }`, `#advice-confidence.low { color: #ff5252; }` to `apps/overlay/src/renderer.html`; 1 test: HTML contains `advice-confidence.high` — assertion in `apps/overlay/src/renderer.test.ts`
+
+## M87 — Renderer: shop and board count display
+
+- [ ] [S] `initRenderer` renders shop minion count from state — in `apps/overlay/src/renderer.ts`, inside `bridge.onState`, also update `#shop-count` element: `shopCountEl.textContent = \`Shop: ${s.player.shop.minions.length}\``; add `<div id="shop-count"></div>` to renderer.html; 2 tests: state with 4 shop minions → `#shop-count` text contains `'4'`; state with 0 shop minions → contains `'0'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+## M88 — Sim: `toFirestoneBoard` preserves windfury and cleave
+
+- [ ] [S] `toFirestoneBoard` includes `windfury` and `cleave` fields — in `packages/sim/src/adapter.ts`, `toFirestoneEntity` currently only maps `taunt`, `divineShield`, `poisonous`, `reborn`; add `windfury: minion.windfury` and `cleave: minion.cleave`; 2 tests in `packages/sim/src/adapter.test.ts`: minion with `windfury: true` → Firestone entity has `windfury: true`; minion with `cleave: true` → Firestone entity has `cleave: true` — `packages/sim/src/adapter.ts` + `packages/sim/src/adapter.test.ts`
+
+- [ ] [S] `toFirestoneBoard` includes `golden` field — add `premium: minion.golden` to `toFirestoneEntity` (Firestone uses `premium` for golden); 2 tests: minion with `golden: true` → entity has `premium: true`; `golden: false` → `premium: false` — `packages/sim/src/adapter.ts` + `packages/sim/src/adapter.test.ts`
+
+## M89 — Sim: `simulateBatch` seed determinism test
+
+- [ ] [S] `simulateBatch` with same seed returns same win count — in `packages/sim/src/simulateBatch.test.ts`, add 1 test: call `simulateBatch(boardA, boardB, 10, 42)` twice → both calls return the same `wins` count; 1 additional test: different seed → may differ (or at minimum does not crash) — `packages/sim/src/simulateBatch.test.ts` only
+
+## M90 — Advisor: `predictOpponentBoard` minimum board guarantee
+
+- [ ] [S] `predictOpponentBoard` returns at least 1 minion for non-empty board — add 1 test to `packages/advisor/src/opponentPredictor.test.ts`: opponent with 3 minions on board at turn 1 (no scaling) → result.minions.length === 3; opponent with 0 minions → result.minions.length === 0 — `packages/advisor/src/opponentPredictor.test.ts` only
+
+- [ ] [S] `predictOpponentBoard` caps scale at 1.5 — add 1 test: opponent with 1 minion (attack=4, health=4) at turn 20 → scaled attack ≤ 6 (i.e. Math.round(4 * 1.5) = 6); turn 5 (scale=1.1) → Math.round(4 * 1.1) = 4 — `packages/advisor/src/opponentPredictor.test.ts` only
+
+## M91 — Shared: `formatRecommendation` extended actions
+
+- [ ] [S] `formatRecommendation` for all action types — in `packages/shared/src/recommendation.ts`, add 1 test per action type to `packages/shared/src/recommendation.test.ts`: Buy → contains cardId; Sell → contains boardIndex; Freeze → contains 'Freeze'; Reroll → contains 'Reroll'; TierUp → contains 'Tier'; Reposition → contains both fromIndex and toIndex — `packages/shared/src/recommendation.test.ts` only (6 tests total, no production change if already correct)
+
+## M92 — Shared: `sessionLog` read/write round-trip
+
+- [ ] [S] `appendSessionEvent` then `readSession` returns the entry — in `packages/shared/src/sessionLog.test.ts`, add 3 tests using `mkdtempSync`: write one event then read → array length 1 and kind matches; write two events → length 2; malformed JSON line in file → skipped without throw — `packages/shared/src/sessionLog.test.ts` only
+
+- [ ] [S] `pruneOldSessions` deletes oldest files — add 2 tests: create 5 session files, call `pruneOldSessions(3, dir)` → only 3 files remain; call with `keepLast=0` → all files deleted — `packages/shared/src/sessionLog.test.ts` only
+
+## M93 — Coordinator: bridge poll interval is configurable
+
+- [ ] [S] `startBridge` accepts optional `pollIntervalMs` — add an optional 6th parameter `pollIntervalMs = 500` to `startBridge` in `apps/overlay/src/ipcBridge.ts`; use it instead of the hardcoded `500`; 2 tests: `pollIntervalMs=100` → interval is set with that value (stub `setInterval` to capture arg); default → 500 — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+
+## M94 — LogStream: `wireLogStreamWithRetry` uses configurable `retryMs`
+
+- [ ] [S] `wireLogStreamWithRetry` retries up to `maxAttempts` — add 2 tests to `apps/overlay/src/logStream.test.ts`: stub `wireFn` that fails twice then succeeds → final result is non-null; stub that always fails with `maxAttempts=2` → returns `null` after exactly 2 calls — `apps/overlay/src/logStream.test.ts` only (no production change if already correct; tests lock behavior)
+
+## M95 — State: `pipeline` session reset
+
+- [ ] [S] `createPipeline` exposes `reset()` — add to the `Pipeline` interface in `packages/state/src/pipeline.ts` a method `reset(): void` that calls `initialState()` and replaces internal state; 3 tests: after feeding events that change `state.turn`, calling `reset()` → `getState().turn === 0`; `reset()` then feeding new events → state updates correctly; calling `reset()` with no prior events → does not throw — `packages/state/src/pipeline.ts` + `packages/state/src/pipeline.test.ts`
+
+## M96 — Card data: `isBattlegroundsPool` used in candidates
+
+- [ ] [S] `enumerateBuyCandidates` filters candidates by `isBattlegroundsPool` — in `packages/advisor/src/candidates.ts`, import `isBattlegroundsPool` from `@overlay/card-data` and skip any shop minion where `isBattlegroundsPool` returns false (e.g. hero power minions with non-BG cardIds); 2 tests: shop with 1 BG-pool minion and 1 non-pool minion → 1 candidate returned; shop with 2 BG-pool minions → 2 candidates — `packages/advisor/src/candidates.ts` + `packages/advisor/src/candidates.test.ts`
+
+## M97 — Overlay: window opacity follows settings on creation
+
+- [ ] [S] `createOverlayWindow` applies `opacity` from loaded settings — in `apps/overlay/src/createOverlayWindow.ts`, confirm `win.setOpacity(settings.opacity)` is called (it already is); add 2 tests: settings with `opacity=0.5` → `setOpacity` called with `0.5`; settings with `opacity=1.0` → called with `1.0` — existing test in `apps/overlay/src/createOverlayWindow.ts` test file (add tests if missing)
+
+## M98 — Overlay: window position follows settings on creation
+
+- [ ] [S] `createOverlayWindow` applies `x`/`y` from loaded settings — confirm `win.setPosition(settings.x, settings.y)` is called; add 2 tests: settings with `x=100, y=200` → `setPosition` called with `(100, 200)`; default settings (x=0, y=0) → called with `(0, 0)` — existing test in `apps/overlay/src/createOverlayWindow.ts` test file
+
+## M99 — Advisor: `weightedWinScore` integration in `recommend`
+
+- [ ] [S] `recommend` uses `weightedWinScore` for final sort when opponents exist — add 1 test to `packages/advisor/src/recommend.test.ts`: state with 2 non-eliminated opponents and a board with 1 minion in shop → `recommend` returns array sorted by score descending (first rec.score ≥ last rec.score); score values are in [0, 1] — `packages/advisor/src/recommend.test.ts` only
+
+## M100 — Doctor: `runDoctor` wired into bootstrap on startup banner
+
+- [ ] [S] `bootstrapOverlay` sends startup banner to overlay window — in `apps/overlay/src/bootstrap.ts`, after calling `runDoctor`, call `win.webContents.send('overlay:startup-banner', formatStartupBanner(result))`; 2 tests: stub `runDoctor` all-true → `webContents.send` called with channel `'overlay:startup-banner'` and string containing `'HS:✓'`; all-false → string containing `'HS:✗'` — `apps/overlay/src/bootstrap.ts` + `apps/overlay/src/bootstrap.test.ts`
+
+- [ ] [S] Preload wires `onStartupBanner` — in `apps/overlay/src/preload.ts`, add `onStartupBanner(cb: (s: string) => void): void` that registers `ipc.on('overlay:startup-banner', (_e, s) => cb(s))`; 2 tests: emitting `'overlay:startup-banner'` with `'HS:✓ ...'` → callback invoked with that string; callback receives exact string unchanged — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
+
+## M101 — Renderer: startup banner display
+
+- [ ] [S] `initRenderer` handles `onStartupBanner` — add `onStartupBanner(cb: (s: string) => void): void` to `OverlayBridge` in `apps/overlay/src/renderer.ts`; inside `initRenderer` call `bridge.onStartupBanner((s) => { const el = document.getElementById('startup-banner'); if (el) { el.textContent = s; el.classList.add('visible'); } })`; add `<div id="startup-banner"></div>` to `renderer.html` with CSS `display:none` and `.visible { display: block; }`; 2 tests: callback sets `#startup-banner` text; adds `visible` class — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.html` + `apps/overlay/src/renderer.test.ts`
+
+## M102 — State: `applyTurnPhase` lobby detection
+
+- [ ] [S] `applyTurnPhase` for `MAIN_START_TRIGGERS` sets `'shopping'` — add 1 test to `packages/state/src/reducer/turnPhase.test.ts`: TAG_CHANGE tag=STEP value=MAIN_START_TRIGGERS → phase is `'shopping'` (or confirm no change from existing behavior — whichever is correct per `turnPhase.ts`); read the file first and only add test if value is handled — `packages/state/src/reducer/turnPhase.test.ts` only
+
+## M103 — Sim: `fromTranscript` round-trip
+
+- [ ] [S] `fromTranscript` returns a `Board` with expected minion count — add 2 tests to `packages/sim/src/fromTranscript.test.ts`: an empty transcript → board with 0 minions; a transcript from `simulateBatch` result → board has minion count ≥ 0 (no throw) — `packages/sim/src/fromTranscript.test.ts` only
+
+## M104 — Shared: `utils` clamp already tested; add `lerp`
+
+- [ ] [S] `lerp(a: number, b: number, t: number): number` — add to `packages/shared/src/utils.ts` an exported function `lerp(a: number, b: number, t: number): number` returning `a + (b - a) * t`; export from `packages/shared/src/index.ts`; 3 tests: `lerp(0, 10, 0.5) === 5`; `lerp(0, 10, 0) === 0`; `lerp(0, 10, 1) === 10` — `packages/shared/src/utils.ts` + `packages/shared/src/utils.test.ts`
+
+## M105 — Coordinator: `stop` closes log stream
+
+- [ ] [S] `Coordinator.stop` closes the stream handle — in `apps/overlay/src/coordinator.ts`, the `stop()` method calls `stopBridge()` but does NOT close the log stream handle (that handle is returned by `bootstrapOverlay`, not held by coordinator); add to `Coordinator` interface a `setStreamHandle(h: StreamHandle | null): void` and in `stop()`, call `streamHandle?.close()`; 2 tests: stub `StreamHandle` with `close` spy → `stop()` calls `close`; `stop()` with null handle → no throw — `apps/overlay/src/coordinator.ts` + `apps/overlay/src/coordinator.test.ts`
+
+## M106 — Overlay: `ipcHandlers` `settings:get` handler
+
+- [ ] [S] `settings:get` IPC handler — in `apps/overlay/src/ipcHandlers.ts`, add handler for `'settings:get'` that calls `loadSettings(args[0] as string)` and returns the settings object; 2 tests: handler calls `loadSettings` with the provided path; handler returns an object with `opacity` field — `apps/overlay/src/ipcHandlers.ts` + `apps/overlay/src/ipcHandlers.test.ts`
+
+## M107 — Log parser: `tokenize` boundary tests
+
+- [ ] [S] `tokenize` handles lines with leading whitespace — add 2 tests to `packages/log-parser/src/tokenize.test.ts`: a line with 4 leading spaces → tokenizes the inner content correctly; an all-whitespace line → returns `null` or empty (whichever current behavior is) — `packages/log-parser/src/tokenize.test.ts` only
+
+## M108 — State: `initialOpponentState` export coverage
+
+- [ ] [S] `initialOpponentState` exported from `packages/state/src/index.ts` — verify `initialOpponentState` is exported; if not, add the export; add 1 test to `packages/state/src/index.test.ts`: `import { initialOpponentState } from '../src/index'` is a function; calling `initialOpponentState(1, 2)` returns object with `entityId===1` — `packages/state/src/index.ts` + `packages/state/src/index.test.ts`
+
+## M109 — Advisor: `scoreBuysWithSim` returns TOP_N max 3
+
+- [ ] [S] `scoreBuysWithSim` caps output at 3 — add 1 test to `packages/advisor/src/budgetScorer.test.ts`: state with 5 shop minions → `scoreBuysWithSim` returns at most 3 recommendations; 1 additional test: state with 1 shop minion → returns at most 1 recommendation — `packages/advisor/src/budgetScorer.test.ts` only
+
+## M110 — Coordinator: log recommendation kind correctly
+
+- [ ] [S] `startCoordinator` logs `'recommendation'` kind with correct action type — in `apps/overlay/src/coordinator.ts`, the log call is `logFn('recommendation', { turn, action: recs[0]?.action ?? null })`; add 2 tests to `apps/overlay/src/coordinator.test.ts`: after feeding a `TAG_CHANGE RESOURCES value=10` event that gives gold, the stub logFn sees a call with kind `'recommendation'`; when recommend throws, logFn sees a `'recommendation'` call with `action: null` (confirm existing try/catch behavior) — `apps/overlay/src/coordinator.test.ts` only
+
+## M111 — Overlay: `opponentPanel` IPC handler actually sends to renderer
+
+- [ ] [S] `set-opponent-panel` IPC handler wires to `setOpponentPanel` — in `apps/overlay/src/ipcHandlers.ts`, confirm `set-opponent-panel` calls `setOpponentPanelFn`; add 1 test: invoking the handler with a payload → `setOpponentPanel` called once with that payload — `apps/overlay/src/ipcHandlers.test.ts` only
+
+## M112 — Advisor: `freezeScore` shop-has-good-minions heuristic
+
+- [ ] [S] `freezeScore` returns > 0 when shop has a high-tribe-synergy minion — read `packages/advisor/src/heuristics/freezeScore.ts` and add 2 tests to `packages/advisor/src/heuristics/freezeScore.test.ts`: shop minion with matching tribe as 2 board minions → `freezeScore > 0`; shop minion with no tribe match and board is empty → `freezeScore === 0` — `packages/advisor/src/heuristics/freezeScore.test.ts` only (no production change if correct; adds tests to lock behavior)
+
+## M113 — Overlay: `damageWidget` tier-0 guard
+
+- [ ] [S] `computeDamageForecast` returns zero forecast for playerTier=0 — add 1 test to `apps/overlay/src/damageWidget.test.ts`: `computeDamageForecast({ winPct: 0.6, avgHpDelta: 1 }, 0)` → `{ minDmg: 0, maxDmg: 0, winPct: 0.6 }` (tier 0 means no damage multiplier); confirm production code handles this (add guard if needed) — `apps/overlay/src/damageWidget.ts` + `apps/overlay/src/damageWidget.test.ts`
+
+## M114 — State: `parseSession` — parse full game from events
+
+- [ ] [S] `parseSession` returns final `GameState` from a sequence of events — in `packages/state/src/parseSession.ts`, read the function signature; add 2 tests to `packages/state/src/parseSession.test.ts`: passing `[]` returns a `GameState` with `turn === 0`; passing one `BLOCK_START` start-game event returns `phase === 'shopping'` — `packages/state/src/parseSession.test.ts` only (no production change if correct; tests lock behavior)
