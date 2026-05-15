@@ -396,6 +396,8 @@
 
 2026-05-15 00:00  [DONE]  M61: applyTurnTimer — handles `TAG_CHANGE tag=TIMEOUT` on player controller, sets `state.player.turnTimer: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`), 4 tests (initial=15, updates on turn start, no-op on opponent, reflects remaining time), wired into reducer; 1000/1000 tests pass (commit 6e305c9)
 
+2026-05-15 00:00  [DONE]  M61: applyOpponentRevives — handles `TAG_CHANGE tag=NUM_REVIVES` on opponent controllers, sets `state.opponents[i].revives: number` (add field to OpponentState), 4 tests (initial=0, increments on opponent revive, no-op on player, reflected in state), wired into reducer; 1004/1004 tests pass (commit abac9f0)
+
 ---
 
 Format:
