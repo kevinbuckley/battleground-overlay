@@ -47,6 +47,7 @@ export function initialState(): GameState {
       deathrattlesTriggeredThisTurn: 0,
       minionsDiedThisTurn: 0,
       totalCardsPlayed: 0,
+      totalCardsDrawn: 0,
       entityRegistry: new Map(),
     },
     opponents: [],
