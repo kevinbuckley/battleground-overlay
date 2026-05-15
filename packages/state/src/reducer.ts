@@ -47,6 +47,7 @@ import { applyPlayerTurnsPlayed } from './reducer/playerTurnsPlayed';
 import { applyPoisonous } from './reducer/poisonous';
 import { applyRace } from './reducer/race';
 import { applyReborn } from './reducer/reborn';
+import { applyRevives } from './reducer/revives';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
 import { applyShopRefresh } from './reducer/shopRefresh';
@@ -278,6 +279,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_TURNS_PLAYED') {
         return applyPlayerTurnsPlayed(state, event);
+      }
+      if (event.tag === 'NUM_REVIVES') {
+        return applyRevives(state, event);
       }
       return applyTripleBonus(state, event);
 
