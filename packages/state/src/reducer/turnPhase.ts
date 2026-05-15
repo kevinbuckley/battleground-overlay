@@ -4,7 +4,9 @@ import type { GameState } from '@overlay/shared';
 const phaseMap: Record<string, GameState['phase']> = {
   MAIN_READY: 'shopping',
   BEGIN_SHOOTING_ATTACK: 'combat',
+  MAIN_COMBAT: 'combat',
   MAIN_CLEANUP: 'end',
+  FINAL_GAMEOVER: 'end',
 };
 
 export function applyTurnPhase(state: GameState, event: TagChange): GameState {

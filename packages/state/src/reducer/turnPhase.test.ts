@@ -25,6 +25,20 @@ describe('applyTurnPhase', () => {
     expect(result.phase).toBe('combat');
   });
 
+  it('transitions MAIN_COMBAT → combat', () => {
+    const state = initialState();
+    const event = tagChange('STEP', 'MAIN_COMBAT');
+    const result = applyTurnPhase(state, event);
+    expect(result.phase).toBe('combat');
+  });
+
+  it('transitions FINAL_GAMEOVER → end', () => {
+    const state = initialState();
+    const event = tagChange('STEP', 'FINAL_GAMEOVER');
+    const result = applyTurnPhase(state, event);
+    expect(result.phase).toBe('end');
+  });
+
   it('transitions MAIN_CLEANUP → end', () => {
     const state = initialState();
     const event = tagChange('STEP', 'MAIN_CLEANUP');
