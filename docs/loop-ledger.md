@@ -4,6 +4,8 @@
 
 2026-05-14 00:00  [DONE]  M61: Build pipeline — created `apps/overlay/build.mjs` using esbuild to bundle `main.ts` → `dist/main.cjs` (CJS/Electron), `preload.ts` → `dist/preload.js` (IIFE), `renderer.ts` → `dist/renderer-bundle.js` (IIFE); copies `renderer.html` to `dist/`; updated `apps/overlay/package.json` with `"main": "dist/main.cjs"` and `"dev": "node build.mjs && electron ."`; 943/943 tests pass (commit f7629ea)
 
+2026-05-14 00:00  [DONE]  M60: applyDiscover handler — handles `TAG_CHANGE tag=DISCOVER` on player controller, sets `state.player.discoveredCardId: string | null` (add field to PlayerState), wired into reducer, 4 tests (sets discovered cardId, clears on 0, no-op on opponent, persists across turns); 949/949 tests pass (commit 147d7ac)
+
 2026-05-14 00:00  [DONE]  M58: saveSettings creates parent dir — added `mkdirSync(dirname(filePath), { recursive: true })` before `writeFileSync` in `apps/overlay/src/settings.ts`; 2 tests (nested subpath save+load round-trip, file exists at nested location); 13/13 tests pass (commit cb6c63e)
 
 2026-05-14 00:00  [DONE]  M60: getRecsForBridge slicer — added `getRecsForBridge(allRecs, max)` pure helper to `apps/overlay/src/coordinator.ts` that returns `allRecs.slice(0, max)`; 3 tests (5 recs max=3 → length 3, 2 recs max=3 → length 2, empty → length 0); 935/935 tests pass (commit e80f81e)

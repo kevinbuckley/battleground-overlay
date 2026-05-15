@@ -686,6 +686,13 @@ by hand before first use.
 
 - [ ] [S] RECOVERY: Add `clamp(n: number, min: number, max: number): number` to `packages/shared/src/utils.ts` and export from shared index; test: clamp(5,1,3)===3, clamp(0,1,3)===1, clamp(2,1,3)===2 — packages/shared/src/utils.ts + test
 
+## M60 — Missing tag handlers
+
+- [x] [S] `applyDiscover` — handles `TAG_CHANGE tag=DISCOVER` on player controller → sets `state.player.discoveredCardId: string | null` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (sets discovered cardId on DISCOVER tag, clears on DISCOVER=0, no-op on opponent, persisted across turns) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/discover.ts` + test (commit 147d7ac)
+- [ ] [S] `applyOpponentTurnsPlayed` — handles `TAG_CHANGE tag=NUM_TURNS_PLAYED` on opponent controller → sets `state.opponents[i].turnsPlayed: number` (add field to OpponentState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments per turn, no-op on player, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/opponentTurnsPlayed.ts` + test
+- [ ] [S] `applyCombo` — handles `TAG_CHANGE tag=COMBO` on player controller → sets `state.player.combo: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments on combo play, no-op on opponent, resets on MAIN_READY) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/combo.ts` + test
+- [ ] [S] `applySpellPower` — handles `TAG_CHANGE tag=SPELL_POWER` on entities in PLAY zone → updates `minion.spellPower: number` (add field to Minion in `packages/shared/src/state.ts`); wire into reducer; 4 tests (updates player board minion, updates opponent board minion, no-op on hero, no-op on non-play entity) — `packages/shared/src/state.ts` + `packages/state/src/reducer/spellPower.ts` + test
+
 ## Quarantined
 
 (tasks the loop got stuck on — investigate manually before re-queuing)
