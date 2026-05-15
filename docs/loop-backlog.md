@@ -804,7 +804,7 @@ by hand before first use.
 
 ## M76 — Log parser: `parseFullEntity` robustness
 
-- [ ] [S] `parseFullEntity` handles missing cardId field — add 2 tests to `packages/log-parser/src/parseFullEntity.test.ts`: line with `FULL_ENTITY` but no `CardID=` → returns entity with `cardId = ''`; line `'FULL_ENTITY - Creating ID=5 CardID=TB_BaconShop_HERO_01'` → `id=5`, `cardId='TB_BaconShop_HERO_01'` — `packages/log-parser/src/parseFullEntity.test.ts` only
+- [x] [S] `parseFullEntity` handles missing cardId field — add 2 tests to `packages/log-parser/src/parseFullEntity.test.ts`: line with `FULL_ENTITY` but no `CardID=` → returns entity with `cardId = ''`; line `'FULL_ENTITY - Creating ID=5 CardID=TB_BaconShop_HERO_01'` → `id=5`, `cardId='TB_BaconShop_HERO_01'` — `packages/log-parser/src/parseFullEntity.test.ts` only (commit 39fac37)
 
 - [ ] [S] `parseShowEntity` robustness — add 2 tests to `packages/log-parser/src/parseShowEntity.test.ts`: valid line `'SHOW_ENTITY - Updating Entity=3 CardID=BOT_445'` → `entity='3'`, `cardId='BOT_445'`; line missing `CardID` → returns `null` — `packages/log-parser/src/parseShowEntity.test.ts` only
 
