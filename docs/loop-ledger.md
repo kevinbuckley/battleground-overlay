@@ -390,6 +390,10 @@
 
 ---
 
+2026-05-15 00:00  [DONE]  M61: applyImmune handler — handles `TAG_CHANGE tag=IMMUNE value=1/0` on entities in PLAY zone, sets `minion.immune: boolean` (add field to Minion in `packages/shared/src/state.ts`), 5 tests (set on player/opponent minion, clear on value=0, no-op on hero, no-op on non-play entity), wired into reducer; 996/996 tests pass (commit 84dc681)
+
+---
+
 Format:
 ```
 YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
