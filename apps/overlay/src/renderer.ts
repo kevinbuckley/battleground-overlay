@@ -5,6 +5,7 @@ export interface OverlayBridge {
   onExplanation(cb: (t: string) => void): void;
   onDamage(cb: (f: unknown) => void);
   onBoard(cb: (b: unknown) => void);
+  onShop?(cb: (s: unknown[]) => void): void;
   onOpponents(cb: (o: unknown[]) => void);
   onHsStatus(cb: (s: string) => void): void;
   onState(cb: (s: unknown) => void): void;
@@ -111,6 +112,13 @@ export function initRenderer(bridge: OverlayBridge): void {
       const items = b.minions.map((m) => `<li>${formatMinionLine(m)}</li>`).join('');
       minionsEl.innerHTML = items;
     }
+  });
+
+  bridge.onShop?.((shop: unknown[]) => {
+    const el = document.getElementById('shop-minions');
+    if (!el) return;
+    const minions = shop as { cardId: string; attack: number; health: number }[];
+    el.innerHTML = minions.map((m) => `<li>${m.attack}/${m.health} ${m.cardId}</li>`).join('');
   });
 
   bridge.onOpponents((opponentsData: unknown) => {

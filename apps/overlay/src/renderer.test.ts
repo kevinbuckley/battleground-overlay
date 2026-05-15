@@ -589,6 +589,76 @@ describe('initRenderer', () => {
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
 
+  it('onShop populates #shop-minions with <li> per minion', () => {
+    let shopCallback: ((s: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onShop: (cb: (s: unknown[]) => void) => {
+        shopCallback = cb;
+      },
+      onOpponents: () => {},
+      onHsStatus: () => {},
+      onState: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string; innerHTML: string }>();
+    mockElements.set('shop-minions', { textContent: '', innerHTML: '' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    shopCallback!([
+      { attack: 3, health: 4, cardId: 'TB_GolgBos_04' },
+      { attack: 5, health: 2, cardId: 'TB_GolgBos_05' },
+    ]);
+
+    const minionsEl = mockElements.get('shop-minions') as { innerHTML: string };
+    expect(minionsEl.innerHTML).toContain('3/4 TB_GolgBos_04');
+    expect(minionsEl.innerHTML).toContain('5/2 TB_GolgBos_05');
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
+  it('onShop clears #shop-minions when shop is empty', () => {
+    let shopCallback: ((s: unknown[]) => void) | null = null;
+    const bridge = {
+      onRecs: () => {},
+      onExplanation: () => {},
+      onDamage: () => {},
+      onBoard: () => {},
+      onShop: (cb: (s: unknown[]) => void) => {
+        shopCallback = cb;
+      },
+      onOpponents: () => {},
+      onHsStatus: () => {},
+      onState: () => {},
+    };
+
+    const mockElements = new Map<string, { textContent: string; innerHTML: string }>();
+    mockElements.set('shop-minions', { textContent: '', innerHTML: 'stale' });
+
+    (globalThis as unknown as Record<string, unknown>).document = {
+      getElementById(id: string) {
+        return mockElements.get(id) || null;
+      },
+    } as unknown as typeof globalThis.document;
+
+    initRenderer(bridge);
+    shopCallback!([]);
+
+    const minionsEl = mockElements.get('shop-minions') as { innerHTML: string };
+    expect(minionsEl.innerHTML).toBe('');
+
+    (globalThis as unknown as Record<string, unknown>).document = undefined;
+  });
+
   it('onOpponents updates #opponent-count textContent with "Opponents: N"', () => {
     let opponentsCallback: ((o: unknown[]) => void) | null = null;
     const bridge = {
