@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 12:55  [DONE]  M77: streamEvents skips unparseable lines — 2 tests to `stream.test.ts`: one valid + one garbage → onEvent called exactly once; only garbage → onEvent never called; 1090/1090 tests pass (commit e97a603)
+
 2026-05-15 12:50  [DONE]  M75: parseShowEntity robustness — added 2 tests to `parseShowEntity.test.ts`: valid line with BOT_445 parses correctly, line missing CardID returns null; 5/5 tests pass (commit ddc05f5)
 
 2026-05-15 12:45  [DONE]  M74: enumerateSellCandidates empty-board guard — added early-return `if (state.player.board.minions.length === 0) return []` to `enumerateSellCandidates`; 1 test already existed (empty board → returns []); 1084/1084 tests pass (commit 1999989)
