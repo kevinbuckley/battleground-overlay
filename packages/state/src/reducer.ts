@@ -70,6 +70,7 @@ import { applySilence } from './reducer/silence';
 import { applySpellPower } from './reducer/spellPower';
 import { applyTaunt } from './reducer/taunt';
 import { applyTierUp } from './reducer/tierUp';
+import { applyTotalCardsPlayed } from './reducer/totalCardsPlayed';
 import { applyTrinket } from './reducer/trinket';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
@@ -336,6 +337,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CHOICES') {
         return applyNumChoices(state, event);
+      }
+      if (event.tag === 'NUM_CARDS_PLAYED') {
+        return applyTotalCardsPlayed(state, event);
       }
       if (event.tag === 'NUM_DEATHRATTLES_TRIGGERED_THIS_TURN') {
         return applyDeathrattlesTriggered(state, event);

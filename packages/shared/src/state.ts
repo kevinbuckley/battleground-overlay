@@ -78,6 +78,7 @@ export interface PlayerState {
   gameTurn: number;
   deathrattlesTriggeredThisTurn: number;
   minionsDiedThisTurn: number;
+  totalCardsPlayed: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
