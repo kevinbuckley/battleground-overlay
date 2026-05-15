@@ -348,6 +348,8 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M56: formatDoctorReport — added `formatDoctorReport(r: DoctorResult): string` to `apps/overlay/src/doctor.ts` returning multi-line string with `✓`/`✗` per check, missing sections listed after config line, error shown after mlx line; 3 tests (all-ok 3 checkmarks, one failure 2 checkmarks+1 cross, missing sections text present); 6/6 tests pass (commit 9c44a8d)
 
+2026-05-14 00:00  [DONE]  M57: Bridge sends top-3 recs only — modified `startBridge` in `apps/overlay/src/ipcBridge.ts` to slice recs to `.slice(0, 3)` before sending on `'overlay:recs-update'`; 2 tests (1 rec → length 1, 5 recs → length 3); 924/924 tests pass (commit f113e40)
+
 ---
 
 Format:
