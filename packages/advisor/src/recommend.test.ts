@@ -764,6 +764,124 @@ describe('recommend', () => {
     expect(recs.length).toBeGreaterThanOrEqual(1);
   });
 
+  it('does not crash when all opponents are eliminated', () => {
+    const state = {
+      ...initialState(),
+      turn: 5,
+      phase: 'shopping' as const,
+      player: {
+        ...initialState().player,
+        shop: {
+          ...initialState().player.shop,
+          minions: [
+            {
+              entityId: 10,
+              cardId: 'TB_BaconShop_Minion1',
+              attack: 1,
+              health: 1,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 1,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            } as Minion,
+          ],
+        },
+        board: {
+          ...initialState().player.board,
+          minions: [
+            {
+              entityId: 1,
+              cardId: 'TB_BaconShop_Minion3',
+              attack: 2,
+              health: 2,
+              taunt: false,
+              divineShield: false,
+              poisonous: false,
+              windfury: false,
+              cleave: false,
+              golden: false,
+              elite: false,
+              cost: 3,
+              reborn: false,
+              frozen: false,
+              tribes: [],
+            },
+          ],
+        },
+        gold: 3,
+        tier: 3,
+        tierUpCost: 4,
+      },
+      opponents: [
+        {
+          entityId: 100,
+          playerId: 1,
+          hero: { entityId: 100, cardId: 'Hero_Garrosh', hp: 30, armor: 0 },
+          board: {
+            minions: [
+              {
+                entityId: 200,
+                cardId: 'TB_BaconShop_Minion6',
+                attack: 3,
+                health: 3,
+                taunt: false,
+                divineShield: false,
+                poisonous: false,
+                windfury: false,
+                cleave: false,
+                golden: false,
+                elite: false,
+                cost: 3,
+                reborn: false,
+                frozen: false,
+                tribes: [],
+              },
+            ],
+          },
+          tier: 4,
+          eliminated: true,
+        },
+        {
+          entityId: 101,
+          playerId: 2,
+          hero: { entityId: 101, cardId: 'Hero_Jaina', hp: 20, armor: 0 },
+          board: {
+            minions: [
+              {
+                entityId: 201,
+                cardId: 'TB_BaconShop_Minion7',
+                attack: 4,
+                health: 4,
+                taunt: false,
+                divineShield: false,
+                poisonous: false,
+                windfury: false,
+                cleave: false,
+                golden: false,
+                elite: false,
+                cost: 4,
+                reborn: false,
+                frozen: false,
+                tribes: [],
+              },
+            ],
+          },
+          tier: 5,
+          eliminated: true,
+        },
+      ],
+    };
+    const recs = recommend(state);
+    expect(Array.isArray(recs)).toBe(true);
+  });
+
   it('returns at least 1 recommendation with 3-minion board and 1 opponent (hill-climb runs without throwing)', () => {
     const state = {
       ...initialState(),
