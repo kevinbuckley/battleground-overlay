@@ -1,4 +1,4 @@
-import type { GameState, Recommendation } from '@overlay/shared';
+import type { GameState, Minion, OpponentState, Recommendation } from '@overlay/shared';
 import {
   enumerateBuyCandidates,
   enumerateFreezeCandidates,
@@ -11,6 +11,37 @@ import { scoreCandidate, scoreSellCandidate } from './simScorer';
 import { withBudget } from './withBudget';
 
 const TOP_N = 3;
+
+/**
+ * Build the projected minion array for an opponent.
+ *
+ * If the opponent has tracked stats (minionsOnBoard > 0), uses those
+ * to construct a projected board from the opponent's existing board
+ * minions, scaling stats by turn.  Otherwise falls back to
+ * `predictOpponentBoard` which projects from scratch.
+ */
+function buildProjectedOpponentBoard(opp: OpponentState, turn: number): Minion[] {
+  if (opp.minionsOnBoard > 0 && opp.board.minions.length > 0) {
+    const predictor = predictOpponentBoard(opp, turn);
+    if (predictor.minions.length >= opp.minionsOnBoard) {
+      return predictor.minions;
+    }
+    const result: Minion[] = [];
+    const pool = opp.board.minions;
+    for (let i = 0; i < opp.minionsOnBoard; i++) {
+      const base = pool[i % pool.length];
+      if (!base) continue;
+      const scale = Math.min(1.5, 1 + (turn - 4) * 0.1);
+      result.push({
+        ...base,
+        attack: Math.round(base.attack * scale),
+        health: Math.round(base.health * scale),
+      });
+    }
+    return result;
+  }
+  return predictOpponentBoard(opp, turn).minions;
+}
 
 /**
  * Score all shop buy candidates via simulation with a time budget.
@@ -28,7 +59,7 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
-    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+    board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
@@ -70,7 +101,7 @@ export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number)
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
-    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+    board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
@@ -120,7 +151,7 @@ export function scoreTierUpWithSim(
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
-    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+    board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
   const result = withBudget(
@@ -168,7 +199,7 @@ export function scoreFreezeWithSim(
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
-    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+    board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
   const result = withBudget(
@@ -216,7 +247,7 @@ export function scoreRerollWithSim(
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
-    board: { ...o.board, minions: predictOpponentBoard(o, turn).minions },
+    board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
   const result = withBudget(

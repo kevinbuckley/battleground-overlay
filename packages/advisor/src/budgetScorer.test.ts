@@ -465,3 +465,110 @@ describe('scoreRerollWithSim', () => {
     expect(result[0].reason).toBeTruthy();
   });
 });
+
+describe('OpponentState tracking fields in budgetScorer', () => {
+  it('uses opponent.minionsOnBoard when opponent has tracked stats', () => {
+    const shopMinions = [
+      {
+        entityId: 1,
+        cardId: 'CS3_001',
+        attack: 3,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+    ];
+
+    const state = makeState({
+      turn: 6,
+      opponents: [
+        {
+          entityId: 100,
+          playerId: 1,
+          hero: { cardId: 'Hero_Dragon', hp: 30, armor: 0 },
+          board: {
+            minions: [
+              {
+                entityId: 200,
+                cardId: 'TB_BaconBosss25_8',
+                attack: 4,
+                health: 4,
+                taunt: true,
+                divineShield: false,
+                poisonous: false,
+                reborn: false,
+                frozen: false,
+                tribes: ['Murloc'],
+              },
+            ],
+          },
+          tier: 5,
+          eliminated: false,
+          minionsOnBoard: 3,
+        },
+      ],
+      player: makePlayer({
+        shop: {
+          minions: shopMinions,
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreBuysWithSim(state, 0, 1000);
+    expect(result.length).toBeGreaterThan(0);
+    for (const rec of result) {
+      expect(rec.score).toBe(0);
+    }
+  });
+
+  it('falls back to predictOpponentBoard when opponent has default (0) minionsOnBoard', () => {
+    const shopMinions = [
+      {
+        entityId: 1,
+        cardId: 'CS3_001',
+        attack: 3,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+    ];
+
+    const state = makeState({
+      turn: 6,
+      opponents: [
+        {
+          entityId: 100,
+          playerId: 1,
+          hero: { cardId: 'Hero_Dragon', hp: 30, armor: 0 },
+          board: { minions: [] },
+          tier: 5,
+          eliminated: false,
+          minionsOnBoard: 0,
+        },
+      ],
+      player: makePlayer({
+        shop: {
+          minions: shopMinions,
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreBuysWithSim(state, 0, 1000);
+    expect(result.length).toBeGreaterThan(0);
+    for (const rec of result) {
+      expect(rec.score).toBe(0);
+    }
+  });
+});
