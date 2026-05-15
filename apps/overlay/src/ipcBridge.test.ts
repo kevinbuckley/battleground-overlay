@@ -275,4 +275,41 @@ describe('ipcBridge', () => {
     expect(forecast.maxDmg).toBe(2);
   });
 
+  it('startBridge sends overlay:hs-status when getHsStatus is provided', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+      () => null,
+      () => 'anchored',
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const hsChannels = sends.filter((s) => s.channel === 'overlay:hs-status');
+    expect(hsChannels.length).toBeGreaterThanOrEqual(1);
+    expect(hsChannels[0].args[0]).toBe('anchored');
+  });
+
+  it('startBridge does not send overlay:hs-status when getHsStatus is omitted', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const hsChannels = sends.filter((s) => s.channel === 'overlay:hs-status');
+    expect(hsChannels.length).toBe(0);
+  });
 });

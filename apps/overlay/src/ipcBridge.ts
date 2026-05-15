@@ -10,6 +10,7 @@ export function startBridge(
   getState: () => GameState,
   getRecs: () => Recommendation[] | null,
   getScoreResult: () => ScoreResult | null,
+  getHsStatus?: () => string,
 ): void {
   pollInterval = setInterval(() => {
     try {
@@ -58,6 +59,13 @@ export function startBridge(
         const state = getState();
         const forecast = computeDamageForecast(scoreResult, state.player.tier);
         win.webContents.send('overlay:damage-update', forecast);
+      }
+    } catch {
+      // swallow — renderer may not be ready yet
+    }
+    try {
+      if (getHsStatus) {
+        win.webContents.send('overlay:hs-status', getHsStatus());
       }
     } catch {
       // swallow — renderer may not be ready yet
