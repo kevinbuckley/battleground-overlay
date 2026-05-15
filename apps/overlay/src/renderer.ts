@@ -6,6 +6,7 @@ export interface OverlayBridge {
   onDamage(cb: (f: unknown) => void);
   onBoard(cb: (b: unknown) => void);
   onOpponents(cb: (o: unknown[]) => void);
+  onHsStatus(cb: (s: string) => void): void;
 }
 
 export function formatMinionLine(m: { attack: number; health: number; cardId: string }): string {
@@ -123,5 +124,10 @@ export function initRenderer(bridge: OverlayBridge): void {
       const alive = o.filter((opp) => !opp.eliminated).length;
       aliveEl.textContent = `Alive: ${alive}/${o.length}`;
     }
+  });
+
+  bridge.onHsStatus((status: string) => {
+    const el = document.getElementById('hs-status');
+    if (el) el.textContent = status;
   });
 }

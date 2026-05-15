@@ -752,9 +752,9 @@ by hand before first use.
 
 ## M66 — Renderer: HS-status display
 
-- [ ] [S] `OverlayBridge.onHsStatus` wiring in renderer — in `apps/overlay/src/renderer.ts`, (1) add `onHsStatus(cb: (s: string) => void): void` to the `OverlayBridge` interface; (2) add a call `bridge.onHsStatus((status: string) => { const el = document.getElementById('hs-status'); if (el) el.textContent = status; })` inside `initRenderer`; 3 tests: `onHsStatus` callback sets `#hs-status` text content to `'waiting'`; sets to `'anchored'`; sets to `'failed'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
+- [x] [S] `OverlayBridge.onHsStatus` wiring in renderer — in `apps/overlay/src/renderer.ts`, (1) add `onHsStatus(cb: (s: string) => void): void` to the `OverlayBridge` interface; (2) add a call `bridge.onHsStatus((status: string) => { const el = document.getElementById('hs-status'); if (el) el.textContent = status; })` inside `initRenderer`; 3 tests: `onHsStatus` callback sets `#hs-status` text content to `'waiting'`; sets to `'anchored'`; sets to `'failed'` — `apps/overlay/src/renderer.ts` + `apps/overlay/src/renderer.test.ts`
 
-- [ ] [S] `#hs-status` element in renderer.html — add `<div id="hs-status"></div>` to `apps/overlay/src/renderer.html` immediately after `<div id="advice-action"></div>`; add CSS rule `#hs-status { font-size: 11px; color: #888; margin-bottom: 4px; }` in the `<style>` block; 1 test: the file contains `id="hs-status"` — `apps/overlay/src/renderer.html` only (no new test file; add assertion to existing `apps/overlay/src/renderer.test.ts`)
+- [x] [S] `#hs-status` element in renderer.html — add `<div id="hs-status"></div>` to `apps/overlay/src/renderer.html` immediately after `<div id="advice-action"></div>`; add CSS rule `#hs-status { font-size: 11px; color: #888; margin-bottom: 4px; }` in the `<style>` block; 1 test: the file contains `id="hs-status"` — `apps/overlay/src/renderer.html` only (no new test file; add assertion to existing `apps/overlay/src/renderer.test.ts`)
 
 ## M67 — Renderer: turn/phase/gold/tier display
 
