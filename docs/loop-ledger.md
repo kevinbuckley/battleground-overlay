@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M59: formatStartupBanner helper — added `formatStartupBanner(d)` to `apps/overlay/src/doctor.ts` returning a single-line summary `"HS:✓ Config:✓ MLX:✗"`; 3 tests (all true, all false, mixed); 13/13 tests pass (commit 25cb3cb)
 
+2026-05-14 00:00  [DONE]  M61: Build pipeline — created `apps/overlay/build.mjs` using esbuild to bundle `main.ts` → `dist/main.cjs` (CJS/Electron), `preload.ts` → `dist/preload.js` (IIFE), `renderer.ts` → `dist/renderer-bundle.js` (IIFE); copies `renderer.html` to `dist/`; updated `apps/overlay/package.json` with `"main": "dist/main.cjs"` and `"dev": "node build.mjs && electron ."`; 943/943 tests pass (commit f7629ea)
+
 2026-05-14 00:00  [DONE]  M58: saveSettings creates parent dir — added `mkdirSync(dirname(filePath), { recursive: true })` before `writeFileSync` in `apps/overlay/src/settings.ts`; 2 tests (nested subpath save+load round-trip, file exists at nested location); 13/13 tests pass (commit cb6c63e)
 
 2026-05-14 00:00  [DONE]  M60: getRecsForBridge slicer — added `getRecsForBridge(allRecs, max)` pure helper to `apps/overlay/src/coordinator.ts` that returns `allRecs.slice(0, max)`; 3 tests (5 recs max=3 → length 3, 2 recs max=3 → length 2, empty → length 0); 935/935 tests pass (commit e80f81e)
