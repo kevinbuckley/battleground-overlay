@@ -66,13 +66,15 @@ you should have committed or reverted. Avoid these failure modes:
    Both must exit 0. If they were already failing before your change,
    STOP and quarantine — don't pile fixes on top.
 
-4. **COMMIT (implementation)** — stage the implementation files and
-   commit with a clear one-line message. Note the sha:
+4. **COMMIT (implementation)** — this step is MANDATORY even if LSP
+   warnings appear. LSP warnings do not block commits. Stage ALL
+   changed production + test files and commit:
    ```bash
    git add <your files>
    git commit -m "feat: <task summary>"
    IMPL_SHA=$(git rev-parse --short HEAD)
    ```
+   If you skip this step the iteration is wasted. Commit now.
 
 5. **UPDATE BOOKKEEPING** — edit then commit these two files together:
    - Tick the task `[x]` in `docs/loop-backlog.md`
