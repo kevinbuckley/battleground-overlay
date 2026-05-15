@@ -16,6 +16,7 @@ export interface Minion {
   cost: number;
   tribes: string[];
   spellPower: number;
+  exhausted: boolean;
 }
 
 export interface Board {

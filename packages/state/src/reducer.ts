@@ -18,6 +18,7 @@ import { applyDeathrattle } from './reducer/deathrattle';
 import { applyDiscover } from './reducer/discover';
 import { applyDivineShield } from './reducer/divineShield';
 import { applyElite } from './reducer/elite';
+import { applyExhausted } from './reducer/exhausted';
 import { applyFatigue } from './reducer/fatigue';
 import { applyFrozenMinion } from './reducer/frozenMinion';
 import { applyGameOver } from './reducer/gameOver';
@@ -219,6 +220,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'LIFESTEAL') {
         return applyLifesteal(state, event);
+      }
+      if (event.tag === 'EXHAUSTED') {
+        return applyExhausted(state, event);
       }
       if (event.tag === 'SPELL_POWER') {
         return applySpellPower(state, event);
