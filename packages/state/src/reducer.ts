@@ -42,6 +42,7 @@ import { applyLobbySize } from './reducer/lobbySize';
 import { applyMagnetic } from './reducer/magnetic';
 import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
+import { applyMinionsDied } from './reducer/minionsDied';
 import { applyMinionsKilled } from './reducer/minionsKilled';
 import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
 import { applyNumChoices } from './reducer/numChoices';
@@ -295,6 +296,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_MINIONS_KILLED_THIS_TURN') {
         return applyMinionsKilled(state, event);
+      }
+      if (event.tag === 'NUM_MINIONS_DIED_THIS_TURN') {
+        return applyMinionsDied(state, event);
       }
       if (event.tag === 'NUM_CARDS_DRAWN_THIS_TURN') {
         return applyCardsDrawn(state, event);
