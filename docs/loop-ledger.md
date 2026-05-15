@@ -591,4 +591,6 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 12:00  [DONE]  M73: rerollScore board-full guard — added guard to rerollScore.ts returning 0 when board has 7+ minions, 2 tests (board 7→0, board 6→non-zero); 1080/1080 tests pass (commit d45c988)
 2026-05-15 12:00  [DONE]  M79: parseTagChange space-in-entity tests — added 2 tests to parseTagChange.test.ts: entity with spaces parsed correctly, numeric entity with HAND value parses correctly; 1082/1082 tests pass (commit 2344de9)
 
+2026-05-15 13:00  [DONE]  M78: applyTurnPhase MAIN_COMBAT + FINAL_GAMEOVER — added MAIN_COMBAT: 'combat' and FINAL_GAMEOVER: 'end' to phaseMap in turnPhase.ts; 2 new tests (MAIN_COMBAT→combat, FINAL_GAMEOVER→end); 1093/1093 tests pass (commit df0c901)
+
 2026-05-15 12:45  [DONE]  M76: parseFullEntity missing cardId — modified CREATING_RE and UPDATING_RE to make CardID/cardId optional; added 2 tests (missing cardId in Creating line returns cardId='', missing cardId in Updating line returns cardId='' with name preserved); 1086/1086 tests pass (commit 39fac37)

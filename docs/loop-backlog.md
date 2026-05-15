@@ -816,7 +816,7 @@ by hand before first use.
 
 ## M78 — State: `turnPhase` shopping/combat detection
 
-- [ ] [S] `applyTurnPhase` transitions to `'combat'` on `MAIN_COMBAT` STEP — in `packages/state/src/reducer/turnPhase.ts`, confirm (or add) that `value === 'MAIN_COMBAT'` sets `state.phase = 'combat'`; add 3 tests to `packages/state/src/reducer/turnPhase.test.ts`: STEP=MAIN_COMBAT → phase `'combat'`; STEP=MAIN_READY → phase `'shopping'`; STEP=FINAL_GAMEOVER → phase `'end'` — `packages/state/src/reducer/turnPhase.ts` + `packages/state/src/reducer/turnPhase.test.ts`
+- [x] [S] `applyTurnPhase` transitions to `'combat'` on `MAIN_COMBAT` STEP — in `packages/state/src/reducer/turnPhase.ts`, confirm (or add) that `value === 'MAIN_COMBAT'` sets `state.phase = 'combat'`; add 3 tests to `packages/state/src/reducer/turnPhase.test.ts`: STEP=MAIN_COMBAT → phase `'combat'`; STEP=MAIN_READY → phase `'shopping'`; STEP=FINAL_GAMEOVER → phase `'end'` — `packages/state/src/reducer/turnPhase.ts` + `packages/state/src/reducer/turnPhase.test.ts` (commit df0c901)
 
 ## M79 — State: `shopRefresh` minion tracking
 
