@@ -15,6 +15,7 @@ import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyCombo } from './reducer/combo';
 import { applyDeathrattle } from './reducer/deathrattle';
+import { applyDeathrattlesTriggered } from './reducer/deathrattlesTriggered';
 import { applyDiscover } from './reducer/discover';
 import { applyDivineShield } from './reducer/divineShield';
 import { applyElite } from './reducer/elite';
@@ -331,6 +332,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_CHOICES') {
         return applyNumChoices(state, event);
+      }
+      if (event.tag === 'NUM_DEATHRATTLES_TRIGGERED_THIS_TURN') {
+        return applyDeathrattlesTriggered(state, event);
       }
       return applyTripleBonus(state, event);
 
