@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 00:00  [DONE]  M69: logTurnSnapshot helper — add exported `logTurnSnapshot(state, logFn)` to `apps/overlay/src/coordinator.ts` that logs `state-snapshot` with turn/phase/gold/tier/boardSize/shopSize; 2 tests (kind is 'state-snapshot', payload contains boardSize); 1075/1075 tests pass (commit 0324050)
+
 2026-05-15 00:00  [DONE]  M64: OpponentState serialization — update `serializeGameState`/`deserializeGameState` in `packages/state/src/serialize.ts` to serialize/deserialize all 22 OpponentState fields (turnsPlayed, revives, turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn); 3 tests (round-trip with 2 opponents having non-default values, backward-compat with old format missing fields, full 22-field round-trip); 1066/1066 tests pass (commit 06980c1)
 
 2026-05-15 00:00  [DONE]  M64: OpponentState field parity — add 18 missing tracking fields to OpponentState interface (turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numGameTurns, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn), create `initialOpponentState()` helper, 22 tests; 1063/1063 tests pass (commit 7be7db6)
