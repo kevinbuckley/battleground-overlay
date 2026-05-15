@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-14 00:00  [DONE]  M58: saveSettings creates parent dir — added `mkdirSync(dirname(filePath), { recursive: true })` before `writeFileSync` in `apps/overlay/src/settings.ts`; 2 tests (nested subpath save+load round-trip, file exists at nested location); 13/13 tests pass (commit cb6c63e)
+
 2026-05-14 00:00  [DONE]  M56: checkMlxServer health probe — created `packages/llm/src/healthCheck.ts` exporting `async function checkMlxServer(fetchFn, url)` that probes `http://localhost:8080/v1/models`; returns `{ok:true}` on 200, `{ok:false, error}` on non-200/throw; 3 tests + export from index + index.test export test; 914/914 tests pass (commit 919344a)
 
 2026-05-14 00:00  [DONE]  M56: getHsLogConfigPath helper — added `getHsLogConfigPath(homedir)` to `apps/overlay/src/hsLogConfig.ts` returning `path.join(homedir, 'Library/Preferences/Blizzard/Hearthstone/log.config')`; 2 tests (ends with log.config, custom homedir prefix); 910/910 tests pass (commit c035d50)
