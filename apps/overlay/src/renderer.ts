@@ -24,7 +24,7 @@ export function getActionText(rec: Recommendation): string {
   const action = rec.action;
   switch (action.type) {
     case 'Buy':
-      return `Buy ${action.cardId}`;
+      return `Buy ${action.cardName ?? action.cardId}`;
     case 'Sell':
       return `Sell #${action.boardIndex}`;
     case 'Freeze':

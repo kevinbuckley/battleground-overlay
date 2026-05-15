@@ -17,6 +17,19 @@ describe('getActionText', () => {
     expect(getActionText(rec)).toBe('Buy TB_GolgBos_04');
   });
 
+  it('returns "Buy <cardName>" when BuyAction has a cardName', () => {
+    const rec = makeBuyRec('TB_001');
+    rec.action.cardName = 'Alleycat';
+
+    expect(getActionText(rec)).toBe('Buy Alleycat');
+  });
+
+  it('falls back to cardId when BuyAction has no cardName', () => {
+    const rec = makeBuyRec('TB_001');
+
+    expect(getActionText(rec)).toBe('Buy TB_001');
+  });
+
   it('returns "Sell #<index>" for SellAction', () => {
     const rec = makeBuyRec('') as Recommendation & { action: { type: 'Sell'; boardIndex: number } };
     (rec.action as { type: 'Sell'; boardIndex: number }).type = 'Sell';

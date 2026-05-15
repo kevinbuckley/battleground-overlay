@@ -603,3 +603,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 00:00  [DONE]  M80: entityRegistry accessible after start-game block — added reducer regression test preserving a pre-populated registry across TB_BaconShop_StartGame; 1099/1099 tests pass (commit 1458892)
 
 2026-05-15 00:00  [DONE]  M115: ipcBridge enriches recs with card name — added card-name enrichment helpers for Buy recs and board minions; 1102/1102 tests pass
+
+2026-05-15 00:00  [DONE]  M115: getActionText uses cardName when available — renderer Buy labels prefer action.cardName with cardId fallback; 1104/1104 tests pass
