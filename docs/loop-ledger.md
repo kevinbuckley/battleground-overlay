@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M58: saveSettings creates parent dir — added `mkdirSync(dirname(filePath), { recursive: true })` before `writeFileSync` in `apps/overlay/src/settings.ts`; 2 tests (nested subpath save+load round-trip, file exists at nested location); 13/13 tests pass (commit cb6c63e)
 
+2026-05-14 00:00  [DONE]  M60: getRecsForBridge slicer — added `getRecsForBridge(allRecs, max)` pure helper to `apps/overlay/src/coordinator.ts` that returns `allRecs.slice(0, max)`; 3 tests (5 recs max=3 → length 3, 2 recs max=3 → length 2, empty → length 0); 935/935 tests pass (commit e80f81e)
+
 2026-05-14 00:00  [DONE]  M59: mergeSettings helper — added `mergeSettings(base, patch)` to `apps/overlay/src/settings.ts` that returns a new `OverlaySettings` with shallow override (hotkeys merged field-by-field); 3 tests (empty patch → deep-equals base, partial opacity → opacity 0.5 others unchanged, partial hotkeys → toggle 'F1' with reload/hide unchanged); 16/16 tests pass (commit f17e64b)
 
 2026-05-14 00:00  [DONE]  M58: Overlay state defaults — added `setCurrentSettings(s: OverlaySettings)` and `getCurrentSettings(): OverlaySettings | null` to `apps/overlay/src/overlayState.ts` with module-level state; 3 tests (initial null, setter then getter returns same object, setter twice returns second); 9/9 tests pass (commit eb544eb)
