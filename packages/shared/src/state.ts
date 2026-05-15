@@ -18,6 +18,7 @@ export interface Minion {
   spellPower: number;
   exhausted: boolean;
   magnetic: boolean;
+  immune: boolean;
 }
 
 export interface Board {

@@ -34,6 +34,7 @@ import { applyHeroIdentify } from './reducer/heroIdentify';
 import { applyHeroPower } from './reducer/heroPower';
 import { applyHeroPowerCardId } from './reducer/heroPowerCardId';
 import { applyHeroPowerCost } from './reducer/heroPowerCost';
+import { applyImmune } from './reducer/immune';
 import { applyLifesteal } from './reducer/lifesteal';
 import { applyLobbySize } from './reducer/lobbySize';
 import { applyMagnetic } from './reducer/magnetic';
@@ -227,6 +228,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'MAGNETIC') {
         return applyMagnetic(state, event);
+      }
+      if (event.tag === 'IMMUNE') {
+        return applyImmune(state, event);
       }
       if (event.tag === 'SPELL_POWER') {
         return applySpellPower(state, event);
