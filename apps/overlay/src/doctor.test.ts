@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { formatDoctorReport, runDoctor } from './doctor';
+import { formatDoctorReport, formatStartupBanner, runDoctor } from './doctor';
 
 describe('runDoctor', () => {
   it('returns all-true when all deps succeed', async () => {
@@ -76,6 +76,36 @@ describe('runDoctor', () => {
       });
       const report = formatDoctorReport(result);
       expect(report).toContain('Missing: Zone, Bob');
+    });
+  });
+
+  describe('formatStartupBanner', () => {
+    it('all true returns all checkmarks', () => {
+      const result = formatStartupBanner({
+        hsRunning: true,
+        configOk: true,
+        mlxOk: true,
+      });
+      expect(result).toBe('HS:✓ Config:✓ MLX:✓');
+    });
+
+    it('all false returns all crosses', () => {
+      const result = formatStartupBanner({
+        hsRunning: false,
+        configOk: false,
+        mlxOk: false,
+      });
+      expect(result).toBe('HS:✗ Config:✗ MLX:✗');
+    });
+
+    it('mixed contains both checkmark and cross', () => {
+      const result = formatStartupBanner({
+        hsRunning: true,
+        configOk: false,
+        mlxOk: true,
+      });
+      expect(result).toContain('✓');
+      expect(result).toContain('✗');
     });
   });
 });

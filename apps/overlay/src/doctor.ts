@@ -28,6 +28,19 @@ export async function runDoctor(deps: {
   };
 }
 
+export function formatStartupBanner(d: {
+  hsRunning: boolean;
+  configOk: boolean;
+  mlxOk: boolean;
+}): string {
+  const parts = [
+    `HS:${d.hsRunning ? '✓' : '✗'}`,
+    `Config:${d.configOk ? '✓' : '✗'}`,
+    `MLX:${d.mlxOk ? '✓' : '✗'}`,
+  ];
+  return parts.join(' ');
+}
+
 export function formatDoctorReport(r: DoctorResult): string {
   const lines: string[] = [];
   lines.push(`${r.hsRunning ? '✓' : '✗'} Hearthstone running: ${r.hsRunning}`);
