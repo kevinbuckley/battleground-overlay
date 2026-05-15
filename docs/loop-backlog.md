@@ -798,7 +798,7 @@ by hand before first use.
 
 ## M75 — Log parser: multi-value TAG_CHANGE values with spaces
 
-- [ ] [S] `parseTagChange` handles values containing spaces — the current regex `value=(\S+)` rejects values like `TAG_CHANGE Entity=GameEntity tag=STEP value=MAIN_READY` only if STEP has spaces, but values like `MAIN_READY` don't; however entity names CAN contain spaces (e.g. `Entity=Zeddy` vs `Entity=Some Player Name`). Add 2 tests to `packages/log-parser/src/parseTagChange.test.ts`: line `'TAG_CHANGE Entity=Some Player tag=ZONE value=PLAY'` — entity is `'Some Player'`; line `'TAG_CHANGE Entity=1 tag=ZONE value=HAND'` parses correctly — `packages/log-parser/src/parseTagChange.test.ts` only (no production change if tests already pass; add to lock behavior)
+- [x] [S] `parseTagChange` handles values containing spaces — the current regex `value=(\S+)` rejects values like `TAG_CHANGE Entity=GameEntity tag=STEP value=MAIN_READY` only if STEP has spaces, but values like `MAIN_READY` don't; however entity names CAN contain spaces (e.g. `Entity=Zeddy` vs `Entity=Some Player Name`). Add 2 tests to `packages/log-parser/src/parseTagChange.test.ts`: line `'TAG_CHANGE Entity=Some Player tag=ZONE value=PLAY'` — entity is `'Some Player'`; line `'TAG_CHANGE Entity=1 tag=ZONE value=HAND'` parses correctly — `packages/log-parser/src/parseTagChange.test.ts` only (no production change if tests already pass; add to lock behavior) (commit 2344de9)
 
 - [ ] [S] `parseTagChange` returns null on malformed lines — add 3 tests: empty string → `null`; line without `tag=` → `null`; partial line `'TAG_CHANGE Entity=foo'` → `null` — `packages/log-parser/src/parseTagChange.test.ts` only
 

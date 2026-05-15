@@ -579,3 +579,4 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 12:00  [DONE]  M72: sellScore golden-minion protection — early-return 0 for golden minions, 2 new tests (golden returns 0, non-golden returns > 0); 1078/1078 tests pass (commit 844057f)
 
 2026-05-15 12:00  [DONE]  M73: rerollScore board-full guard — added guard to rerollScore.ts returning 0 when board has 7+ minions, 2 tests (board 7→0, board 6→non-zero); 1080/1080 tests pass (commit d45c988)
+2026-05-15 12:00  [DONE]  M79: parseTagChange space-in-entity tests — added 2 tests to parseTagChange.test.ts: entity with spaces parsed correctly, numeric entity with HAND value parses correctly; 1082/1082 tests pass (commit 2344de9)
