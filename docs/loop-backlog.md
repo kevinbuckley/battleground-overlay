@@ -866,7 +866,7 @@ by hand before first use.
 
 ## M80 — State: `entityRegistry` population
 
-- [ ] [S] `entityRegistry` populated by `applyMinionPlaced` — in `packages/state/src/reducer/minionPlaced.ts`, confirm the function adds to `player.entityRegistry` when a minion is placed; add 3 tests to `packages/state/src/reducer/minionPlaced.test.ts`: placing a FULL_ENTITY with id=10 → `entityRegistry.get(10)` is defined; placing with cardId='BOT_445' → `entityRegistry.get(id).cardId === 'BOT_445'`; placing twice with same id updates registry — `packages/state/src/reducer/minionPlaced.ts` + `packages/state/src/reducer/minionPlaced.test.ts`
+- [x] [S] `entityRegistry` populated by `applyMinionPlaced` — in `packages/state/src/reducer/minionPlaced.ts`, confirm the function adds to `player.entityRegistry` when a minion is placed; add 3 tests to `packages/state/src/reducer/minionPlaced.test.ts`: placing a FULL_ENTITY with id=10 → `entityRegistry.get(10)` is defined; placing with cardId='BOT_445' → `entityRegistry.get(id).cardId === 'BOT_445'`; placing twice with same id updates registry — `packages/state/src/reducer/minionPlaced.ts` + `packages/state/src/reducer/minionPlaced.test.ts`
 
 - [ ] [S] `entityRegistry` cleared on new game — add 1 test: when `BLOCK_START effectCardId='TB_BaconShop_StartGame'` triggers (sets `turn=1, phase='shopping'`), the entity registry should remain accessible (not crash); calling `reducer` on a state with a pre-populated `entityRegistry` and then the start-game block → state is returned without throwing — `packages/state/src/reducer.test.ts` only
 

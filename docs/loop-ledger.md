@@ -597,3 +597,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 2026-05-15 12:45  [DONE]  M76: parseFullEntity missing cardId — modified CREATING_RE and UPDATING_RE to make CardID/cardId optional; added 2 tests (missing cardId in Creating line returns cardId='', missing cardId in Updating line returns cardId='' with name preserved); 1086/1086 tests pass (commit 39fac37)
 
+
+2026-05-15 00:00  [DONE]  M80: entityRegistry populated by applyMinionPlaced — added 3 tests covering FULL_ENTITY registry insertion, cardId preservation, and same-id updates; 1098/1098 tests pass (commit 0f3bd37)

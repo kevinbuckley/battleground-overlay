@@ -88,4 +88,26 @@ describe('minionPlaced', () => {
 
     expect(next.player.board.minions.length).toBe(0);
   });
+
+  it('stores FULL_ENTITY details in the player entity registry', () => {
+    const state = initialState();
+    const next = applyMinionPlaced(state, makeFullEntity(10, 'BOT_445'));
+
+    expect(next.player.entityRegistry.get(10)).toBeDefined();
+  });
+
+  it('preserves the FULL_ENTITY cardId in the player entity registry', () => {
+    const state = initialState();
+    const next = applyMinionPlaced(state, makeFullEntity(11, 'BOT_445'));
+
+    expect(next.player.entityRegistry.get(11)?.cardId).toBe('BOT_445');
+  });
+
+  it('updates existing entity registry entries when the same id is placed twice', () => {
+    const state = initialState();
+    const first = applyMinionPlaced(state, makeFullEntity(12, 'BOT_445'));
+    const second = applyMinionPlaced(first, makeFullEntity(12, 'TB_BGSMinion_7'));
+
+    expect(second.player.entityRegistry.get(12)?.cardId).toBe('TB_BGSMinion_7');
+  });
 });
