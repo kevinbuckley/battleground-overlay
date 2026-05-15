@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M60: applyBountyCards + applyVictories — handle `TAG_CHANGE tag=NUM_BOUNTY_CARDS` and `TAG_CHANGE tag=NUM_VICTORIES` on player controller, set `state.player.bountyCards` and `state.player.victories`, 8 tests, wired into reducer; 977/977 tests pass (commit 61e4e64)
 
+2026-05-14 00:00  [DONE]  M60: applyGameType handler — handles `TAG_CHANGE tag=GAME_TYPE` on player controller, sets `state.player.gameType: string | null` (add field to PlayerState), 4 tests (sets gameType, null on "0", no-op on opponent, no-op on non-GAME_TYPE tag), wired into reducer; 981/981 tests pass (commit 5b67f8a)
+
 2026-05-14 00:00  [DONE]  M60: applyCombo handler — handles `TAG_CHANGE tag=COMBO` on player controller, sets `state.player.combo: number` (add field to PlayerState), 4 tests (initial=0, updates on COMBO tag, no-op on opponent, no-op on non-player entity), wired into reducer; 957/957 tests pass (commit 94aab43)
 
 2026-05-14 00:00  [DONE]  M60: applyPlayerTurnsPlayed — handles `TAG_CHANGE tag=NUM_TURNS_PLAYED` on player controller, sets `state.player.turnsPlayed: number` (add field to PlayerState), 4 tests (initial=0, increments per turn, no-op on opponent, reflected in state); 965/965 tests pass (commit c8f3537)
