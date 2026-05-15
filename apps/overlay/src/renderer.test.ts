@@ -65,6 +65,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -104,6 +105,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -137,6 +139,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -174,6 +177,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; classList: Set<string> }>();
@@ -216,6 +220,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -248,6 +253,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -275,6 +281,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -307,6 +314,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -339,6 +347,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -371,6 +380,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -403,6 +413,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -430,6 +441,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -464,6 +476,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -502,6 +515,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; innerHTML: string }>();
@@ -540,6 +554,7 @@ describe('initRenderer', () => {
       },
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string; innerHTML: string }>();
@@ -572,6 +587,7 @@ describe('initRenderer', () => {
         opponentsCallback = cb;
       },
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -604,6 +620,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -630,6 +647,7 @@ describe('initRenderer', () => {
         opponentsCallback = cb;
       },
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -662,6 +680,7 @@ describe('initRenderer', () => {
         opponentsCallback = cb;
       },
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -701,6 +720,7 @@ describe('initRenderer', () => {
         opponentsCallback = cb;
       },
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -734,6 +754,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<
@@ -778,6 +799,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<
@@ -826,6 +848,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<
@@ -864,6 +887,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();
@@ -901,6 +925,7 @@ describe('initRenderer', () => {
       onBoard: () => {},
       onOpponents: () => {},
       onHsStatus: () => {},
+      onState: () => {},
     };
 
     const mockElements = new Map<string, { textContent: string }>();

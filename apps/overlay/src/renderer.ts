@@ -7,6 +7,7 @@ export interface OverlayBridge {
   onBoard(cb: (b: unknown) => void);
   onOpponents(cb: (o: unknown[]) => void);
   onHsStatus(cb: (s: string) => void): void;
+  onState(cb: (s: unknown) => void): void;
 }
 
 export function formatMinionLine(m: { attack: number; health: number; cardId: string }): string {
@@ -129,5 +130,12 @@ export function initRenderer(bridge: OverlayBridge): void {
   bridge.onHsStatus((status: string) => {
     const el = document.getElementById('hs-status');
     if (el) el.textContent = status;
+  });
+
+  bridge.onState((raw: unknown) => {
+    const el = document.getElementById('game-info');
+    if (!el) return;
+    const s = raw as { turn: number; phase: string; player: { gold: number; tier: number } };
+    el.textContent = `T${s.turn} ${s.phase} | Gold:${s.player.gold} Tier:${s.player.tier}`;
   });
 }

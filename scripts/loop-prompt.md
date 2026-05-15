@@ -47,7 +47,12 @@ you should have committed or reverted. Avoid these failure modes:
       - "Add function Y to file Z" → grep Z for Y. If already wired, mark `[x]`.
       - Otherwise proceed.
 
-   d. Emit on its own line: `CHOSEN TASK: <copy the backlog line verbatim>`
+   d. **VERIFY your pick**: run `grep -F "<first 40 chars of your task title>" docs/loop-backlog.md`.
+      If it returns NO match, you have invented a task that doesn't exist — STOP and pick again.
+      Only proceed once grep confirms the task is in the file as `- [ ]`.
+
+   e. Emit on its own line: `CHOSEN TASK: <copy the backlog line verbatim>`
+      The ledger (below) lists COMPLETED tasks — never re-pick from it.
 
 2. **IMPLEMENT** — create/edit only the files the task names. Write
    the tests the task requires. Keep the change small. If it grows
