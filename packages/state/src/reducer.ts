@@ -53,6 +53,7 @@ import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
 import { applyShopSize } from './reducer/shopSize';
 import { applySilence } from './reducer/silence';
+import { applySpellPower } from './reducer/spellPower';
 import { applyTaunt } from './reducer/taunt';
 import { applyTierUp } from './reducer/tierUp';
 import { applyTrinket } from './reducer/trinket';
@@ -213,6 +214,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'LIFESTEAL') {
         return applyLifesteal(state, event);
+      }
+      if (event.tag === 'SPELL_POWER') {
+        return applySpellPower(state, event);
       }
       if (event.tag === 'WINDFURY') {
         return applyWindfury(state, event);

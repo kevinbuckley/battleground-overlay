@@ -15,6 +15,7 @@ export interface Minion {
   lifesteal: boolean;
   cost: number;
   tribes: string[];
+  spellPower: number;
 }
 
 export interface Board {
