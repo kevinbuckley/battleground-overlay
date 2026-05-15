@@ -12,6 +12,7 @@ import { applyCardsInDeck } from './reducer/cardsInDeck';
 import { applyCardsPlayed } from './reducer/cardsPlayed';
 import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
+import { applyCombo } from './reducer/combo';
 import { applyDeathrattle } from './reducer/deathrattle';
 import { applyDiscover } from './reducer/discover';
 import { applyDivineShield } from './reducer/divineShield';
@@ -266,6 +267,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_MINIONS_IN_BOB_DECK') {
         return applyShopSize(state, event);
+      }
+      if (event.tag === 'COMBO') {
+        return applyCombo(state, event);
       }
       return applyTripleBonus(state, event);
 

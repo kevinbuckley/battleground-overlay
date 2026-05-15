@@ -61,6 +61,7 @@ export interface PlayerState {
   goldSpentThisTurn: number;
   shopSize: number;
   discoveredCardId: string | null;
+  combo: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 
