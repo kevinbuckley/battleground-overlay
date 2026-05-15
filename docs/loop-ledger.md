@@ -358,7 +358,7 @@ status. One line per task. Most-recent at the top.
 
 2026-05-14 00:00  [DONE]  M57: Bridge sends top-3 recs only — modified `startBridge` in `apps/overlay/src/ipcBridge.ts` to slice recs to `.slice(0, 3)` before sending on `'overlay:recs-update'`; 2 tests (1 rec → length 1, 5 recs → length 3); 924/924 tests pass (commit f113e40)
 
-2026-05-14 00:00  [DONE]  M59: Doctor script entrypoint — created `scripts/doctor.ts` that imports `runDoctor` + `formatDoctorReport`, instantiates real deps (`isHearthstoneRunning`, `verifyHsLoggingConfig(getHsLogConfigPath())`, `checkMlxServer()`), awaits result, and console.log's formatted report; 1 test (module imports cleanly); 936/936 tests pass (commit a615ece)
+2026-05-14 00:00  [DONE]  M59: findHsLogDirCandidates lister — added `findHsLogDirCandidates(baseDir)` to `packages/log-parser/src/findActiveLogDir.ts` that returns all `Hearthstone_*` subdirectory names under baseDir, refactored `findActiveLogDir` to use it; 3 new tests (empty dir, filtered dirs, nonexistent dir); 940/940 tests pass (commit 6ce94a7)
 
 ---
 
