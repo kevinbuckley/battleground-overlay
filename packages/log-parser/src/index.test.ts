@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import { parseLine } from './index';
+import { findHsLogDirCandidates, parseLine } from './index';
 
 describe('parseLine', () => {
   it('returns null for empty string', () => {
@@ -26,5 +26,9 @@ describe('parseLine', () => {
       entity: '5',
       cardId: 'CS2_168',
     });
+  });
+
+  it('exports findHsLogDirCandidates as a function', () => {
+    expect(typeof findHsLogDirCandidates).toBe('function');
   });
 });

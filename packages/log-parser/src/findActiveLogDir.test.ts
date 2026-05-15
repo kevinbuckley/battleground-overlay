@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { findActiveLogDir } from './findActiveLogDir';
+import { findActiveLogDir, findHsLogDirCandidates } from './findActiveLogDir';
 
 describe('findActiveLogDir', () => {
   it('returns the lexicographically latest Hearthstone_ directory', () => {
@@ -33,5 +33,34 @@ describe('findActiveLogDir', () => {
     const base = mkdtempSync(join(tmpdir(), 'hs-logs-empty-'));
     expect(() => findActiveLogDir(base)).toThrow();
     rmSync(base, { recursive: true });
+  });
+
+  describe('findHsLogDirCandidates', () => {
+    it('returns [] for an empty directory', () => {
+      const base = mkdtempSync(join(tmpdir(), 'hs-candidates-empty-'));
+      const result = findHsLogDirCandidates(base);
+      expect(result).toEqual([]);
+      rmSync(base, { recursive: true });
+    });
+
+    it('returns only Hearthstone_* subdirectory names', () => {
+      const base = mkdtempSync(join(tmpdir(), 'hs-candidates-filter-'));
+      mkdirSync(join(base, 'Hearthstone_A'));
+      mkdirSync(join(base, 'OtherApp_B'));
+      mkdirSync(join(base, 'Hearthstone_B'));
+
+      const result = findHsLogDirCandidates(base);
+      expect(result).toContain('Hearthstone_A');
+      expect(result).toContain('Hearthstone_B');
+      expect(result).not.toContain('OtherApp_B');
+      expect(result).toHaveLength(2);
+
+      rmSync(base, { recursive: true });
+    });
+
+    it('returns [] for a nonexistent directory', () => {
+      const result = findHsLogDirCandidates('/tmp/definitely-not-a-real-dir-xyz123');
+      expect(result).toEqual([]);
+    });
   });
 });
