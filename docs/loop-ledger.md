@@ -392,7 +392,7 @@
 
 ---
 
-2026-05-15 00:00  [DONE]  M61: applyImmune handler — handles `TAG_CHANGE tag=IMMUNE value=1/0` on entities in PLAY zone, sets `minion.immune: boolean` (add field to Minion in `packages/shared/src/state.ts`), 5 tests (set on player/opponent minion, clear on value=0, no-op on hero, no-op on non-play entity), wired into reducer; 996/996 tests pass (commit 84dc681)
+2026-05-15 00:00  [DONE]  M62: applyNumMinionsTraded handler — handles `TAG_CHANGE tag=NUM_MINIONS_TRADED_THIS_TURN` on player controller, sets `state.player.minionsTradedThisTurn: number` (add field to PlayerState), 4 tests (initial=0, increments on combat trades, no-op on opponent, reflected in state), wired into reducer; 1012/1012 tests pass (commit aa7b9b0)
 
 ---
 
