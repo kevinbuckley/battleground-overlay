@@ -71,6 +71,8 @@
 ---
 2026-05-14 00:00  [DONE]  M62: Preload wiring — added `preload: resolve(__dirname, 'preload.js')` to `webPreferences` in `getWindowOptions()` in `apps/overlay/src/createOverlayWindow.ts`; 943/943 tests pass (commit 8d71091)
 
+2026-05-14 00:00  [DONE]  M63: Wire bootstrapOverlay into main.ts — replaced `await wireLogStream(() => {})` with `await bootstrapOverlay(win)` in `createWindow()`, importing `bootstrapOverlay` from `./bootstrap`; added 2 tests to `main.test.ts` verifying the import exists and the function is callable; 945/945 tests pass (commit 5df1897)
+
 ---
 
 status. One line per task. Most-recent at the top.
