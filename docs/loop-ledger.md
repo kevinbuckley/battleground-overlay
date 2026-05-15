@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 00:00  [DONE]  M63: applyTotalCardsPlayed — handles `TAG_CHANGE tag=NUM_CARDS_PLAYED` on player controller, sets `state.player.totalCardsPlayed: number` (add field to PlayerState), 4 tests (initial=0, increments on card play, no-op on opponent, reflected in state), wired into reducer; 1032/1032 tests pass (commit b91498f)
+
 2026-05-15 00:00  [DONE]  M63: applyGameTurn — handles `TAG_CHANGE tag=GAME_TURN` on player controller, sets `state.player.gameTurn: number` (add field to PlayerState), 4 tests (initial=1, updates each game turn, no-op on opponent, reflected in state), wired into reducer; 1020/1020 tests pass (commit bf5732c)
 
 2026-05-15 00:00  [DONE]  M62: applyNumGameTurns — handles `TAG_CHANGE tag=NUM_GAME_TURNS` on player controller, sets `state.player.numGameTurns: number` (add field to PlayerState), 4 tests (initial=0, increments each game turn, no-op on opponent, reflected in state), wired into reducer; 1008/1008 tests pass (commit 9a07276)
