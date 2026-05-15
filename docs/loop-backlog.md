@@ -710,7 +710,7 @@ by hand before first use.
 
 - [x] [S] `applyNumGameTurns` — handles `TAG_CHANGE tag=NUM_GAME_TURNS` on player controller → sets `state.player.numGameTurns: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`); wire into reducer; 4 tests (initial=0, increments each game turn, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numGameTurns.ts` + test (commit 9a07276)
 - [x] [S] `applyNumMinionsTraded` — handles `TAG_CHANGE tag=NUM_MINIONS_TRADED_THIS_TURN` on player controller → sets `state.player.minionsTradedThisTurn: number` (add field to PlayerState); wire into reducer; 4 tests (initial=0, increments on combat trades, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numMinionsTraded.ts` + test (commit aa7b9b0)
-- [ ] [S] `applyNumChoices` — handles `TAG_CHANGE tag=NUM_CHOICES` on player controller → sets `state.player.numChoices: number` (add field to PlayerState); wire into reducer; 4 tests (initial=0, updates on discover, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numChoices.ts` + test
+- [x] [S] `applyNumChoices` — handles `TAG_CHANGE tag=NUM_CHOICES` on player controller → sets `state.player.numChoices: number` (add field to PlayerState); wire into reducer; 4 tests (initial=0, updates on discover, no-op on opponent, reflected in state) — `packages/shared/src/state.ts` + `packages/state/src/initialState.ts` + `packages/state/src/reducer/numChoices.ts` + test (commit a8159e9)
 
 ## Quarantined
 

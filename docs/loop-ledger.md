@@ -400,6 +400,8 @@
 
 2026-05-15 00:00  [DONE]  M61: applyOpponentRevives — handles `TAG_CHANGE tag=NUM_REVIVES` on opponent controllers, sets `state.opponents[i].revives: number` (add field to OpponentState), 4 tests (initial=0, increments on opponent revive, no-op on player, reflected in state), wired into reducer; 1004/1004 tests pass (commit abac9f0)
 
+2026-05-15 00:00  [DONE]  M62: applyNumChoices handler — handles `TAG_CHANGE tag=NUM_CHOICES` on player controller, sets `state.player.numChoices: number` (add field to PlayerState), 4 tests (initial=0, updates on discover, no-op on opponent, reflected in state), wired into reducer; 1016/1016 tests pass (commit a8159e9)
+
 ---
 
 Format:
