@@ -394,6 +394,10 @@
 
 ---
 
+2026-05-15 00:00  [DONE]  M61: applyTurnTimer — handles `TAG_CHANGE tag=TIMEOUT` on player controller, sets `state.player.turnTimer: number` (add field to PlayerState in `packages/shared/src/state.ts` and `initialState`), 4 tests (initial=15, updates on turn start, no-op on opponent, reflects remaining time), wired into reducer; 1000/1000 tests pass (commit 6e305c9)
+
+---
+
 Format:
 ```
 YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
