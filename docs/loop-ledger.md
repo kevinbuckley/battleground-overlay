@@ -2,6 +2,8 @@
 
 2026-05-14 00:00  [DONE]  M60: applyCombo handler — handles `TAG_CHANGE tag=COMBO` on player controller, sets `state.player.combo: number` (add field to PlayerState), 4 tests (initial=0, updates on COMBO tag, no-op on opponent, no-op on non-player entity), wired into reducer; 957/957 tests pass (commit 94aab43)
 
+2026-05-14 00:00  [DONE]  M60: applyPlayerTurnsPlayed — handles `TAG_CHANGE tag=NUM_TURNS_PLAYED` on player controller, sets `state.player.turnsPlayed: number` (add field to PlayerState), 4 tests (initial=0, increments per turn, no-op on opponent, reflected in state); 965/965 tests pass (commit c8f3537)
+
 2026-05-14 00:00  [DONE]  M59: formatStartupBanner helper — added `formatStartupBanner(d)` to `apps/overlay/src/doctor.ts` returning a single-line summary `"HS:✓ Config:✓ MLX:✗"`; 3 tests (all true, all false, mixed); 13/13 tests pass (commit 25cb3cb)
 
 2026-05-14 00:00  [DONE]  M61: Build pipeline — created `apps/overlay/build.mjs` using esbuild to bundle `main.ts` → `dist/main.cjs` (CJS/Electron), `preload.ts` → `dist/preload.js` (IIFE), `renderer.ts` → `dist/renderer-bundle.js` (IIFE); copies `renderer.html` to `dist/`; updated `apps/overlay/package.json` with `"main": "dist/main.cjs"` and `"dev": "node build.mjs && electron ."`; 943/943 tests pass (commit f7629ea)
