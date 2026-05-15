@@ -257,6 +257,117 @@ describe('ipcBridge', () => {
     );
   });
 
+  it('startBridge pushes overlay:shop-update with current shop minions', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    state.player.shop.minions = [
+      {
+        entityId: 21,
+        cardId: 'SHOP_1',
+        attack: 1,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        elite: false,
+        lifesteal: false,
+        cost: 3,
+        tribes: [],
+        spellPower: 0,
+        exhausted: false,
+        magnetic: false,
+        immune: false,
+        charge: false,
+      },
+      {
+        entityId: 22,
+        cardId: 'SHOP_2',
+        attack: 3,
+        health: 4,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        elite: false,
+        lifesteal: false,
+        cost: 3,
+        tribes: [],
+        spellPower: 0,
+        exhausted: false,
+        magnetic: false,
+        immune: false,
+        charge: false,
+      },
+      {
+        entityId: 23,
+        cardId: 'SHOP_3',
+        attack: 5,
+        health: 6,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        elite: false,
+        lifesteal: false,
+        cost: 3,
+        tribes: [],
+        spellPower: 0,
+        exhausted: false,
+        magnetic: false,
+        immune: false,
+        charge: false,
+      },
+    ];
+
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const shopChannels = sends.filter((s) => s.channel === 'overlay:shop-update');
+    expect(shopChannels.length).toBeGreaterThanOrEqual(1);
+    expect(shopChannels[0].args[0]).toHaveLength(3);
+  });
+
+  it('startBridge pushes overlay:shop-update with [] for an empty shop', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const shopChannels = sends.filter((s) => s.channel === 'overlay:shop-update');
+    expect(shopChannels.length).toBeGreaterThanOrEqual(1);
+    expect(shopChannels[0].args[0]).toEqual([]);
+  });
+
   it('startBridge pushes overlay:opponents-update with opponent shape', async () => {
     const mockWin = makeMockWin();
     const state = makeMockState();

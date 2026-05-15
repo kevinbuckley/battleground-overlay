@@ -64,6 +64,18 @@ export function startBridge(
       }
       try {
         win.webContents.send(
+          'overlay:shop-update',
+          state.player.shop.minions.map((m) => ({
+            cardId: m.cardId,
+            attack: m.attack,
+            health: m.health,
+          })),
+        );
+      } catch {
+        // swallow
+      }
+      try {
+        win.webContents.send(
           'overlay:opponents-update',
           state.opponents.map((o) => ({
             entityId: o.entityId,

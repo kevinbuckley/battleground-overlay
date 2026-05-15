@@ -737,7 +737,7 @@ by hand before first use.
 
 ## M116 — End-to-end: shop display in overlay
 
-- [ ] [S] `ipcBridge` sends shop update — in `apps/overlay/src/ipcBridge.ts`, inside the poll interval, add `win.webContents.send('overlay:shop-update', state.player.shop.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health })))` after the board-update send; 2 tests: state with 3 shop minions → `overlay:shop-update` sent with array length 3; empty shop → sent with `[]` — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
+- [x] [S] `ipcBridge` sends shop update — in `apps/overlay/src/ipcBridge.ts`, inside the poll interval, add `win.webContents.send('overlay:shop-update', state.player.shop.minions.map(m => ({ cardId: m.cardId, attack: m.attack, health: m.health })))` after the board-update send; 2 tests: state with 3 shop minions → `overlay:shop-update` sent with array length 3; empty shop → sent with `[]` — `apps/overlay/src/ipcBridge.ts` + `apps/overlay/src/ipcBridge.test.ts`
 
 - [ ] [S] Preload wires `onShop` — in `apps/overlay/src/preload.ts`, add `onShop(cb: (s: unknown[]) => void): void` that registers `ipc.on('overlay:shop-update', (_e, shop) => cb(shop))`; 1 test in `apps/overlay/src/preload.test.ts`: emitting `'overlay:shop-update'` with a 3-element array → callback receives array of length 3 — `apps/overlay/src/preload.ts` + `apps/overlay/src/preload.test.ts`
 
