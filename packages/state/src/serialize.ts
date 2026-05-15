@@ -190,6 +190,8 @@ export function serializeGameState(state: GameState): string {
   const obj = {
     turn: state.turn,
     phase: state.phase,
+    lobbySize: state.lobbySize,
+    anomaly: state.anomaly,
     player: serializePlayer(state.player),
     opponents: state.opponents.map(serializeOpponent),
   };
@@ -398,12 +400,16 @@ export function deserializeGameState(json: string): GameState {
   const obj = JSON.parse(json) as {
     turn: number;
     phase: 'lobby' | 'shopping' | 'combat' | 'end';
+    lobbySize?: number;
+    anomaly?: string | null;
     player: object;
     opponents: object[];
   };
   return {
     turn: obj.turn,
     phase: obj.phase,
+    lobbySize: (obj as { lobbySize: number }).lobbySize ?? 8,
+    anomaly: (obj as { anomaly: string | null }).anomaly ?? null,
     player: deserializePlayer(obj.player),
     opponents: obj.opponents.map(deserializeOpponent),
   };

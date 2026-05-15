@@ -293,6 +293,61 @@ describe('serializeGameState', () => {
     expect(restored.opponents[0].gameType).toBeNull();
   });
 
+  it('round-trips lobbySize and anomaly', () => {
+    const state = initialState();
+    state.lobbySize = 6;
+    state.anomaly = 'SomeAnomaly';
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+    expect(restored.lobbySize).toBe(6);
+    expect(restored.anomaly).toBe('SomeAnomaly');
+  });
+
+  it('round-trips anomaly=null', () => {
+    const state = initialState();
+    state.lobbySize = 8;
+    state.anomaly = null;
+    const json = serializeGameState(state);
+    const restored = deserializeGameState(json);
+    expect(restored.lobbySize).toBe(8);
+    expect(restored.anomaly).toBeNull();
+  });
+
+  it('deserializes old format without lobbySize/anomaly gracefully', () => {
+    const oldJson = JSON.stringify({
+      turn: 3,
+      phase: 'shopping',
+      player: {
+        entityId: 0,
+        playerId: 0,
+        hero: { entityId: 0, cardId: 'HERO01', hp: 30, armor: 0 },
+        board: { minions: [] },
+        shop: { minions: [], frozen: false, rollCost: 1 },
+        hand: [],
+        gold: 3,
+        tier: 3,
+        tierUpCost: 3,
+        eliminated: false,
+        pendingTriple: null,
+        heroPowerUsedThisTurn: false,
+        entityRegistry: [],
+      },
+      opponents: [
+        {
+          entityId: 3,
+          playerId: 1,
+          hero: { entityId: 3, cardId: 'HERO01', hp: 30, armor: 0 },
+          board: { minions: [] },
+          tier: 3,
+          eliminated: false,
+        },
+      ],
+    });
+    const restored = deserializeGameState(oldJson);
+    expect(restored.lobbySize).toBe(8);
+    expect(restored.anomaly).toBeNull();
+  });
+
   it('round-trips opponent with non-default values for all 22 fields', () => {
     const state = initialState();
     state.opponents = [
