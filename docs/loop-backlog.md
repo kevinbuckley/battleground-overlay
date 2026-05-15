@@ -729,7 +729,7 @@ by hand before first use.
 
 - [Q] [S] `pipeline` opponent-creation infrastructure — `createPipeline()` starts with `opponents: []` and there's no API to inject opponent entities; the test requires an opponent to exist in `state.opponents` before firing `NUM_TURNS_IN_GAME`; needs opponent creation from `FULL_ENTITY`/`SHOW_ENTITY` events first — `packages/state/src/pipeline.integration.test.ts`
 
-- [ ] [S] OpponentState in budgetScorer — update `packages/advisor/src/budgetScorer.ts` to include opponent tracking fields when scoring (e.g., use `opponent.minionsOnBoard` for board size projection); 2 tests: opponent with tracked stats scores correctly, opponent with default stats scores correctly — `packages/advisor/src/budgetScorer.ts` + test
+- [x] [S] OpponentState in budgetScorer — update `packages/advisor/src/budgetScorer.ts` to include opponent tracking fields when scoring (e.g., use `opponent.minionsOnBoard` for board size projection); 2 tests: opponent with tracked stats scores correctly, opponent with default stats scores correctly — `packages/advisor/src/budgetScorer.ts` + test (commit 46a3457)
 
 ## Quarantined
 

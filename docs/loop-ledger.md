@@ -565,3 +565,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-12 00:00  [DONE]  M24: Windfury tag handler — `applyWindfury` handles `TAG_CHANGE tag=WINDFURY value=1/0`; adds `windfury: boolean` to `Minion` interface; 6 tests, wired into reducer (commit 624ec08)
 
 2026-05-12 00:00  [DONE]  M24: Cleave tag handler — `applyCleave` handles `TAG_CHANGE tag=CLEAVE value=1/0`; adds `cleave: boolean` to `Minion` interface; 4 tests, wired into reducer (commit 46d6c3c)
+
+2026-05-15 00:00  [DONE]  M64: OpponentState in budgetScorer — update `budgetScorer.ts` to use `buildProjectedOpponentBoard` helper that incorporates `opponent.minionsOnBoard` when available (pads projected board from tracked stats), falls back to `predictOpponentBoard` when default; 2 tests (tracked stats, default stats), 1068/1068 tests pass (commit 46a3457)
