@@ -72,6 +72,7 @@ export interface PlayerState {
   victories: number;
   gameType: string | null;
   turnTimer: number;
+  numGameTurns: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

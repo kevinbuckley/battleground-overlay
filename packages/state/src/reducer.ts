@@ -42,6 +42,7 @@ import { applyMinionPlaced } from './reducer/minionPlaced';
 import { applyMinionRemoved } from './reducer/minionRemoved';
 import { applyMinionsKilled } from './reducer/minionsKilled';
 import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
+import { applyNumGameTurns } from './reducer/numGameTurns';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentRevives } from './reducer/opponentRevives';
@@ -315,6 +316,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'TIMEOUT') {
         return applyTurnTimer(state, event);
+      }
+      if (event.tag === 'NUM_GAME_TURNS') {
+        return applyNumGameTurns(state, event);
       }
       return applyTripleBonus(state, event);
 

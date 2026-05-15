@@ -40,6 +40,7 @@ export function initialState(): GameState {
       victories: 0,
       gameType: null,
       turnTimer: 15,
+      numGameTurns: 0,
       entityRegistry: new Map(),
     },
     opponents: [],
