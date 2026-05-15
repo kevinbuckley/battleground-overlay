@@ -18,6 +18,7 @@ export function getWindowOptions(): Record<string, unknown> {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: resolve(__dirname, 'preload.js'),
     },
   };
 }
