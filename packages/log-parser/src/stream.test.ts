@@ -102,4 +102,33 @@ describe('streamEvents', () => {
 
     rmSync(dir, { recursive: true });
   });
+
+  it('skips unparseable lines — one valid + one garbage → onEvent called exactly once', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, 'TAG_CHANGE Entity=4 tag=HEALTH value=30\nthis is garbage\n');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+    handle.close();
+
+    expect(events).toHaveLength(1);
+    expect(events[0]).toMatchObject({ kind: 'TAG_CHANGE', tag: 'HEALTH' });
+
+    rmSync(dir, { recursive: true });
+  });
+
+  it('skips unparseable lines — only garbage → onEvent never called', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, 'random garbage line 1\nanother bad line\nmore nonsense\n');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+    handle.close();
+
+    expect(events).toHaveLength(0);
+
+    rmSync(dir, { recursive: true });
+  });
 });
