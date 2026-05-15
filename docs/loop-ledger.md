@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 13:15  [DONE]  M79: applyShopRefresh sequential + id=1 tests — 2 tests to shopRefresh.test.ts: ZONE_CHANGE_LIST with id=1 sets shop minions; two sequential events → second one updates shop; 6/6 tests pass (commit b71195d)
+
 2026-05-15 12:55  [DONE]  M78: streamEvents handles empty file — 1 test to `stream.test.ts`: streaming an empty file → `onEvent` never called, `StreamHandle` is non-null; 1091/1091 tests pass (commit 38df1ea)
 
 2026-05-15 12:55  [DONE]  M77: streamEvents skips unparseable lines — 2 tests to `stream.test.ts`: one valid + one garbage → onEvent called exactly once; only garbage → onEvent never called; 1090/1090 tests pass (commit e97a603)
@@ -594,3 +596,4 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 13:00  [DONE]  M78: applyTurnPhase MAIN_COMBAT + FINAL_GAMEOVER — added MAIN_COMBAT: 'combat' and FINAL_GAMEOVER: 'end' to phaseMap in turnPhase.ts; 2 new tests (MAIN_COMBAT→combat, FINAL_GAMEOVER→end); 1093/1093 tests pass (commit df0c901)
 
 2026-05-15 12:45  [DONE]  M76: parseFullEntity missing cardId — modified CREATING_RE and UPDATING_RE to make CardID/cardId optional; added 2 tests (missing cardId in Creating line returns cardId='', missing cardId in Updating line returns cardId='' with name preserved); 1086/1086 tests pass (commit 39fac37)
+

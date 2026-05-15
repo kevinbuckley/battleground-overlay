@@ -820,7 +820,7 @@ by hand before first use.
 
 ## M79 — State: `shopRefresh` minion tracking
 
-- [ ] [S] `applyShopRefresh` populates `player.shop.minions` — read `packages/state/src/reducer/shopRefresh.ts` to confirm it handles `ZONE_CHANGE_LIST`; add 2 tests to `packages/state/src/reducer/shopRefresh.test.ts`: a `ZONE_CHANGE_LIST` event with id=1 sets `state.player.shop` to a non-default state (minions array changes); two sequential events → second one updates shop — `packages/state/src/reducer/shopRefresh.ts` + `packages/state/src/reducer/shopRefresh.test.ts`
+- [x] [S] `applyShopRefresh` populates `player.shop.minions` — read `packages/state/src/reducer/shopRefresh.ts` to confirm it handles `ZONE_CHANGE_LIST`; add 2 tests to `packages/state/src/reducer/shopRefresh.test.ts`: a `ZONE_CHANGE_LIST` event with id=1 sets `state.player.shop` to a non-default state (minions array changes); two sequential events → second one updates shop — `packages/state/src/reducer/shopRefresh.ts` + `packages/state/src/reducer/shopRefresh.test.ts` (commit b71195d)
 
 ## M80 — State: `entityRegistry` population
 
