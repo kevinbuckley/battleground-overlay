@@ -39,6 +39,7 @@ import { applyMinionsOnBoard } from './reducer/minionsOnBoard';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentTier } from './reducer/opponentTier';
+import { applyOpponentTurnsPlayed } from './reducer/opponentTurnsPlayed';
 import { applyPlayerDeath } from './reducer/playerDeath';
 import { applyPlayerLost } from './reducer/playerLost';
 import { applyPoisonous } from './reducer/poisonous';
@@ -112,6 +113,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
           }
           if (event.tag === 'PLAYER_TECH_LEVEL') {
             return applyOpponentTier(state, event);
+          }
+          if (event.tag === 'NUM_TURNS_PLAYED') {
+            return applyOpponentTurnsPlayed(state, event);
           }
           return applyOpponentHealth(state, event);
         }

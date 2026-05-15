@@ -71,6 +71,7 @@ export interface OpponentState {
   board: Board;
   tier: number;
   eliminated: boolean;
+  turnsPlayed: number;
 }
 
 export interface GameState {
