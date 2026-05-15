@@ -1,5 +1,7 @@
 # Overlay Loop Ledger
 
+2026-05-15 00:00  [DONE]  M70: recommend all-opponents-eliminated test — add 1 test to `packages/advisor/src/recommend.test.ts` verifying `recommend` returns an array (not throw) when all opponents have `eliminated: true`; 1076/1076 tests pass (commit f692986)
+
 2026-05-15 00:00  [DONE]  M69: logTurnSnapshot helper — add exported `logTurnSnapshot(state, logFn)` to `apps/overlay/src/coordinator.ts` that logs `state-snapshot` with turn/phase/gold/tier/boardSize/shopSize; 2 tests (kind is 'state-snapshot', payload contains boardSize); 1075/1075 tests pass (commit 0324050)
 
 2026-05-15 00:00  [DONE]  M64: OpponentState serialization — update `serializeGameState`/`deserializeGameState` in `packages/state/src/serialize.ts` to serialize/deserialize all 22 OpponentState fields (turnsPlayed, revives, turnsInGame, totalCardsPlayed, totalCardsDrawn, minionsOnBoard, minionsKilledThisTurn, cardsDrawnThisTurn, cardsGivenThisTurn, cardsPlayedThisTurn, deckSize, combo, bountyCards, victories, gameType, turnTimer, numChoices, deathrattlesTriggeredThisTurn, minionsDiedThisTurn, minionsTradedThisTurn); 3 tests (round-trip with 2 opponents having non-default values, backward-compat with old format missing fields, full 22-field round-trip); 1066/1066 tests pass (commit 06980c1)
@@ -571,3 +573,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 00:00  [DONE]  M64: OpponentState in budgetScorer — update `budgetScorer.ts` to use `buildProjectedOpponentBoard` helper that incorporates `opponent.minionsOnBoard` when available (pads projected board from tracked stats), falls back to `predictOpponentBoard` when default; 2 tests (tracked stats, default stats), 1068/1068 tests pass (commit 46a3457)
 
 2026-05-15 00:00  [DONE]  M65: serialize top-level fields — add `lobbySize` and `anomaly` to `serializeGameState` and `deserializeGameState` with backward-compat defaults (lobbySize=8, anomaly=null); 3 tests (lobbySize round-trip, anomaly round-trip, old format graceful fallback); 1071/1071 tests pass (commit 76bfa2e)
+
+2026-05-15 11:48  [DONE]  recommend empty-shop + all-opponents-eliminated tests — locked behavior with 2 new tests; already implemented, tests confirmed green (commit f692986)
