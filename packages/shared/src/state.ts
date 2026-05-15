@@ -60,6 +60,7 @@ export interface PlayerState {
   cardsDrawnThisTurn: number;
   goldSpentThisTurn: number;
   shopSize: number;
+  discoveredCardId: string | null;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

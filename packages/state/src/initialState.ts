@@ -32,6 +32,7 @@ export function initialState(): GameState {
       cardsDrawnThisTurn: 0,
       goldSpentThisTurn: 0,
       shopSize: 3,
+      discoveredCardId: null,
       entityRegistry: new Map(),
     },
     opponents: [],
