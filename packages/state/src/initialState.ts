@@ -39,6 +39,7 @@ export function initialState(): GameState {
       bountyCards: 0,
       victories: 0,
       gameType: null,
+      turnTimer: 15,
       entityRegistry: new Map(),
     },
     opponents: [],

@@ -71,6 +71,7 @@ export interface PlayerState {
   bountyCards: number;
   victories: number;
   gameType: string | null;
+  turnTimer: number;
   entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
 }
 

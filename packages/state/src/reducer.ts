@@ -66,6 +66,7 @@ import { applyTierUp } from './reducer/tierUp';
 import { applyTrinket } from './reducer/trinket';
 import { applyTripleBonus } from './reducer/tripleBonus';
 import { applyTurnPhase } from './reducer/turnPhase';
+import { applyTurnTimer } from './reducer/turnTimer';
 import { applyTurnsInGame } from './reducer/turnsInGame';
 import { applyVictories } from './reducer/victories';
 import { applyWindfury } from './reducer/windfury';
@@ -306,6 +307,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'NUM_VICTORIES') {
         return applyVictories(state, event);
+      }
+      if (event.tag === 'TIMEOUT') {
+        return applyTurnTimer(state, event);
       }
       return applyTripleBonus(state, event);
 
