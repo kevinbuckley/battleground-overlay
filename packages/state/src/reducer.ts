@@ -53,6 +53,7 @@ import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
 import { applyOpponentRevives } from './reducer/opponentRevives';
 import { applyOpponentTier } from './reducer/opponentTier';
+import { applyOpponentTurnsInGame } from './reducer/opponentTurnsInGame';
 import { applyOpponentTurnsPlayed } from './reducer/opponentTurnsPlayed';
 import { applyPlayerDeath } from './reducer/playerDeath';
 import { applyPlayerLost } from './reducer/playerLost';
@@ -295,7 +296,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyCardsGiven(state, event);
       }
       if (event.tag === 'NUM_TURNS_IN_GAME') {
-        return applyTurnsInGame(state, event);
+        const playerResult = applyTurnsInGame(state, event);
+        if (playerResult !== state) return playerResult;
+        return applyOpponentTurnsInGame(state, event);
       }
       if (event.tag === 'NUM_MINIONS_ON_BOARD') {
         return applyMinionsOnBoard(state, event);
