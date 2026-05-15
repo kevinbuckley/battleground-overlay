@@ -19,6 +19,29 @@ describe('reducer BLOCK_START TB_BaconShop_StartGame', () => {
     expect(next.turn).toBe(1);
     expect(next.phase).toBe('shopping');
   });
+
+  it('preserves access to a pre-populated entity registry', () => {
+    const state = initialState();
+    state.player.entityRegistry.set(10, {
+      cardId: 'BOT_445',
+      zone: 'PLAY',
+      controller: state.player.playerId,
+    });
+    const event: BlockStart = {
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      entity: 'GameEntity',
+      effectCardId: 'TB_BaconShop_StartGame',
+      effectIndex: 0,
+      target: '0',
+      subOption: '-1',
+      triggerKeyword: 'NONE',
+    };
+
+    const next = reducer(state, event);
+
+    expect(next.player.entityRegistry.get(10)?.cardId).toBe('BOT_445');
+  });
 });
 
 describe('reducer TAG_CHANGE ZONE=PLAY regression', () => {

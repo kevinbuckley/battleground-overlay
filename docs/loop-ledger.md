@@ -599,3 +599,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 
 
 2026-05-15 00:00  [DONE]  M80: entityRegistry populated by applyMinionPlaced — added 3 tests covering FULL_ENTITY registry insertion, cardId preservation, and same-id updates; 1098/1098 tests pass (commit c987143)
+
+2026-05-15 00:00  [DONE]  M80: entityRegistry accessible after start-game block — added reducer regression test preserving a pre-populated registry across TB_BaconShop_StartGame; 1099/1099 tests pass
