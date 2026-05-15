@@ -21,6 +21,7 @@ function makeMinion(entityId: number, health: number): import('@overlay/shared')
     elite: false,
     cost: 1,
     tribes: [],
+    charge: false,
   };
 }
 

@@ -16,6 +16,7 @@ function makeMinion(entityId: number, health: number): import('@overlay/shared')
     reborn: false,
     frozen: false,
     tribes: [],
+    charge: false,
   };
 }
 

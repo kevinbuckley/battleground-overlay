@@ -28,6 +28,7 @@ function makePlayerMinion(
     windfury,
     cleave: false,
     tribes: [],
+    charge: false,
   };
 }
 

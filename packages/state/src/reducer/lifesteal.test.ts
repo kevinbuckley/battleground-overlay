@@ -30,6 +30,7 @@ function makePlayerMinion(
     elite: false,
     lifesteal,
     tribes: [],
+    charge: false,
   };
 }
 

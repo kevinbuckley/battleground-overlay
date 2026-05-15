@@ -16,6 +16,7 @@ function makeMinion(entityId: number, health: number, attack = 1): Minion {
     reborn: false,
     frozen: false,
     tribes: [],
+    charge: false,
   };
 }
 

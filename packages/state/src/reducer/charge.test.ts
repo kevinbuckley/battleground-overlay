@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'bun:test';
 import type { TagChange } from '@overlay/log-parser';
 import { initialState } from '../initialState';
-import { applyElite } from './elite';
+import { applyCharge } from './charge';
 
 function makeTagChange(entity: string, tag: string, value: string): TagChange {
   return { kind: 'TAG_CHANGE', entity, tag, value };
@@ -12,7 +12,7 @@ function makePlayerMinion(
   cardId: string,
   attack: number,
   health: number,
-  elite = false,
+  charge = false,
 ) {
   return {
     entityId,
@@ -28,9 +28,14 @@ function makePlayerMinion(
     windfury: false,
     cleave: false,
     elite: false,
-    elite,
+    lifesteal: false,
+    cost: 0,
     tribes: [],
-    charge: false,
+    spellPower: 0,
+    exhausted: false,
+    magnetic: false,
+    immune: false,
+    charge,
   };
 }
 
@@ -38,7 +43,7 @@ function makeStateWithPlayerMinion(
   entityId: number,
   attack: number,
   health: number,
-  elite = false,
+  charge = false,
 ) {
   const base = initialState();
   return {
@@ -47,7 +52,7 @@ function makeStateWithPlayerMinion(
       ...base.player,
       board: {
         ...base.player.board,
-        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, elite)],
+        minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, charge)],
       },
     },
   };
@@ -58,16 +63,18 @@ function makeStateWithOpponentMinion(
   entityId: number,
   attack: number,
   health: number,
-  elite = false,
+  charge = false,
 ) {
   const base = initialState();
   const opp = {
     entityId: 100 + oppIndex,
     playerId: oppIndex + 1,
     hero: { entityId: 100 + oppIndex, cardId: 'TestHero', hp: 40, armor: 0 },
-    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, elite)] },
+    board: { minions: [makePlayerMinion(entityId, 'TestMinion', attack, health, charge)] },
     tier: 3,
     eliminated: false,
+    turnsPlayed: 0,
+    revives: 0,
   };
   return {
     ...base,
@@ -75,39 +82,39 @@ function makeStateWithOpponentMinion(
   };
 }
 
-describe('applyElite', () => {
-  it('sets elite on player minion when value=1', () => {
+describe('applyCharge', () => {
+  it('sets charge on player minion when value=1', () => {
     const state = makeStateWithPlayerMinion(1, 2, 3, false);
-    const event = makeTagChange('1', 'ELITE', '1');
-    const result = applyElite(state, event);
-    expect(result.player.board.minions[0].elite).toBe(true);
+    const event = makeTagChange('1', 'CHARGE', '1');
+    const result = applyCharge(state, event);
+    expect(result.player.board.minions[0].charge).toBe(true);
   });
 
-  it('clears elite on player minion when value=0', () => {
-    const state = makeStateWithPlayerMinion(2, 4, 4, true);
-    const event = makeTagChange('2', 'ELITE', '0');
-    const result = applyElite(state, event);
-    expect(result.player.board.minions[0].elite).toBe(false);
+  it('clears charge on player minion when value=0', () => {
+    const state = makeStateWithPlayerMinion(1, 2, 3, true);
+    const event = makeTagChange('1', 'CHARGE', '0');
+    const result = applyCharge(state, event);
+    expect(result.player.board.minions[0].charge).toBe(false);
   });
 
   it('no-op on hero (entity not on any board)', () => {
     const state = initialState();
-    const event = makeTagChange(String(state.player.hero.entityId), 'ELITE', '1');
-    const result = applyElite(state, event);
+    const event = makeTagChange(String(state.player.hero.entityId), 'CHARGE', '1');
+    const result = applyCharge(state, event);
     expect(result).toBe(state);
   });
 
   it('no-op on non-play entity (entity not found on any board)', () => {
     const state = initialState();
-    const event = makeTagChange('999', 'ELITE', '1');
-    const result = applyElite(state, event);
+    const event = makeTagChange('999', 'CHARGE', '1');
+    const result = applyCharge(state, event);
     expect(result).toBe(state);
   });
 
-  it('sets elite on opponent minion when value=1', () => {
+  it('sets charge on opponent minion when value=1', () => {
     const state = makeStateWithOpponentMinion(0, 10, 2, 3, false);
-    const event = makeTagChange('10', 'ELITE', '1');
-    const result = applyElite(state, event);
-    expect(result.opponents[0].board.minions[0].elite).toBe(true);
+    const event = makeTagChange('10', 'CHARGE', '1');
+    const result = applyCharge(state, event);
+    expect(result.opponents[0].board.minions[0].charge).toBe(true);
   });
 });

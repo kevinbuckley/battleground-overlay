@@ -31,6 +31,7 @@ function makePlayerMinion(
     lifesteal: false,
     cost: 0,
     tribes: [],
+    charge: false,
     spellPower: 0,
     exhausted,
     magnetic: false,

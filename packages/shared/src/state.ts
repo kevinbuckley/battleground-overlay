@@ -19,6 +19,7 @@ export interface Minion {
   exhausted: boolean;
   magnetic: boolean;
   immune: boolean;
+  charge: boolean;
 }
 
 export interface Board {

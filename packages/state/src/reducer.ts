@@ -11,6 +11,7 @@ import { applyCardsDrawn } from './reducer/cardsDrawn';
 import { applyCardsGiven } from './reducer/cardsGiven';
 import { applyCardsInDeck } from './reducer/cardsInDeck';
 import { applyCardsPlayed } from './reducer/cardsPlayed';
+import { applyCharge } from './reducer/charge';
 import { applyCleave } from './reducer/cleave';
 import { applyCombatDamage } from './reducer/combatDamage';
 import { applyCombo } from './reducer/combo';
@@ -241,6 +242,9 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'IMMUNE') {
         return applyImmune(state, event);
+      }
+      if (event.tag === 'CHARGE') {
+        return applyCharge(state, event);
       }
       if (event.tag === 'SPELL_POWER') {
         return applySpellPower(state, event);

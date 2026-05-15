@@ -27,6 +27,7 @@ function makePlayerMinion(
     golden: false,
     windfury: false,
     tribes: [],
+    charge: false,
   };
 }
 

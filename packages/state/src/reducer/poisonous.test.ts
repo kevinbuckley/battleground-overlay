@@ -26,6 +26,7 @@ function makePlayerMinion(
     frozen: false,
     golden: false,
     tribes: [],
+    charge: false,
   };
 }
 

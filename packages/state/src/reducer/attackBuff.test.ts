@@ -24,6 +24,7 @@ function makePlayerMinion(entityId: number, cardId: string, attack: number, heal
     elite: false,
     cost: 0,
     tribes: [],
+    charge: false,
   };
 }
 

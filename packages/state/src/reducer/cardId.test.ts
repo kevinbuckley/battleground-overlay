@@ -24,6 +24,7 @@ function makePlayerMinion(entityId: number, cardId: string): import('@overlay/sh
     elite: false,
     cost: 1,
     tribes: [],
+    charge: false,
   };
 }
 

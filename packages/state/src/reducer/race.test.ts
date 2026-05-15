@@ -28,6 +28,12 @@ function makePlayerMinion(
     elite: false,
     cost: 1,
     tribes,
+    charge: false,
+    lifesteal: false,
+    spellPower: 0,
+    exhausted: false,
+    magnetic: false,
+    immune: false,
   };
 }
 
@@ -59,6 +65,8 @@ function makeStateWithOpponentMinion(
     board: { minions: [makePlayerMinion(entityId, cardId, tribes)] },
     tier: 3,
     eliminated: false,
+    turnsPlayed: 0,
+    revives: 0,
   };
   return {
     ...base,
