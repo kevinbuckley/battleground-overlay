@@ -9,6 +9,7 @@ function makeMinion(
   attack: number,
   health: number,
   tribes: string[] = [],
+  golden = false,
 ): Minion {
   return {
     entityId,
@@ -21,6 +22,17 @@ function makeMinion(
     reborn: false,
     frozen: false,
     tribes,
+    golden,
+    windfury: false,
+    cleave: false,
+    elite: false,
+    lifesteal: false,
+    cost: 0,
+    spellPower: 0,
+    exhausted: false,
+    magnetic: false,
+    immune: false,
+    charge: false,
   };
 }
 
@@ -91,5 +103,19 @@ describe('sellScore', () => {
     const minion = makeMinion(1, 'CS2_168', 3, 3);
     const score = sellScore(minion, [], makeState());
     expect(Number.isFinite(score)).toBe(true);
+  });
+
+  it('returns 0 for golden minion regardless of stats', () => {
+    const state = makeState();
+    const board = [makeMinion(1, 'GOLDEN_MINION', 1, 1, [], true)];
+    const score = sellScore(first(board), board, state);
+    expect(score).toBe(0);
+  });
+
+  it('returns > 0 for non-golden minion with same bad stats', () => {
+    const state = makeState();
+    const board = [makeMinion(1, 'NON_GOLDEN', 1, 1, [], false)];
+    const score = sellScore(first(board), board, state);
+    expect(score).toBeGreaterThan(0);
   });
 });

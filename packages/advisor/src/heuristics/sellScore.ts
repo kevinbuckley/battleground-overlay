@@ -9,6 +9,8 @@ import type { GameState, Minion } from '@overlay/shared';
 //      break a triple, and buying it wouldn't create one)?
 
 export function sellScore(minion: Minion, board: Minion[], _state: GameState): number {
+  if (minion.golden) return 0;
+
   const allMinions = board;
   if (allMinions.length === 0) return 0;
 
