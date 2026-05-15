@@ -613,3 +613,5 @@ YYYY-MM-DD HH:MM  [STATUS]  <one-line summary>  (commit <sha>)
 2026-05-15 00:00  [DONE]  M116: initRenderer displays shop minions — renderer subscribes to `onShop`, writes shop minions into `#shop-minions`, and clears the list for empty shops; 1109/1109 tests pass
 
 2026-05-15 15:00  [DONE]  coordinator setHsStatus/getHsStatus + passes to bridge; bootstrapOverlay wires runDoctor+anchor+retry+startup-banner; 1114/1114 tests pass (commit e426831)
+
+2026-05-15 15:30  [DONE]  Startup banner end-to-end (preload onStartupBanner + renderer subscriber + HTML element/CSS) + main.ts loads settings from disk; 1116/1116 tests pass (commit 7589bfe)
