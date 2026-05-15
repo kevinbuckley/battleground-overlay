@@ -48,7 +48,7 @@ export function startBridge(
     try {
       const recs = getRecs?.();
       if (recs) {
-        win.webContents.send('overlay:recs-update', recs);
+        win.webContents.send('overlay:recs-update', recs.slice(0, 3));
       }
     } catch {
       // swallow — renderer may not be ready yet

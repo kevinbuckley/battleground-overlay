@@ -312,4 +312,84 @@ describe('ipcBridge', () => {
     const hsChannels = sends.filter((s) => s.channel === 'overlay:hs-status');
     expect(hsChannels.length).toBe(0);
   });
+
+  it('startBridge sends only top-3 recs when more than 3 are returned', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    const recs: Recommendation[] = [
+      {
+        action: { type: 'Buy' as const, cardId: 'a', shopIndex: 0 },
+        score: 0.9,
+        confidence: 0.9,
+        reason: '',
+      },
+      {
+        action: { type: 'Buy' as const, cardId: 'b', shopIndex: 1 },
+        score: 0.8,
+        confidence: 0.8,
+        reason: '',
+      },
+      {
+        action: { type: 'Buy' as const, cardId: 'c', shopIndex: 2 },
+        score: 0.7,
+        confidence: 0.7,
+        reason: '',
+      },
+      {
+        action: { type: 'Buy' as const, cardId: 'd', shopIndex: 3 },
+        score: 0.6,
+        confidence: 0.6,
+        reason: '',
+      },
+      {
+        action: { type: 'Buy' as const, cardId: 'e', shopIndex: 4 },
+        score: 0.5,
+        confidence: 0.5,
+        reason: '',
+      },
+    ];
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => recs,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const recsChannels = sends.filter((s) => s.channel === 'overlay:recs-update');
+    expect(recsChannels.length).toBeGreaterThanOrEqual(1);
+    const sentRecs = recsChannels[0].args[0] as Recommendation[];
+    expect(sentRecs).toHaveLength(3);
+  });
+
+  it('startBridge sends 1 rec when only 1 is returned', async () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    const recs: Recommendation[] = [
+      {
+        action: { type: 'Buy' as const, cardId: 'a', shopIndex: 0 },
+        score: 0.9,
+        confidence: 0.9,
+        reason: '',
+      },
+    ];
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => recs,
+      () => null,
+    );
+
+    await new Promise<void>((resolve) => setTimeout(resolve, 600));
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    const recsChannels = sends.filter((s) => s.channel === 'overlay:recs-update');
+    expect(recsChannels.length).toBeGreaterThanOrEqual(1);
+    const sentRecs = recsChannels[0].args[0] as Recommendation[];
+    expect(sentRecs).toHaveLength(1);
+  });
 });
