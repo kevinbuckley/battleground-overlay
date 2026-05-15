@@ -75,9 +75,9 @@
 
 2026-05-14 00:00  [DONE]  M63: Wire bootstrapOverlay into main.ts — replaced `await wireLogStream(() => {})` with `await bootstrapOverlay(win)` in `createWindow()`, importing `bootstrapOverlay` from `./bootstrap`; added 2 tests to `main.test.ts` verifying the import exists and the function is callable; 945/945 tests pass (commit 5df1897)
 
----
+2026-05-14 00:00  [DONE]  M60: applyOpponentTurnsPlayed — handles `TAG_CHANGE tag=NUM_TURNS_PLAYED` on opponent controller, sets `state.opponents[i].turnsPlayed: number` (add field to OpponentState), wired into reducer, 4 tests (initial=0, increments per turn, no-op on player, reflected in state); 953/953 tests pass (commit 179afc8)
 
-status. One line per task. Most-recent at the top.
+---
 
 2026-05-14 00:00  [DONE]  M47: Renderer opponent-eliminated indicator — extended `onOpponents` in `renderer.ts` to count eliminated opponents and write `Alive: N/total` to `#opponent-alive`; added `<div id="opponent-alive">` to `renderer.html`; 2 new tests (5 opponents 2 eliminated → `Alive: 3/5`, all eliminated → `Alive: 0/3`); 24/24 tests pass (commit bc74ab4)
 
