@@ -93,6 +93,25 @@ export interface OpponentState {
   eliminated: boolean;
   turnsPlayed: number;
   revives: number;
+  turnsInGame: number;
+  totalCardsPlayed: number;
+  totalCardsDrawn: number;
+  minionsOnBoard: number;
+  minionsKilledThisTurn: number;
+  cardsDrawnThisTurn: number;
+  cardsGivenThisTurn: number;
+  cardsPlayedThisTurn: number;
+  deckSize: number;
+  combo: number;
+  bountyCards: number;
+  victories: number;
+  gameType: string | null;
+  turnTimer: number;
+  numGameTurns: number;
+  numChoices: number;
+  deathrattlesTriggeredThisTurn: number;
+  minionsDiedThisTurn: number;
+  minionsTradedThisTurn: number;
 }
 
 export interface GameState {

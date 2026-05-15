@@ -1,4 +1,43 @@
-import type { GameState } from '@overlay/shared';
+import type { GameState, OpponentState } from '@overlay/shared';
+
+const defaultOpponent: Omit<
+  OpponentState,
+  'entityId' | 'playerId' | 'hero' | 'board' | 'tier' | 'eliminated' | 'turnsPlayed' | 'revives'
+> = {
+  turnsInGame: 0,
+  totalCardsPlayed: 0,
+  totalCardsDrawn: 0,
+  minionsOnBoard: 0,
+  minionsKilledThisTurn: 0,
+  cardsDrawnThisTurn: 0,
+  cardsGivenThisTurn: 0,
+  cardsPlayedThisTurn: 0,
+  deckSize: 30,
+  combo: 0,
+  bountyCards: 0,
+  victories: 0,
+  gameType: null,
+  turnTimer: 15,
+  numGameTurns: 0,
+  numChoices: 0,
+  deathrattlesTriggeredThisTurn: 0,
+  minionsDiedThisTurn: 0,
+  minionsTradedThisTurn: 0,
+};
+
+export function initialOpponentState(entityId = 0, playerId = 0): OpponentState {
+  return {
+    entityId,
+    playerId,
+    hero: { entityId: 0, cardId: '', hp: 40, armor: 0 },
+    board: { minions: [] },
+    tier: 1,
+    eliminated: false,
+    turnsPlayed: 0,
+    revives: 0,
+    ...defaultOpponent,
+  };
+}
 
 export function initialState(): GameState {
   return {
