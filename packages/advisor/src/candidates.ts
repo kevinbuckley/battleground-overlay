@@ -82,7 +82,7 @@ export function enumerateSellCandidates(state: GameState): SellCandidate[] {
     const projectedMinions: Minion[] = [...minions.slice(0, i), ...minions.slice(i + 1)];
 
     candidates.push({
-      action: { type: 'Sell', boardIndex: i },
+      action: { type: 'Sell', boardIndex: i, cardId: minion.cardId },
       projectedBoard: { minions: projectedMinions },
     });
   }

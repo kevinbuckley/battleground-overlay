@@ -8,6 +8,7 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@overlay/card-data": "workspace:*",
     "@overlay/shared": "workspace:*",
     "@overlay/state": "workspace:*",
     "@overlay/sim": "workspace:*"

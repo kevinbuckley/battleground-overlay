@@ -22,6 +22,10 @@ export function scoreCandidate(
   opponents: OpponentState[],
   n: number,
 ): ScoreResult {
+  if (n <= 0) {
+    return { winPct: 0, avgHpDelta: 0 };
+  }
+
   const ourFirestoneBoard = toFirestoneBoard(playerBoard, playerState);
 
   let totalWins = 0;

@@ -8,8 +8,9 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
+    "@overlay/card-data": "workspace:*",
+    "@overlay/shared": "workspace:*",
     "@firestone-hs/reference-data": "^3.0.194",
-    "@firestone-hs/simulate-bgs-battle": "^1.1.711",
-    "@overlay/shared": "workspace:*"
+    "@firestone-hs/simulate-bgs-battle": "^1.1.711"
   }
 }

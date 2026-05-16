@@ -28,7 +28,7 @@ export function getActionText(rec: Recommendation): string {
     case 'Buy':
       return `Buy ${action.cardName ?? action.cardId}`;
     case 'Sell':
-      return `Sell #${action.boardIndex}`;
+      return `Sell ${action.cardName || action.cardId || `#${action.boardIndex}`}`;
     case 'Freeze':
       return 'Freeze shop';
     case 'Reroll':

@@ -12,7 +12,8 @@ export function enrichRecommendationCardName(
   rec: Recommendation,
   lookup: CardLookup = getCardById,
 ): Recommendation {
-  if (rec.action.type !== 'Buy') return rec;
+  if (rec.action.type !== 'Buy' && rec.action.type !== 'Sell') return rec;
+  if (!rec.action.cardId) return rec;
   const cardName = lookup(rec.action.cardId)?.name ?? rec.action.cardId;
   return {
     ...rec,

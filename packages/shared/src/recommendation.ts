@@ -1,5 +1,5 @@
 export type BuyAction = { type: 'Buy'; cardId: string; shopIndex: number; cardName?: string };
-export type SellAction = { type: 'Sell'; boardIndex: number; cardId?: string };
+export type SellAction = { type: 'Sell'; boardIndex: number; cardId?: string; cardName?: string };
 export type FreezeAction = { type: 'Freeze' };
 export type RerollAction = { type: 'Reroll' };
 export type TierUpAction = { type: 'TierUp' };
@@ -27,7 +27,7 @@ export function formatRecommendation(rec: Recommendation): string {
     case 'Buy':
       return `Buy ${rec.action.cardId} (score: ${score})`;
     case 'Sell':
-      return `Sell position ${rec.action.boardIndex} (score: ${score})`;
+      return `Sell ${rec.action.cardName || rec.action.cardId || `position ${rec.action.boardIndex}`} (score: ${score})`;
     case 'Freeze':
       return `Freeze shop (score: ${score})`;
     case 'Reroll':

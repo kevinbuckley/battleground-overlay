@@ -266,7 +266,7 @@ describe('recommend', () => {
     }
     expect(r.score).toBe(1.0);
     expect(r.confidence).toBe(1.0);
-    expect(r.reason).toBe('complete your triple');
+    expect(r.reason).toContain('Complete your triple');
     expect(r.needsExplanation).toBe(false);
   });
 

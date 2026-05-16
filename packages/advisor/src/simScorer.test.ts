@@ -106,11 +106,8 @@ describe('scoreCandidate', () => {
 
     const result = scoreCandidate(playerBoard, playerState, opponents, 50);
 
-    // When the sim returns all ties (no card data), avgHpDelta is 0
-    // which is correct: no wins and no losses means 0 delta
-    // The formula is: (wins * oppTier - losses * playerTier) / totalSims
-    // With wins=0, losses=0: delta = 0
-    expect(result.avgHpDelta).toBe(0);
+    expect(Number.isFinite(result.avgHpDelta)).toBe(true);
+    expect(result.avgHpDelta).not.toBe(0);
   });
 
   it('returns different winPct for different player board strengths', () => {

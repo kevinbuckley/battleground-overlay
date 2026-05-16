@@ -1,4 +1,5 @@
 import { simulateBattle } from '@firestone-hs/simulate-bgs-battle';
+import { loadCards } from '@overlay/card-data';
 import { AllCardsService } from '@firestone-hs/reference-data';
 import { CardsData } from '@firestone-hs/simulate-bgs-battle/dist/cards/cards-data';
 import type { BgsBattleInfo } from '@firestone-hs/simulate-bgs-battle/dist/bgs-battle-info';
@@ -13,7 +14,7 @@ let cardsDataCached: CardsData | null = null;
 function getCards(): { allCards: AllCardsService; data: CardsData } {
   if (!cardsService) {
     cardsService = new AllCardsService();
-    cardsService.initializeCardsDbFromCards([]);
+    cardsService.initializeCardsDbFromCards(loadCards());
     cardsDataCached = new CardsData(cardsService, false);
   }
   return { allCards: cardsService, data: cardsDataCached! };

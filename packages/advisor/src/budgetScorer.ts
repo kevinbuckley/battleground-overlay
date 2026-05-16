@@ -1,3 +1,4 @@
+import { getCardName } from '@overlay/card-data';
 import type { GameState, Minion, OpponentState, Recommendation } from '@overlay/shared';
 import {
   enumerateBuyCandidates,
@@ -11,6 +12,10 @@ import { scoreCandidate, scoreSellCandidate } from './simScorer';
 import { withBudget } from './withBudget';
 
 const TOP_N = 3;
+
+function pct(value: number): number {
+  return Math.round(value * 100);
+}
 
 /**
  * Build the projected minion array for an opponent.
@@ -63,11 +68,14 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
-    const result = withBudget(
-      () => scoreCandidate(c.projectedBoard, player, projectedOpponents, n),
-      budgetMs,
-      { winPct: 0, avgHpDelta: 0 },
-    );
+    const result =
+      n <= 0
+        ? { winPct: 0, avgHpDelta: 0 }
+        : withBudget(
+            () => scoreCandidate(c.projectedBoard, player, projectedOpponents, n),
+            budgetMs,
+            { winPct: 0, avgHpDelta: 0 },
+          );
 
     return {
       action: c.action,
@@ -75,9 +83,9 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
       confidence: Math.min(1, result.winPct + 0.05),
       reason:
         result.winPct > 0.5
-          ? 'projected win rate above 50%'
+          ? `Buy ${getCardName(c.action.cardId)} — ${pct(result.winPct)}% projected win rate`
           : result.winPct > 0
-            ? 'projected win rate below 50%'
+            ? `Buy ${getCardName(c.action.cardId)} — ${pct(result.winPct)}% projected win rate`
             : 'no simulation data',
     };
   });
@@ -105,11 +113,14 @@ export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number)
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
-    const result = withBudget(
-      () => scoreSellCandidate(c.projectedBoard, player, projectedOpponents, n),
-      budgetMs,
-      { winPct: 0, avgHpDelta: 0 },
-    );
+    const result =
+      n <= 0
+        ? { winPct: 0, avgHpDelta: 0 }
+        : withBudget(
+            () => scoreSellCandidate(c.projectedBoard, player, projectedOpponents, n),
+            budgetMs,
+            { winPct: 0, avgHpDelta: 0 },
+          );
 
     return {
       action: c.action,
@@ -117,9 +128,9 @@ export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number)
       confidence: Math.min(1, result.winPct + 0.05),
       reason:
         result.winPct > 0.5
-          ? 'projected win rate above 50% after selling'
+          ? `Sell ${getCardName(c.action.cardId ?? '')} — ${pct(result.winPct)}% projected win rate`
           : result.winPct > 0
-            ? 'projected win rate below 50% after selling'
+            ? `Sell ${getCardName(c.action.cardId ?? '')} — ${pct(result.winPct)}% projected win rate`
             : 'no simulation data',
     };
   });
@@ -154,11 +165,14 @@ export function scoreTierUpWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result = withBudget(
-    () => scoreCandidate(player.board, player, projectedOpponents, n),
-    budgetMs,
-    { winPct: 0, avgHpDelta: 0 },
-  );
+  const result =
+    n <= 0
+      ? { winPct: 0, avgHpDelta: 0 }
+      : withBudget(
+          () => scoreCandidate(player.board, player, projectedOpponents, n),
+          budgetMs,
+          { winPct: 0, avgHpDelta: 0 },
+        );
 
   return [
     {
@@ -167,9 +181,9 @@ export function scoreTierUpWithSim(
       confidence: Math.min(1, result.winPct + 0.05),
       reason:
         result.winPct > 0.5
-          ? 'can tier up with strong projected win rate'
+          ? `Tier up — ${pct(result.winPct)}% projected win rate`
           : result.winPct > 0
-            ? 'can tier up, evaluating win rate'
+            ? `Tier up — ${pct(result.winPct)}% projected win rate`
             : 'can tier up, no simulation data',
     },
   ];
@@ -202,11 +216,14 @@ export function scoreFreezeWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result = withBudget(
-    () => scoreCandidate(player.board, player, projectedOpponents, n),
-    budgetMs,
-    { winPct: 0, avgHpDelta: 0 },
-  );
+  const result =
+    n <= 0
+      ? { winPct: 0, avgHpDelta: 0 }
+      : withBudget(
+          () => scoreCandidate(player.board, player, projectedOpponents, n),
+          budgetMs,
+          { winPct: 0, avgHpDelta: 0 },
+        );
 
   return [
     {
@@ -215,9 +232,9 @@ export function scoreFreezeWithSim(
       confidence: Math.min(1, result.winPct + 0.05),
       reason:
         result.winPct > 0.5
-          ? 'freezing shop preserves strong board for future turns'
+          ? `Freeze shop — current board projects ${pct(result.winPct)}% win rate`
           : result.winPct > 0
-            ? 'freezing shop to evaluate future options'
+            ? `Freeze shop — current board projects ${pct(result.winPct)}% win rate`
             : 'freezing shop, no simulation data',
     },
   ];
@@ -250,11 +267,14 @@ export function scoreRerollWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result = withBudget(
-    () => scoreCandidate(player.board, player, projectedOpponents, n),
-    budgetMs,
-    { winPct: 0, avgHpDelta: 0 },
-  );
+  const result =
+    n <= 0
+      ? { winPct: 0, avgHpDelta: 0 }
+      : withBudget(
+          () => scoreCandidate(player.board, player, projectedOpponents, n),
+          budgetMs,
+          { winPct: 0, avgHpDelta: 0 },
+        );
 
   return [
     {
@@ -263,9 +283,9 @@ export function scoreRerollWithSim(
       confidence: Math.min(1, result.winPct + 0.05),
       reason:
         result.winPct > 0.5
-          ? 'rerolling shop preserves strong board for better options'
+          ? `Reroll shop — current board projects ${pct(result.winPct)}% win rate`
           : result.winPct > 0
-            ? 'rerolling shop to find better options'
+            ? `Reroll shop — current board projects ${pct(result.winPct)}% win rate`
             : 'rerolling shop, no simulation data',
     },
   ];

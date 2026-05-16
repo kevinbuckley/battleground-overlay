@@ -224,6 +224,24 @@ describe('ipcBridge', () => {
     });
   });
 
+  it('enrichRecommendationCardName adds cardName for Sell actions with cardId', () => {
+    const rec: Recommendation = {
+      action: { type: 'Sell', boardIndex: 0, cardId: 'TB_001' },
+      score: 0.9,
+      confidence: 0.9,
+      reason: '',
+    };
+
+    const enriched = enrichRecommendationCardName(rec, () => ({ name: 'Alleycat' }));
+
+    expect(enriched.action).toEqual({
+      type: 'Sell',
+      boardIndex: 0,
+      cardId: 'TB_001',
+      cardName: 'Alleycat',
+    });
+  });
+
   it('toBoardUpdateMinion adds a looked-up card name', () => {
     const state = makeMockState();
     state.player.board.minions = [

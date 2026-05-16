@@ -37,6 +37,26 @@ describe('getActionText', () => {
     expect(getActionText(rec)).toBe('Sell #2');
   });
 
+  it('returns "Sell <cardName>" when SellAction has a cardName', () => {
+    const rec: Recommendation = {
+      action: { type: 'Sell', boardIndex: 1, cardId: 'BG_TEST', cardName: 'Sellemental' },
+      score: 0.7,
+      confidence: 0.7,
+      reason: '',
+    };
+    expect(getActionText(rec)).toBe('Sell Sellemental');
+  });
+
+  it('returns "Sell <cardId>" when SellAction has cardId but no cardName', () => {
+    const rec: Recommendation = {
+      action: { type: 'Sell', boardIndex: 1, cardId: 'BG_TEST' },
+      score: 0.7,
+      confidence: 0.7,
+      reason: '',
+    };
+    expect(getActionText(rec)).toBe('Sell BG_TEST');
+  });
+
   it('returns "Freeze shop" for FreezeAction', () => {
     const rec = makeBuyRec('') as Recommendation & { action: { type: 'Freeze' } };
     (rec.action as { type: 'Freeze' }).type = 'Freeze';

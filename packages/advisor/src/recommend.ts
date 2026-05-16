@@ -1,3 +1,4 @@
+import { getCardName } from '@overlay/card-data';
 import type { GameState, Recommendation } from '@overlay/shared';
 import {
   scoreBuysWithSim,
@@ -16,6 +17,10 @@ import { hillClimbPosition } from './positionHillClimb';
 
 const TOP_N = 3;
 
+function pct(score: number): number {
+  return Math.round(score * 100);
+}
+
 export function recommend(state: GameState): Recommendation[] {
   const { player } = state;
 
@@ -26,7 +31,7 @@ export function recommend(state: GameState): Recommendation[] {
         action: { type: 'Buy', cardId: player.pendingTriple, shopIndex: -1 },
         score: 1.0,
         confidence: 1.0,
-        reason: 'complete your triple',
+        reason: `Complete your triple with ${getCardName(player.pendingTriple)}`,
         needsExplanation: false,
       },
     ];
@@ -48,7 +53,12 @@ export function recommend(state: GameState): Recommendation[] {
       action: { type: 'Buy', cardId: shopCard.cardId, shopIndex: i },
       score,
       confidence: Math.min(1, score + 0.1),
-      reason: triple > 0 ? 'triple opportunity' : tribe > 0 ? 'tribe synergy' : 'no strong reason',
+      reason:
+        triple > 0
+          ? `Buy ${getCardName(shopCard.cardId)} — completes or advances a triple`
+          : tribe > 0
+            ? `Buy ${getCardName(shopCard.cardId)} — ${pct(tribe)}% tribe synergy score`
+            : `Buy ${getCardName(shopCard.cardId)} — no strong synergy yet`,
     };
   });
 
@@ -86,10 +96,13 @@ export function recommend(state: GameState): Recommendation[] {
       const score = sellScore(minion, boardMinions, state);
       if (score < 0.5) return null;
       return {
-        action: { type: 'Sell', boardIndex: idx },
+        action: { type: 'Sell', boardIndex: idx, cardId: minion.cardId },
         score,
         confidence: Math.min(1, score + 0.1),
-        reason: score >= 0.8 ? 'weak with no synergy' : 'low sell value',
+        reason:
+          score >= 0.8
+            ? `Sell ${getCardName(minion.cardId)} — weakest board minion with low synergy`
+            : `Sell ${getCardName(minion.cardId)} — low board value`,
       } as Recommendation;
     })
     .filter((r): r is Recommendation => r !== null);
