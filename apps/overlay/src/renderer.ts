@@ -138,7 +138,10 @@ export function initRenderer(bridge: OverlayBridge): void {
 
   bridge.onHsStatus((status: string) => {
     const el = document.getElementById('hs-status');
-    if (el) el.textContent = status;
+    if (!el) return;
+    // Only show the status line when we're waiting for HS to appear. Once the
+    // overlay is rendering (it is), 'anchored' and 'failed' are noise.
+    el.textContent = status === 'waiting' ? 'Waiting for Hearthstone…' : '';
   });
 
   bridge.onState((raw: unknown) => {
@@ -154,4 +157,36 @@ export function initRenderer(bridge: OverlayBridge): void {
     el.textContent = banner;
     el.classList.add('visible');
   });
+}
+
+// When loaded as the renderer bundle, wire up against the preload-exposed bridge.
+declare global {
+  interface Window {
+    overlayBridge?: OverlayBridge;
+  }
+}
+
+if (typeof window !== 'undefined') {
+  const tryInit = (): boolean => {
+    const b = window.overlayBridge;
+    if (!b) return false;
+    initRenderer(b);
+    const dbg = document.getElementById('overlay-debug');
+    if (dbg) dbg.textContent = 'bridge: connected';
+    return true;
+  };
+  if (!tryInit()) {
+    // Bridge may not have been exposed by preload yet — retry briefly.
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries++;
+      if (tryInit() || tries > 40) {
+        clearInterval(timer);
+        const dbg = document.getElementById('overlay-debug');
+        if (dbg && !window.overlayBridge) {
+          dbg.textContent = `bridge: NOT FOUND after ${tries} tries — preload didn't expose overlayBridge`;
+        }
+      }
+    }, 50);
+  }
 }

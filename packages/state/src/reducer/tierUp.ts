@@ -1,5 +1,6 @@
 import type { TagChange } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { entityRefersToPlayer } from '../entityId';
 
 const TIER_UP_COSTS: Record<number, number> = {
   1: 6,
@@ -12,9 +13,13 @@ const TIER_UP_COSTS: Record<number, number> = {
 };
 
 export function applyTierUp(state: GameState, event: TagChange): GameState {
-  const entityId = Number.parseInt(event.entity, 10);
-  if (isNaN(entityId)) return state;
-  if (entityId !== state.player.entityId) return state;
+  // HS often reports PLAYER_TECH_LEVEL on the hero entity descriptor as well
+  // as on the bare player entity — accept either.
+  if (!entityRefersToPlayer(event.entity, state)) {
+    // Try the hero descriptor: it carries player=N inside.
+    const owner = (event.entityRaw ?? '').match(/\bplayer=(\d+)\b/);
+    if (!owner || Number.parseInt(owner[1] ?? '', 10) !== state.player.playerId) return state;
+  }
 
   const newTier = Number.parseInt(event.value, 10);
   if (isNaN(newTier)) return state;

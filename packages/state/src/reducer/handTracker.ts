@@ -1,15 +1,14 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { extractEntityId } from '../entityId';
 import { applyEntityEvent } from '../entityRegistry';
 
 export function applyHandTracker(state: GameState, event: HsEvent): GameState {
   if (event.kind !== 'TAG_CHANGE') return state;
   if (event.tag !== 'ZONE') return state;
 
-  const entityMatch = event.entity.match(/^(\d+)$/);
-  if (!entityMatch || !entityMatch[1]) return state;
-
-  const entityId = Number.parseInt(entityMatch[1], 10);
+  const entityId = extractEntityId(event.entity);
+  if (entityId === null) return state;
 
   // Only process events for the player's own entities
   // (controller check is done via entityRegistry below)

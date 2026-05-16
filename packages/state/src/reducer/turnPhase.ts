@@ -15,7 +15,8 @@ export function applyTurnPhase(state: GameState, event: TagChange): GameState {
   const newPhase = phaseMap[event.value];
   if (!newPhase) return state;
 
-  const newTurn = event.value === 'MAIN_READY' ? state.turn + 1 : state.turn;
-
-  return { ...state, phase: newPhase, turn: newTurn };
+  // Don't touch state.turn here — STEP=MAIN_READY fires multiple times per BG
+  // turn. The authoritative turn counter is GameEntity NUM_TURNS_IN_PLAY,
+  // handled in the main reducer.
+  return { ...state, phase: newPhase };
 }

@@ -48,6 +48,7 @@ export function initialState(): GameState {
     player: {
       entityId: 0,
       playerId: 0,
+      name: '',
       hero: { entityId: 0, cardId: '', hp: 40, armor: 0 },
       board: { minions: [] },
       shop: { minions: [], frozen: false, rollCost: 1 },

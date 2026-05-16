@@ -42,6 +42,8 @@ export interface Hero {
 export interface PlayerState {
   entityId: number;
   playerId: number;
+  /** Battle.net display tag (e.g. "kbux#11815"); some HS log lines reference the player by name. */
+  name: string;
   hero: Hero;
   board: Board;
   shop: Shop;

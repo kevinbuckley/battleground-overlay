@@ -1,5 +1,21 @@
 import type { IpcRenderer, contextBridge } from 'electron';
 
+// Resolved at runtime via the preload's CJS require. Guarded so tests (which
+// import this file directly without Electron available) don't crash.
+let realContextBridge: typeof contextBridge | undefined;
+let realIpcRenderer: IpcRenderer | undefined;
+try {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const electron = require('electron') as {
+    contextBridge: typeof contextBridge;
+    ipcRenderer: IpcRenderer;
+  };
+  realContextBridge = electron.contextBridge;
+  realIpcRenderer = electron.ipcRenderer;
+} catch {
+  // not in an Electron preload context (e.g. unit test) — leave undefined
+}
+
 export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
   cb.exposeInMainWorld('overlayBridge', {
     onRecs(cb: (r: unknown[]) => void): void {
@@ -48,4 +64,10 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
       });
     },
   });
+}
+
+// Wire the bridge when this preload script is actually loaded into a renderer.
+// Tests import setupPreload directly and stub electron, so guard against it.
+if (typeof realContextBridge !== 'undefined' && typeof realIpcRenderer !== 'undefined') {
+  setupPreload(realContextBridge, realIpcRenderer);
 }

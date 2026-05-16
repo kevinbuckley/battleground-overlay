@@ -3,18 +3,32 @@ import { createInterface } from 'node:readline';
 import { watch } from 'chokidar';
 import { parseBlockEnd, parseBlockStart } from './parseBlock';
 import { parseFullEntity } from './parseFullEntity';
+import { parsePlayerInfo } from './parsePlayerInfo';
+import { parsePlayerName } from './parsePlayerName';
 import { parseShowEntity } from './parseShowEntity';
 import { parseTagChange } from './parseTagChange';
 import { parseZoneChangeList } from './parseZoneChangeList';
 import type { HsEvent } from './types';
 
-function parseSingleLine(line: string): HsEvent | null {
+// HS Power.log lines are prefixed with a log level + timestamp + caller, e.g.
+//   D 15:47:09.1222540 GameState.DebugPrintPower() - TAG_CHANGE Entity=19 ...
+// Strip that prefix so per-event parsers can match against the bare payload.
+const HS_LOG_PREFIX_RE = /^[DIWE]\s+\d{1,2}:\d{2}:\d{2}\.\d+\s+\S+\(\)\s+-\s+/;
+
+function stripHsLogPrefix(line: string): string {
+  return line.replace(HS_LOG_PREFIX_RE, '');
+}
+
+function parseSingleLine(rawLine: string): HsEvent | null {
+  const line = stripHsLogPrefix(rawLine);
   return (
     parseTagChange(line) ??
     parseFullEntity(line) ??
     parseBlockStart(line) ??
     parseBlockEnd(line) ??
     parseZoneChangeList(line) ??
+    parsePlayerInfo(line) ??
+    parsePlayerName(line) ??
     parseShowEntity(line) ??
     null
   );

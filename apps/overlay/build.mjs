@@ -18,17 +18,20 @@ async function build() {
     target: ['node20'],
     outfile: join(DIST, 'main.cjs'),
     external: ['electron'],
+    define: { 'import.meta.dirname': '__dirname', 'import.meta.url': '__filename' },
     logLevel: 'info',
   });
 
-  // Bundle preload.ts → dist/preload.js (ESM for contextIsolation preload)
+  // Bundle preload.ts → dist/preload.js (CJS so require('electron') works in
+  // the preload context with contextIsolation enabled).
   await esbuild.build({
     entryPoints: [join(SRC, 'preload.ts')],
     bundle: true,
-    platform: 'browser',
-    format: 'iife',
-    target: 'esnext',
+    platform: 'node',
+    format: 'cjs',
+    target: ['node20'],
     outfile: join(DIST, 'preload.js'),
+    external: ['electron'],
     logLevel: 'info',
   });
 

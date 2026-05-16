@@ -1,6 +1,10 @@
 export interface TagChange {
   kind: 'TAG_CHANGE';
+  // Normalised to the bare numeric entity id string when extractable, so
+  // downstream reducers can do plain parseInt(event.entity). The original
+  // descriptor (when HS emitted one) is preserved in `entityRaw`.
   entity: string;
+  entityRaw: string;
   tag: string;
   value: string;
 }
@@ -38,4 +42,27 @@ export interface ZoneChangeList {
   id: number;
 }
 
-export type HsEvent = TagChange | FullEntity | ShowEntity | BlockStart | BlockEnd | ZoneChangeList;
+export interface PlayerInfo {
+  kind: 'PLAYER_INFO';
+  entityId: number;
+  playerId: number;
+  // `true` when GameAccountId has a non-zero `hi` component (the local human
+  // account). Remote/AI opponents report hi=0 lo=0.
+  isLocal: boolean;
+}
+
+export interface PlayerName {
+  kind: 'PLAYER_NAME';
+  playerId: number;
+  name: string;
+}
+
+export type HsEvent =
+  | TagChange
+  | FullEntity
+  | ShowEntity
+  | BlockStart
+  | BlockEnd
+  | ZoneChangeList
+  | PlayerInfo
+  | PlayerName;

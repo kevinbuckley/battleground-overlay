@@ -32,7 +32,8 @@ export function createOverlayWindow(
   },
 ): BrowserWindow {
   const electron = require('electron') as typeof import('electron');
-  const { app, BrowserWindow: RealBrowserWindow } = electron;
+  const { app, BrowserWindow: RealBrowserWindow, globalShortcut } = electron;
+  const appWithShortcut = Object.assign(Object.create(app) as typeof app, { globalShortcut });
 
   pruneOldSessions(50);
 
@@ -54,9 +55,24 @@ export function createOverlayWindow(
 
   setOverlayWin(win);
   win.setIgnoreMouseEvents(true);
+  // Float above fullscreen apps and follow across Spaces (macOS).
+  try {
+    win.setAlwaysOnTop(true, 'screen-saver');
+    win.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true });
+  } catch {
+    // ignore on platforms that don't support these
+  }
+  // Fixed location at top-right of screen so the overlay never lands somewhere
+  // unexpected. Anchor still tracks HS but we explicitly resize+place.
   anchorToHearthstone(win, { x: 10, y: 10 });
+  try {
+    win.setBounds({ x: 20, y: 60, width: 380, height: 220 });
+  } catch {
+    /* ignore */
+  }
   const cfg = defaultHotkeyConfig();
-  registerHotkeys(win, cfg, appOverride ?? app);
+  registerHotkeys(win, cfg, appOverride ?? appWithShortcut);
   win.loadFile(getRendererPath());
+  win.show();
   return win;
 }

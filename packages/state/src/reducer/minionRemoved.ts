@@ -1,18 +1,22 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { extractEntityId } from '../entityId';
 import { applyEntityEvent } from '../entityRegistry';
 
 export function applyMinionRemoved(state: GameState, event: HsEvent): GameState {
   if (event.kind !== 'TAG_CHANGE') return state;
 
-  const entityMatch = event.entity.match(/^(\d+)$/);
-  if (!entityMatch || !entityMatch[1]) return state;
+  const entityId = extractEntityId(event.entity);
+  if (entityId === null) return state;
 
-  const entityId = Number.parseInt(entityMatch[1], 10);
-
-  // Only care about ZONE transitions to GRAVEYARD or REMOVEDFROMGAME
+  // BG uses GRAVEYARD/REMOVEDFROMGAME during combat resolution to temporarily
+  // shuffle minions, then restores survivors back to PLAY. If we react to
+  // either transition we lose the persistent board between turns. Instead we
+  // only remove on explicit PLAY → HAND (the player sold the minion), which
+  // is handled by applyShopSell. This reducer is now a no-op for BG.
+  return state;
   if (event.tag !== 'ZONE') return state;
-  if (event.value !== 'GRAVEYARD' && event.value !== 'REMOVEDFROMGAME') {
+  if (event.value !== 'GRAVEYARD') {
     return state;
   }
 

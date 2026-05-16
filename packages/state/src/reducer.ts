@@ -1,5 +1,6 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { applyEntityEvent } from './entityRegistry';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyAttackBuff } from './reducer/attackBuff';
@@ -84,9 +85,136 @@ import { applyWindfury } from './reducer/windfury';
 
 export function reducer(state: GameState, event: HsEvent): GameState {
   switch (event.kind) {
+    case 'PLAYER_NAME': {
+      // Attribute the name to the matching player (local or opponent).
+      if (state.player.playerId === event.playerId) {
+        return { ...state, player: { ...state.player, name: event.name } };
+      }
+      return state;
+    }
+
+    case 'PLAYER_INFO': {
+      if (event.isLocal) {
+        // Identify the human player so controller checks downstream succeed.
+        // A different (entityId, playerId) means a new BG match — reset the
+        // per-match state.
+        const identityChanged =
+          state.player.playerId !== event.playerId || state.player.entityId !== event.entityId;
+        if (identityChanged) {
+          return {
+            ...state,
+            turn: 0,
+            phase: 'lobby',
+            opponents: [],
+            player: {
+              ...state.player,
+              entityId: event.entityId,
+              playerId: event.playerId,
+              hero: { entityId: event.entityId, cardId: '', hp: 40, armor: 0 },
+              board: { minions: [] },
+              shop: { minions: [], frozen: false, rollCost: 1 },
+              hand: [],
+              gold: 0,
+              tier: 1,
+              tierUpCost: 6,
+              eliminated: false,
+              pendingTriple: null,
+              heroPowerUsedThisTurn: false,
+              handSize: 0,
+              trinketUsed: false,
+              cardsPlayedThisTurn: 0,
+              cardsGivenThisTurn: 0,
+              cardsDrawnThisTurn: 0,
+              goldSpentThisTurn: 0,
+              minionsOnBoard: 0,
+              minionsKilledThisTurn: 0,
+              minionsDiedThisTurn: 0,
+              minionsTradedThisTurn: 0,
+              turnsPlayed: 0,
+              turnsInGame: 0,
+              deathrattlesTriggeredThisTurn: 0,
+              entityRegistry: new Map(),
+            },
+          };
+        }
+        return state;
+      }
+      // Remote player → register as an opponent slot if not present yet.
+      const existing = state.opponents.find((o) => o.playerId === event.playerId);
+      if (existing) return state;
+      return {
+        ...state,
+        opponents: [
+          ...state.opponents,
+          {
+            entityId: event.entityId,
+            playerId: event.playerId,
+            hero: { entityId: event.entityId, cardId: '', hp: 40, armor: 0 },
+            board: { minions: [] },
+            tier: 1,
+            eliminated: false,
+            turnsPlayed: 0,
+            revives: 0,
+            turnsInGame: 0,
+            totalCardsPlayed: 0,
+            totalCardsDrawn: 0,
+            minionsOnBoard: 0,
+            minionsKilledThisTurn: 0,
+            cardsDrawnThisTurn: 0,
+            cardsGivenThisTurn: 0,
+            cardsPlayedThisTurn: 0,
+            deckSize: 30,
+            combo: 0,
+            bountyCards: 0,
+            victories: 0,
+            gameType: null,
+            turnTimer: 15,
+            numGameTurns: 0,
+            numChoices: 0,
+            deathrattlesTriggeredThisTurn: 0,
+            minionsDiedThisTurn: 0,
+            minionsTradedThisTurn: 0,
+          },
+        ],
+      };
+    }
+
     case 'BLOCK_START': {
       if (event.blockType === 'TRIGGER' && event.effectCardId === 'TB_BaconShop_StartGame') {
-        return { ...state, turn: 1, phase: 'shopping' };
+        // New BG match — reset board/shop/hand/opponents/registry. Keep the
+        // resolved player identity so we don't have to rediscover it.
+        return {
+          ...state,
+          turn: 1,
+          phase: 'shopping',
+          opponents: [],
+          player: {
+            ...state.player,
+            board: { minions: [] },
+            shop: { minions: [], frozen: false, rollCost: 1 },
+            hand: [],
+            gold: 0,
+            tier: 1,
+            tierUpCost: 6,
+            eliminated: false,
+            pendingTriple: null,
+            heroPowerUsedThisTurn: false,
+            handSize: 0,
+            trinketUsed: false,
+            cardsPlayedThisTurn: 0,
+            cardsGivenThisTurn: 0,
+            cardsDrawnThisTurn: 0,
+            goldSpentThisTurn: 0,
+            minionsOnBoard: 0,
+            minionsKilledThisTurn: 0,
+            minionsDiedThisTurn: 0,
+            minionsTradedThisTurn: 0,
+            turnsPlayed: 0,
+            turnsInGame: 0,
+            deathrattlesTriggeredThisTurn: 0,
+            entityRegistry: new Map(),
+          },
+        };
       }
       const afterDeathrattle = applyDeathrattle(state, event);
       if (afterDeathrattle !== state) {
@@ -104,7 +232,17 @@ export function reducer(state: GameState, event: HsEvent): GameState {
     case 'ZONE_CHANGE_LIST':
       return applyShopRefresh(state, event);
 
-    case 'TAG_CHANGE':
+    case 'TAG_CHANGE': {
+      // Keep the player's entity registry up to date for every TAG_CHANGE so
+      // ATK/HEALTH/CARDID/CONTROLLER/ZONE info is available to subsequent
+      // dispatches (e.g. minion-placement consults registry attack/health).
+      const updatedRegistry = applyEntityEvent(
+        new Map(state.player.entityRegistry),
+        event,
+      );
+      if (updatedRegistry !== state.player.entityRegistry) {
+        state = { ...state, player: { ...state.player, entityRegistry: updatedRegistry } };
+      }
       if (event.tag === 'PLAYSTATE' && event.value === 'FINISHED') {
         return applyGameOver(state, event);
       }
@@ -178,6 +316,16 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       }
       if (event.tag === 'STEP') {
         return applyTurnPhase(state, event);
+      }
+      // The Game-level entity's NUM_TURNS_IN_PLAY counts BG turns 1, 2, 3, …
+      // Anchor state.turn to it so we don't drift via STEP=MAIN_READY (which
+      // fires multiple times per real BG turn).
+      if (event.tag === 'NUM_TURNS_IN_PLAY' && event.entity === 'GameEntity') {
+        const n = Number.parseInt(event.value, 10);
+        if (!Number.isNaN(n) && n > 0 && n !== state.turn) {
+          return { ...state, turn: n };
+        }
+        return state;
       }
       if (event.tag === 'DAMAGE') {
         return applyCombatDamage(state, event);
@@ -356,6 +504,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         return applyDeathrattlesTriggered(state, event);
       }
       return applyTripleBonus(state, event);
+    }
 
     default:
       return state;

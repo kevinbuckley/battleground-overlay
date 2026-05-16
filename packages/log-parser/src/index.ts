@@ -1,5 +1,7 @@
 import { parseBlockEnd, parseBlockStart } from './parseBlock';
 import { parseFullEntity } from './parseFullEntity';
+import { parsePlayerInfo } from './parsePlayerInfo';
+import { parsePlayerName } from './parsePlayerName';
 import { parseShowEntity } from './parseShowEntity';
 import { parseTagChange } from './parseTagChange';
 import { parseZoneChangeList } from './parseZoneChangeList';
@@ -15,6 +17,8 @@ export function parseLine(line: string): HsEvent | null {
     parseBlockStart(trimmed) ??
     parseBlockEnd(trimmed) ??
     parseZoneChangeList(trimmed) ??
+    parsePlayerInfo(trimmed) ??
+    parsePlayerName(trimmed) ??
     parseShowEntity(trimmed);
 
   return result;
@@ -22,6 +26,7 @@ export function parseLine(line: string): HsEvent | null {
 
 export { parseBlockEnd, parseBlockStart } from './parseBlock';
 export { parseFullEntity } from './parseFullEntity';
+export { parsePlayerInfo } from './parsePlayerInfo';
 export { parseShowEntity } from './parseShowEntity';
 export { parseTagChange } from './parseTagChange';
 export { parseZoneChangeList } from './parseZoneChangeList';
@@ -35,6 +40,7 @@ export type {
   BlockStart,
   BlockEnd,
   ZoneChangeList,
+  PlayerInfo,
 } from './types';
 
 export { streamEvents } from './stream';

@@ -9,9 +9,13 @@
       margin: 0;
       padding: 12px 16px;
       font-family: 'Segoe UI', system-ui, sans-serif;
-      color: #e0e0e0;
-      background: transparent;
+      color: #ffffff;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid rgba(255, 215, 0, 0.4);
       user-select: none;
+      max-width: 360px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
     }
     #advice-action {
       font-size: 18px;
@@ -86,6 +90,7 @@
   </style>
 </head>
 <body>
+  <div id="overlay-debug" style="font-size:10px;color:#888;"></div>
   <div id="startup-banner"></div>
   <div id="hs-status"></div>
   <div id="game-info"></div>

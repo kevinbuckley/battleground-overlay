@@ -30,12 +30,48 @@ export async function wireLogStreamWithRetry(
   const maxAttempts = opts?.maxAttempts ?? 3;
   const retryMs = opts?.retryMs ?? 2000;
 
+  let handle: StreamHandle | null = null;
+  let currentPath: string | null = null;
+
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    const result = await wireFn(onEvent, opts?.logBaseDir);
-    if (result !== null) return result;
+    handle = await wireFn(onEvent, opts?.logBaseDir);
+    if (handle !== null) {
+      try {
+        currentPath = join(findActiveLogDir(opts?.logBaseDir), 'Power.log');
+      } catch {
+        currentPath = null;
+      }
+      break;
+    }
     if (attempt < maxAttempts - 1) {
       await new Promise((r) => setTimeout(r, retryMs));
     }
   }
-  return null;
+  if (handle === null) return null;
+
+  // Watch for log rotation: every 3s, ask findActiveLogDir whether HS has
+  // started a newer Power.log (e.g. on game restart). If so, swap our tail.
+  const rotationTimer = setInterval(async () => {
+    try {
+      const candidate = join(findActiveLogDir(opts?.logBaseDir), 'Power.log');
+      if (!existsSync(candidate)) return;
+      if (candidate === currentPath) return;
+      // Switch: close old handle, open new one.
+      const newHandle = await wireFn(onEvent, opts?.logBaseDir);
+      if (newHandle !== null) {
+        handle?.close();
+        handle = newHandle;
+        currentPath = candidate;
+      }
+    } catch {
+      // ignore — we'll retry on the next tick
+    }
+  }, 3000);
+
+  return {
+    close: () => {
+      clearInterval(rotationTimer);
+      handle?.close();
+    },
+  };
 }

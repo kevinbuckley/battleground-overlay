@@ -5,7 +5,7 @@ import { anchorToHearthstoneWithRetry, isHearthstoneRunning } from './anchor';
 import type { Coordinator } from './coordinator';
 import { startCoordinator } from './coordinator';
 import { formatStartupBanner, runDoctor } from './doctor';
-import { verifyHsLoggingConfig } from './hsLogConfig';
+import { getHsLogConfigPath, verifyHsLoggingConfig } from './hsLogConfig';
 import { wireLogStreamWithRetry } from './logStream';
 
 export interface BootstrapDeps {
@@ -32,7 +32,7 @@ export async function bootstrapOverlay(
   const { checkMlxServer } = await import('@overlay/llm');
   const doctorResult = await doctorFn({
     isHsRunning: isHearthstoneRunning,
-    verifyConfig: verifyHsLoggingConfig,
+    verifyConfig: () => verifyHsLoggingConfig(getHsLogConfigPath()),
     checkMlx: checkMlxServer,
   });
   logFn('doctor', doctorResult);

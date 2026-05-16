@@ -1,6 +1,7 @@
 import { getCardById } from '@overlay/card-data';
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
+import { extractEntityId } from '../entityId';
 import { applyEntityEvent } from '../entityRegistry';
 
 export function applyShopBuy(state: GameState, event: HsEvent): GameState {
@@ -8,10 +9,8 @@ export function applyShopBuy(state: GameState, event: HsEvent): GameState {
   if (event.tag !== 'ZONE') return state;
   if (event.value !== 'PLAY') return state;
 
-  const entityMatch = event.entity.match(/^(\d+)$/);
-  if (!entityMatch || !entityMatch[1]) return state;
-
-  const entityId = Number.parseInt(entityMatch[1], 10);
+  const entityId = extractEntityId(event.entity);
+  if (entityId === null) return state;
 
   // Update the entity registry to get the latest info for this entity
   const nextRegistry = applyEntityEvent(new Map(state.player.entityRegistry), event);
