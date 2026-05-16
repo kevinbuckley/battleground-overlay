@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import type { GameState, PlayerState } from '@overlay/shared';
+import type { GameState, OpponentState, PlayerState } from '@overlay/shared';
 import { initialState } from '@overlay/state';
 import {
   scoreBuysWithSim,
@@ -18,6 +18,39 @@ function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
 function makeState(overrides: Partial<GameState> = {}): GameState {
   return {
     ...initialState(),
+    ...overrides,
+  };
+}
+
+function makeOpponentStub(overrides: Partial<OpponentState> = {}): OpponentState {
+  return {
+    entityId: 0,
+    playerId: 0,
+    hero: { entityId: 0, cardId: '', hp: 40, armor: 0 },
+    board: { minions: [] },
+    tier: 1,
+    eliminated: false,
+    turnsPlayed: 0,
+    revives: 0,
+    turnsInGame: 0,
+    totalCardsPlayed: 0,
+    totalCardsDrawn: 0,
+    minionsOnBoard: 0,
+    minionsKilledThisTurn: 0,
+    cardsDrawnThisTurn: 0,
+    cardsGivenThisTurn: 0,
+    cardsPlayedThisTurn: 0,
+    deckSize: 30,
+    combo: 0,
+    bountyCards: 0,
+    victories: 0,
+    gameType: null,
+    turnTimer: 15,
+    numGameTurns: 0,
+    numChoices: 0,
+    deathrattlesTriggeredThisTurn: 0,
+    minionsDiedThisTurn: 0,
+    minionsTradedThisTurn: 0,
     ...overrides,
   };
 }
@@ -236,6 +269,42 @@ describe('scoreBuysWithSim', () => {
     const first = result[0];
     expect(first.score).toBeGreaterThanOrEqual(0);
     expect(first.action.type).toBe('Buy');
+  });
+
+  it('does not treat unresolved opponent stubs as simulation evidence', () => {
+    const shopMinions = [
+      {
+        entityId: 1,
+        cardId: 'CS3_001',
+        attack: 3,
+        health: 2,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        tribes: ['Beast'],
+      },
+    ];
+
+    const state = makeState({
+      turn: 8,
+      opponents: Array.from({ length: 7 }, () => makeOpponentStub()),
+      player: makePlayer({
+        shop: {
+          minions: shopMinions,
+          frozen: false,
+          rollCost: 2,
+        },
+      }),
+    });
+
+    const result = scoreBuysWithSim(state, 10, 5000);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].score).toBe(0);
+    expect(result[0].confidence).toBe(0.05);
+    expect(result[0].reason).toBe('no simulation data');
   });
 
   it('projects non-empty opponent board via predictOpponentBoard', () => {

@@ -17,6 +17,12 @@ function pct(value: number): number {
   return Math.round(value * 100);
 }
 
+function hasOpponentBoardSignal(opponents: OpponentState[]): boolean {
+  return opponents.some(
+    (o) => !o.eliminated && (o.board.minions.length > 0 || o.minionsOnBoard > 0),
+  );
+}
+
 /**
  * Build the projected minion array for an opponent.
  *
@@ -61,6 +67,7 @@ function buildProjectedOpponentBoard(opp: OpponentState, turn: number): Minion[]
 export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number): Recommendation[] {
   const candidates = enumerateBuyCandidates(state);
   const { player, opponents, turn } = state;
+  const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
@@ -68,14 +75,13 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
-    const result =
-      n <= 0
-        ? { winPct: 0, avgHpDelta: 0 }
-        : withBudget(
-            () => scoreCandidate(c.projectedBoard, player, projectedOpponents, n),
-            budgetMs,
-            { winPct: 0, avgHpDelta: 0 },
-          );
+    const result = !shouldSimulate
+      ? { winPct: 0, avgHpDelta: 0 }
+      : withBudget(
+          () => scoreCandidate(c.projectedBoard, player, projectedOpponents, n),
+          budgetMs,
+          { winPct: 0, avgHpDelta: 0 },
+        );
 
     return {
       action: c.action,
@@ -106,6 +112,7 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
 export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number): Recommendation[] {
   const candidates = enumerateSellCandidates(state);
   const { player, opponents, turn } = state;
+  const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
 
   const projectedOpponents = opponents.map((o) => ({
     ...o,
@@ -113,14 +120,13 @@ export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number)
   }));
 
   const scored: Recommendation[] = candidates.map((c) => {
-    const result =
-      n <= 0
-        ? { winPct: 0, avgHpDelta: 0 }
-        : withBudget(
-            () => scoreSellCandidate(c.projectedBoard, player, projectedOpponents, n),
-            budgetMs,
-            { winPct: 0, avgHpDelta: 0 },
-          );
+    const result = !shouldSimulate
+      ? { winPct: 0, avgHpDelta: 0 }
+      : withBudget(
+          () => scoreSellCandidate(c.projectedBoard, player, projectedOpponents, n),
+          budgetMs,
+          { winPct: 0, avgHpDelta: 0 },
+        );
 
     return {
       action: c.action,
@@ -155,6 +161,7 @@ export function scoreTierUpWithSim(
 ): Recommendation[] {
   const candidates = enumerateTierUpCandidates(state);
   const { player, opponents, turn } = state;
+  const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
 
   if (candidates.length === 0) {
     return [];
@@ -165,14 +172,12 @@ export function scoreTierUpWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result =
-    n <= 0
-      ? { winPct: 0, avgHpDelta: 0 }
-      : withBudget(
-          () => scoreCandidate(player.board, player, projectedOpponents, n),
-          budgetMs,
-          { winPct: 0, avgHpDelta: 0 },
-        );
+  const result = !shouldSimulate
+    ? { winPct: 0, avgHpDelta: 0 }
+    : withBudget(() => scoreCandidate(player.board, player, projectedOpponents, n), budgetMs, {
+        winPct: 0,
+        avgHpDelta: 0,
+      });
 
   return [
     {
@@ -206,6 +211,7 @@ export function scoreFreezeWithSim(
 ): Recommendation[] {
   const candidates = enumerateFreezeCandidates(state);
   const { player, opponents, turn } = state;
+  const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
 
   if (candidates.length === 0) {
     return [];
@@ -216,14 +222,12 @@ export function scoreFreezeWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result =
-    n <= 0
-      ? { winPct: 0, avgHpDelta: 0 }
-      : withBudget(
-          () => scoreCandidate(player.board, player, projectedOpponents, n),
-          budgetMs,
-          { winPct: 0, avgHpDelta: 0 },
-        );
+  const result = !shouldSimulate
+    ? { winPct: 0, avgHpDelta: 0 }
+    : withBudget(() => scoreCandidate(player.board, player, projectedOpponents, n), budgetMs, {
+        winPct: 0,
+        avgHpDelta: 0,
+      });
 
   return [
     {
@@ -257,6 +261,7 @@ export function scoreRerollWithSim(
 ): Recommendation[] {
   const candidates = enumerateRerollCandidates(state);
   const { player, opponents, turn } = state;
+  const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
 
   if (candidates.length === 0) {
     return [];
@@ -267,14 +272,12 @@ export function scoreRerollWithSim(
     board: { ...o.board, minions: buildProjectedOpponentBoard(o, turn) },
   }));
 
-  const result =
-    n <= 0
-      ? { winPct: 0, avgHpDelta: 0 }
-      : withBudget(
-          () => scoreCandidate(player.board, player, projectedOpponents, n),
-          budgetMs,
-          { winPct: 0, avgHpDelta: 0 },
-        );
+  const result = !shouldSimulate
+    ? { winPct: 0, avgHpDelta: 0 }
+    : withBudget(() => scoreCandidate(player.board, player, projectedOpponents, n), budgetMs, {
+        winPct: 0,
+        avgHpDelta: 0,
+      });
 
   return [
     {
