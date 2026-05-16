@@ -65,7 +65,7 @@ import { applyReborn } from './reducer/reborn';
 import { applyRevives } from './reducer/revives';
 import { applyShopBuy } from './reducer/shopBuy';
 import { applyShopFreeze } from './reducer/shopFreeze';
-import { applyShopRefresh } from './reducer/shopRefresh';
+import { applyShopRefresh, applyShopRefreshFromZonePlay } from './reducer/shopRefresh';
 import { applyShopReroll } from './reducer/shopReroll';
 import { applyShopSell } from './reducer/shopSell';
 import { applyShopSize } from './reducer/shopSize';
@@ -242,6 +242,12 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       );
       if (updatedRegistry !== state.player.entityRegistry) {
         state = { ...state, player: { ...state.player, entityRegistry: updatedRegistry } };
+      }
+      if (event.tag === 'ZONE' || event.tag === 'HAS_DRAG_TO_BUY') {
+        const afterShopZone = applyShopRefreshFromZonePlay(state, event);
+        if (afterShopZone !== state) {
+          return afterShopZone;
+        }
       }
       if (event.tag === 'PLAYSTATE' && event.value === 'FINISHED') {
         return applyGameOver(state, event);

@@ -25,6 +25,18 @@ export function extractEntityPriorZone(entity: string): string | null {
   return m?.[1] ?? null;
 }
 
+export function extractEntityZonePos(entity: string): number | null {
+  const m = entity.match(/\bzonePos=(\d+)\b/);
+  if (!m?.[1]) return null;
+  return Number.parseInt(m[1], 10);
+}
+
+export function extractEntityCardId(entity: string): string | null {
+  const m = entity.match(/\bcardId=([^\]\s]*)/);
+  if (!m?.[1]) return null;
+  return m[1];
+}
+
 // Returns true if the TAG_CHANGE entity refers to the local player. HS uses
 // any of three forms:
 //   - bare numeric matching player.entityId

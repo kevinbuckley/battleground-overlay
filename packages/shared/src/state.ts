@@ -83,7 +83,18 @@ export interface PlayerState {
   minionsDiedThisTurn: number;
   totalCardsPlayed: number;
   totalCardsDrawn: number;
-  entityRegistry: Map<number, { cardId: string; zone: string; controller: number }>;
+  entityRegistry: Map<
+    number,
+    {
+      cardId: string;
+      zone: string;
+      controller: number;
+      attack?: number;
+      health?: number;
+      zonePos?: number;
+      hasDragToBuy?: boolean;
+    }
+  >;
 }
 
 export interface OpponentState {
