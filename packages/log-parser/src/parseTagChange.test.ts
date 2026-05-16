@@ -6,6 +6,7 @@ describe('parseTagChange', () => {
     expect(parseTagChange('TAG_CHANGE Entity=4 tag=HEALTH value=30')).toEqual({
       kind: 'TAG_CHANGE',
       entity: '4',
+      entityRaw: '4',
       tag: 'HEALTH',
       value: '30',
     });
@@ -15,6 +16,7 @@ describe('parseTagChange', () => {
     expect(parseTagChange('TAG_CHANGE Entity=GameEntity tag=STEP value=MAIN_ACTION')).toEqual({
       kind: 'TAG_CHANGE',
       entity: 'GameEntity',
+      entityRaw: 'GameEntity',
       tag: 'STEP',
       value: 'MAIN_ACTION',
     });
@@ -25,7 +27,8 @@ describe('parseTagChange', () => {
       parseTagChange('TAG_CHANGE Entity=[name=Murloc Tidecaller id=42] tag=ATK value=3'),
     ).toEqual({
       kind: 'TAG_CHANGE',
-      entity: '[name=Murloc Tidecaller id=42]',
+      entity: '42',
+      entityRaw: '[name=Murloc Tidecaller id=42]',
       tag: 'ATK',
       value: '3',
     });
@@ -40,6 +43,7 @@ describe('parseTagChange', () => {
     expect(parseTagChange('TAG_CHANGE Entity=5 tag=ZONE value="PLAY"')).toEqual({
       kind: 'TAG_CHANGE',
       entity: '5',
+      entityRaw: '5',
       tag: 'ZONE',
       value: '"PLAY"',
     });
@@ -49,6 +53,7 @@ describe('parseTagChange', () => {
     expect(parseTagChange('TAG_CHANGE Entity=Some Player tag=ZONE value=PLAY')).toEqual({
       kind: 'TAG_CHANGE',
       entity: 'Some Player',
+      entityRaw: 'Some Player',
       tag: 'ZONE',
       value: 'PLAY',
     });
@@ -58,6 +63,7 @@ describe('parseTagChange', () => {
     expect(parseTagChange('TAG_CHANGE Entity=1 tag=ZONE value=HAND')).toEqual({
       kind: 'TAG_CHANGE',
       entity: '1',
+      entityRaw: '1',
       tag: 'ZONE',
       value: 'HAND',
     });

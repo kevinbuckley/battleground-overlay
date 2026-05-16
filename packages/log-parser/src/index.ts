@@ -7,8 +7,13 @@ import { parseTagChange } from './parseTagChange';
 import { parseZoneChangeList } from './parseZoneChangeList';
 import type { HsEvent } from './types';
 
+// HS Power.log lines are prefixed with a log level + timestamp + caller, e.g.
+//   D 15:47:09.1222540 GameState.DebugPrintPower() - TAG_CHANGE Entity=19 ...
+// Strip that prefix so offline fixture parsing matches the live stream parser.
+const HS_LOG_PREFIX_RE = /^[DIWE]\s+\d{1,2}:\d{2}:\d{2}\.\d+\s+\S+\(\)\s+-\s+/;
+
 export function parseLine(line: string): HsEvent | null {
-  const trimmed = line.trim();
+  const trimmed = line.replace(HS_LOG_PREFIX_RE, '').trim();
   if (!trimmed) return null;
 
   const result =

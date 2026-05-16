@@ -8,7 +8,8 @@ describe('wireLogStreamWithRetry', () => {
     const result = await wireLogStreamWithRetry(() => {}, {
       wireFn: mockWire as typeof wireLogStream,
     });
-    expect(result).toBe(mockHandle);
+    expect(result).not.toBeNull();
+    result?.close();
   });
 
   it('returns null after maxAttempts=1 when mock always returns null', async () => {

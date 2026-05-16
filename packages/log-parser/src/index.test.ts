@@ -28,6 +28,19 @@ describe('parseLine', () => {
     });
   });
 
+  it('parses raw Power.log lines with Hearthstone debug prefix', () => {
+    const result = parseLine(
+      'D 14:22:08.1636210 GameState.DebugPrintPower() - TAG_CHANGE Entity=GameEntity tag=NUM_TURNS_IN_PLAY value=6 ',
+    );
+    expect(result).toEqual({
+      kind: 'TAG_CHANGE',
+      entity: 'GameEntity',
+      entityRaw: 'GameEntity',
+      tag: 'NUM_TURNS_IN_PLAY',
+      value: '6',
+    });
+  });
+
   it('exports findHsLogDirCandidates as a function', () => {
     expect(typeof findHsLogDirCandidates).toBe('function');
   });

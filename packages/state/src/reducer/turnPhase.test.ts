@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'bun:test';
-import type { GameState } from '@overlay/shared';
 import { initialState } from '../initialState';
 import { applyTurnPhase } from './turnPhase';
 
@@ -60,18 +59,18 @@ describe('applyTurnPhase', () => {
     expect(result.phase).toBe('lobby');
   });
 
-  it('increments turn on MAIN_READY', () => {
+  it('does not increment turn on MAIN_READY', () => {
     const state = { ...initialState(), turn: 1 };
     const event = tagChange('STEP', 'MAIN_READY');
     const result = applyTurnPhase(state, event);
-    expect(result.turn).toBe(2);
+    expect(result.turn).toBe(1);
   });
 
-  it('turn starts at 1 after StartGame (set by reducer, not this function)', () => {
-    const state = { ...initialState(), turn: 1, phase: 'shopping' as GameState['phase'] };
+  it('preserves StartGame turn when MAIN_READY fires again', () => {
+    const state = { ...initialState(), turn: 1, phase: 'shopping' as const };
     const event = tagChange('STEP', 'MAIN_READY');
     const result = applyTurnPhase(state, event);
-    expect(result.turn).toBe(2);
+    expect(result.turn).toBe(1);
     expect(result.phase).toBe('shopping');
   });
 

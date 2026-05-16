@@ -244,12 +244,13 @@ describe('coordinator', () => {
       triggerKeyword: '',
     });
 
-    // Second event: turn 1 → 2 (MAIN_READY increments turn)
+    // Second event: authoritative BG turn counter increments turn.
     coordinator.onEvent({
       kind: 'TAG_CHANGE',
-      entity: '0',
-      tag: 'STEP',
-      value: 'MAIN_READY',
+      entity: 'GameEntity',
+      entityRaw: 'GameEntity',
+      tag: 'NUM_TURNS_IN_PLAY',
+      value: '2',
     });
 
     // Should have a state-snapshot entry from the turn increment

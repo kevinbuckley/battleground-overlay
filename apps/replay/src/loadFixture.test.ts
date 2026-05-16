@@ -54,6 +54,7 @@ describe('loadFixture', () => {
       expect(result[0]).toEqual({
         kind: 'TAG_CHANGE',
         entity: '1',
+        entityRaw: '1',
         tag: 'PLAYSTATE',
         value: 'FINISHED',
       });

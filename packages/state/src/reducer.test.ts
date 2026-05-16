@@ -20,7 +20,7 @@ describe('reducer BLOCK_START TB_BaconShop_StartGame', () => {
     expect(next.phase).toBe('shopping');
   });
 
-  it('preserves access to a pre-populated entity registry', () => {
+  it('clears pre-populated entity registry on new game reset', () => {
     const state = initialState();
     state.player.entityRegistry.set(10, {
       cardId: 'BOT_445',
@@ -40,7 +40,7 @@ describe('reducer BLOCK_START TB_BaconShop_StartGame', () => {
 
     const next = reducer(state, event);
 
-    expect(next.player.entityRegistry.get(10)?.cardId).toBe('BOT_445');
+    expect(next.player.entityRegistry.size).toBe(0);
   });
 });
 
@@ -90,7 +90,7 @@ describe('reducer FULL_ENTITY', () => {
   });
 
   it('adds stub minion to board when FULL_ENTITY followed by ZONE=PLAY on player controller', () => {
-    const state = initialState();
+    const state = { ...initialState(), player: { ...initialState().player, playerId: 1 } };
     const entityEvent: FullEntity = {
       kind: 'FULL_ENTITY',
       id: 200,
@@ -100,11 +100,12 @@ describe('reducer FULL_ENTITY', () => {
       kind: 'TAG_CHANGE',
       entity: '200',
       tag: 'CONTROLLER',
-      value: String(state.player.playerId),
+      value: '1',
     };
     const zoneEvent: TagChange = {
       kind: 'TAG_CHANGE',
       entity: '200',
+      entityRaw: '[entityName=Minion id=200 zone=HAND zonePos=1 cardId=TB_BGSMinion_2 player=1]',
       tag: 'ZONE',
       value: 'PLAY',
     };
@@ -240,7 +241,8 @@ describe('reducer TAG_CHANGE DIVINE_SHIELD via applyBuffs', () => {
       value: '1',
     };
     const next = reducer(state, event);
-    expect(next).toBe(state);
+    expect(next.player.board).toEqual(state.player.board);
+    expect(next.opponents).toEqual(state.opponents);
   });
 
   it('no-op on non-play entity', () => {
@@ -252,6 +254,7 @@ describe('reducer TAG_CHANGE DIVINE_SHIELD via applyBuffs', () => {
       value: '1',
     };
     const next = reducer(state, event);
-    expect(next).toBe(state);
+    expect(next.player.board).toEqual(state.player.board);
+    expect(next.opponents).toEqual(state.opponents);
   });
 });

@@ -12,6 +12,16 @@ function makeTagChange(entityId: number, tag: string, value: string): TagChange 
   return { kind: 'TAG_CHANGE', entity: String(entityId), tag, value };
 }
 
+function makeHandToPlayEvent(entityId: number, playerId: number): TagChange {
+  return {
+    kind: 'TAG_CHANGE',
+    entity: String(entityId),
+    entityRaw: `[entityName=Minion id=${entityId} zone=HAND zonePos=1 cardId=TB_BGSMinion player=${playerId}]`,
+    tag: 'ZONE',
+    value: 'PLAY',
+  };
+}
+
 function buildStateWithRegistry(
   playerId: number,
   cardIds: [number, string][],
@@ -34,7 +44,7 @@ describe('minionPlaced', () => {
     const controllerEvent = makeTagChange(100, 'CONTROLLER', '1');
     const s = applyMinionPlaced(state, controllerEvent);
     // Now transition to PLAY
-    const zoneEvent = makeTagChange(100, 'ZONE', 'PLAY');
+    const zoneEvent = makeHandToPlayEvent(100, 1);
     const next = applyMinionPlaced(s, zoneEvent);
 
     expect(next.player.board.minions.length).toBe(1);
@@ -49,7 +59,7 @@ describe('minionPlaced', () => {
   it('does not add minion if entity belongs to opponent controller', () => {
     const state = buildStateWithRegistry(1, [[200, 'TB_BGSMinion_2']]);
     const controllerEvent = makeTagChange(200, 'CONTROLLER', '2');
-    const zoneEvent = makeTagChange(200, 'ZONE', 'PLAY');
+    const zoneEvent = makeHandToPlayEvent(200, 2);
     const s = applyMinionPlaced(state, controllerEvent);
     const next = applyMinionPlaced(s, zoneEvent);
 
@@ -60,7 +70,7 @@ describe('minionPlaced', () => {
     const state = buildStateWithRegistry(1, [[300, 'TB_BGSMinion_3']]);
     const controllerEvent = makeTagChange(300, 'CONTROLLER', '1');
     const s0 = applyMinionPlaced(state, controllerEvent);
-    const zoneEvent = makeTagChange(300, 'ZONE', 'PLAY');
+    const zoneEvent = makeHandToPlayEvent(300, 1);
     const s1 = applyMinionPlaced(s0, zoneEvent);
     expect(s1.player.board.minions.length).toBe(1);
 
@@ -68,7 +78,7 @@ describe('minionPlaced', () => {
     const s2 = applyMinionPlaced(s1, graveEvent);
     expect(s2.player.board.minions.length).toBe(1);
 
-    const backToPlay = makeTagChange(300, 'ZONE', 'PLAY');
+    const backToPlay = makeHandToPlayEvent(300, 1);
     const s3 = applyMinionPlaced(s2, backToPlay);
     expect(s3.player.board.minions.length).toBe(1);
   });

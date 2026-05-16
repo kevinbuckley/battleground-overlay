@@ -30,14 +30,21 @@ describe('pipeline integration', () => {
   it('replays synthetic events: start game + health + gold', () => {
     const pipeline = createPipeline();
 
+    pipeline.onEvent({
+      kind: 'PLAYER_INFO',
+      entityId: 17,
+      playerId: 6,
+      isLocal: true,
+    });
+
     // Start the game
     pipeline.onEvent(blockStart('TRIGGER', 'TB_BaconShop_StartGame', '1'));
 
-    // Set player health (entity '0' matches player.entityId)
-    pipeline.onEvent(tagChange('0', 'HEALTH', '40'));
+    // Set player health.
+    pipeline.onEvent(tagChange('17', 'HEALTH', '40'));
 
-    // Set player gold (entity '0' matches player.entityId)
-    pipeline.onEvent(tagChange('0', 'RESOURCES', '3'));
+    // Set player gold.
+    pipeline.onEvent(tagChange('17', 'RESOURCES', '3'));
 
     const state = pipeline.getState();
 
@@ -73,6 +80,13 @@ describe('pipeline integration', () => {
   it('shop-buy → board-add flow: FULL_ENTITY + CONTROLLER + ZONE=PLAY', () => {
     const pipeline = createPipeline();
 
+    pipeline.onEvent({
+      kind: 'PLAYER_INFO',
+      entityId: 17,
+      playerId: 6,
+      isLocal: true,
+    });
+
     // Start the game
     pipeline.onEvent(blockStart('TRIGGER', 'TB_BaconShop_StartGame', '1'));
 
@@ -80,19 +94,22 @@ describe('pipeline integration', () => {
     pipeline.onEvent({
       kind: 'FULL_ENTITY',
       id: 200,
-      cardId: 'TB_BaconShop_Min1',
+      cardId: 'BG_TEST_MINION',
     } as import('@overlay/log-parser').FullEntity);
 
-    // Assign controller to player (playerId = 0 by default)
-    pipeline.onEvent(tagChange('200', 'CONTROLLER', '0'));
+    // Assign controller to player
+    pipeline.onEvent(tagChange('200', 'CONTROLLER', '6'));
 
     // Move entity to PLAY zone (shop buy)
-    pipeline.onEvent(tagChange('200', 'ZONE', 'PLAY'));
+    pipeline.onEvent({
+      ...tagChange('200', 'ZONE', 'PLAY'),
+      entityRaw: '[entityName=Minion id=200 zone=HAND zonePos=1 cardId=BG_TEST_MINION player=6]',
+    });
 
     const state = pipeline.getState();
 
     expect(state.player.board.minions).toHaveLength(1);
     expect(state.player.board.minions[0]?.entityId).toBe(200);
-    expect(state.player.board.minions[0]?.cardId).toBe('TB_BaconShop_Min1');
+    expect(state.player.board.minions[0]?.cardId).toBe('BG_TEST_MINION');
   });
 });

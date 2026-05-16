@@ -125,7 +125,7 @@ describe('ipcBridge', () => {
     state.player.board.minions = [
       {
         entityId: 10,
-        cardId: 'CS1_129',
+        cardId: 'TEST_BOARD_MINION_1',
         attack: 3,
         health: 2,
         taunt: true,
@@ -140,7 +140,7 @@ describe('ipcBridge', () => {
       },
       {
         entityId: 11,
-        cardId: 'NEW1_030',
+        cardId: 'TEST_BOARD_MINION_2',
         attack: 6,
         health: 5,
         taunt: false,
@@ -177,14 +177,14 @@ describe('ipcBridge', () => {
       }[];
     };
     expect(boardPayload.minions).toHaveLength(2);
-    expect(boardPayload.minions[0].cardId).toBe('CS1_129');
-    expect(boardPayload.minions[0].name).toBe('CS1_129');
+    expect(boardPayload.minions[0].cardId).toBe('TEST_BOARD_MINION_1');
+    expect(boardPayload.minions[0].name).toBe('TEST_BOARD_MINION_1');
     expect(boardPayload.minions[0].attack).toBe(3);
     expect(boardPayload.minions[0].health).toBe(2);
     expect(boardPayload.minions[0].taunt).toBe(true);
     expect(boardPayload.minions[0].divineShield).toBe(false);
-    expect(boardPayload.minions[1].cardId).toBe('NEW1_030');
-    expect(boardPayload.minions[1].name).toBe('NEW1_030');
+    expect(boardPayload.minions[1].cardId).toBe('TEST_BOARD_MINION_2');
+    expect(boardPayload.minions[1].name).toBe('TEST_BOARD_MINION_2');
     expect(boardPayload.minions[1].divineShield).toBe(true);
   });
 

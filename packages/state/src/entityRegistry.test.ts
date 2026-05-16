@@ -45,14 +45,14 @@ describe('entityRegistry', () => {
     expect(next.get(42)?.cardId).toBe('TB_BGSMinion_99');
   });
 
-  it('returns unchanged registry for unknown entity TAG_CHANGE', () => {
+  it('auto-creates an entry for unknown entity TAG_CHANGE', () => {
     const registry: EntityRegistry = new Map();
     registry.set(1, { cardId: 'TB_BGSMinion_1', zone: 'PLAY', controller: 0 });
 
     const unknownEvent = makeTagChange(999, 'ZONE', 'GRAVEYARD');
     const next = applyEntityEvent(registry, unknownEvent);
 
-    expect(next.size).toBe(1);
-    expect(next.has(999)).toBe(false);
+    expect(next.size).toBe(2);
+    expect(next.get(999)).toEqual({ cardId: '', zone: 'GRAVEYARD', controller: 0 });
   });
 });

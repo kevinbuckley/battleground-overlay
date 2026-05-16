@@ -33,7 +33,9 @@ export function createOverlayWindow(
 ): BrowserWindow {
   const electron = require('electron') as typeof import('electron');
   const { app, BrowserWindow: RealBrowserWindow, globalShortcut } = electron;
-  const appWithShortcut = Object.assign(Object.create(app) as typeof app, { globalShortcut });
+  const appWithShortcut = Object.assign(Object.create(app ?? {}) as typeof app, {
+    globalShortcut,
+  });
 
   pruneOldSessions(50);
 
@@ -73,6 +75,6 @@ export function createOverlayWindow(
   const cfg = defaultHotkeyConfig();
   registerHotkeys(win, cfg, appOverride ?? appWithShortcut);
   win.loadFile(getRendererPath());
-  win.show();
+  (win as BrowserWindow & { show?: () => void }).show?.();
   return win;
 }
