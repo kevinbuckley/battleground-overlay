@@ -17,6 +17,9 @@ test('sanitized live BG fixture replays through the state reducer', () => {
   expect(summary.finalState.turn).toBeGreaterThanOrEqual(10);
   expect(summary.finalState.player.playerId).toBeGreaterThan(0);
   expect(summary.finalState.player.name).toBe('LOCAL_PLAYER');
+  expect(summary.finalState.player.board.minions).toHaveLength(7);
+  expect(summary.finalState.player.shop.minions).toHaveLength(5);
+  expect(summary.finalState.opponents).toHaveLength(7);
   expect(summary.turns.length).toBeGreaterThanOrEqual(10);
 });
 

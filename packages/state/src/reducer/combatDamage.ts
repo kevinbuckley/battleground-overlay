@@ -26,6 +26,9 @@ export function applyCombatDamage(state: GameState, event: TagChange): GameState
   const playerMinions = state.player.board.minions;
   const targetMinion = playerMinions.find((m) => m.entityId === entityId);
   if (targetMinion) {
+    // BG combat damage is transient: minions can die during combat but return
+    // for the next recruit phase. Keep the persistent shopping board intact.
+    if (state.phase === 'combat') return state;
     const newHealth = Math.max(0, targetMinion.health - damage);
     const nextMinions =
       newHealth === 0
@@ -45,6 +48,7 @@ export function applyCombatDamage(state: GameState, event: TagChange): GameState
     const oppMinions = opp.board.minions;
     const targetOppMinion = oppMinions.find((m) => m.entityId === entityId);
     if (!targetOppMinion) return opp;
+    if (state.phase === 'combat') return opp;
 
     const newHealth = Math.max(0, targetOppMinion.health - damage);
     const nextOppMinions =

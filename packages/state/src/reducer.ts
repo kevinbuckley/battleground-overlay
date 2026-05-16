@@ -1,6 +1,7 @@
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState } from '@overlay/shared';
 import { applyEntityEvent } from './entityRegistry';
+import { initialOpponentState } from './initialState';
 import { applyAnomaly } from './reducer/anomaly';
 import { applyArmor } from './reducer/armor';
 import { applyAttackBuff } from './reducer/attackBuff';
@@ -83,7 +84,57 @@ import { applyTurnsInGame } from './reducer/turnsInGame';
 import { applyVictories } from './reducer/victories';
 import { applyWindfury } from './reducer/windfury';
 
-export function reducer(state: GameState, event: HsEvent): GameState {
+function createLobbyOpponentStubs(): GameState['opponents'] {
+  return Array.from({ length: 7 }, () => initialOpponentState());
+}
+
+function resetMatchStateForPlayer(state: GameState, entityId: number, playerId: number): GameState {
+  return {
+    ...state,
+    turn: 0,
+    phase: 'lobby',
+    opponents: createLobbyOpponentStubs(),
+    player: {
+      ...state.player,
+      entityId,
+      playerId,
+      hero: { entityId, cardId: '', hp: 40, armor: 0 },
+      board: { minions: [] },
+      shop: { minions: [], frozen: false, rollCost: 1 },
+      hand: [],
+      gold: 0,
+      tier: 1,
+      tierUpCost: 6,
+      eliminated: false,
+      pendingTriple: null,
+      heroPowerUsedThisTurn: false,
+      handSize: 0,
+      trinketUsed: false,
+      cardsPlayedThisTurn: 0,
+      cardsGivenThisTurn: 0,
+      cardsDrawnThisTurn: 0,
+      goldSpentThisTurn: 0,
+      minionsOnBoard: 0,
+      minionsKilledThisTurn: 0,
+      minionsDiedThisTurn: 0,
+      minionsTradedThisTurn: 0,
+      turnsPlayed: 0,
+      turnsInGame: 0,
+      deathrattlesTriggeredThisTurn: 0,
+      entityRegistry: new Map(),
+    },
+  };
+}
+
+function opponentFromPlayerInfo(entityId: number, playerId: number) {
+  return {
+    ...initialOpponentState(entityId, playerId),
+    hero: { entityId, cardId: '', hp: 40, armor: 0 },
+  };
+}
+
+export function reducer(inputState: GameState, event: HsEvent): GameState {
+  let state = inputState;
   switch (event.kind) {
     case 'PLAYER_NAME': {
       // Attribute the name to the matching player (local or opponent).
@@ -101,85 +152,38 @@ export function reducer(state: GameState, event: HsEvent): GameState {
         const identityChanged =
           state.player.playerId !== event.playerId || state.player.entityId !== event.entityId;
         if (identityChanged) {
-          return {
-            ...state,
-            turn: 0,
-            phase: 'lobby',
-            opponents: [],
-            player: {
-              ...state.player,
-              entityId: event.entityId,
-              playerId: event.playerId,
-              hero: { entityId: event.entityId, cardId: '', hp: 40, armor: 0 },
-              board: { minions: [] },
-              shop: { minions: [], frozen: false, rollCost: 1 },
-              hand: [],
-              gold: 0,
-              tier: 1,
-              tierUpCost: 6,
-              eliminated: false,
-              pendingTriple: null,
-              heroPowerUsedThisTurn: false,
-              handSize: 0,
-              trinketUsed: false,
-              cardsPlayedThisTurn: 0,
-              cardsGivenThisTurn: 0,
-              cardsDrawnThisTurn: 0,
-              goldSpentThisTurn: 0,
-              minionsOnBoard: 0,
-              minionsKilledThisTurn: 0,
-              minionsDiedThisTurn: 0,
-              minionsTradedThisTurn: 0,
-              turnsPlayed: 0,
-              turnsInGame: 0,
-              deathrattlesTriggeredThisTurn: 0,
-              entityRegistry: new Map(),
-            },
-          };
+          return resetMatchStateForPlayer(state, event.entityId, event.playerId);
         }
         return state;
       }
-      // Remote player → register as an opponent slot if not present yet.
-      const existing = state.opponents.find((o) => o.playerId === event.playerId);
-      if (existing) return state;
+      // Remote player → update a known slot, or claim the first lobby stub.
+      const existingIndex = state.opponents.findIndex((o) => o.playerId === event.playerId);
+      if (existingIndex !== -1) {
+        const existing = state.opponents[existingIndex];
+        if (existing?.entityId === event.entityId) return state;
+        const opponents = state.opponents.map((o, i) =>
+          i === existingIndex ? { ...o, entityId: event.entityId, playerId: event.playerId } : o,
+        );
+        return { ...state, opponents };
+      }
+      const stubIndex = state.opponents.findIndex((o) => o.playerId === 0 && o.entityId === 0);
+      if (stubIndex !== -1) {
+        const opponents = state.opponents.map((o, i) =>
+          i === stubIndex ? opponentFromPlayerInfo(event.entityId, event.playerId) : o,
+        );
+        return { ...state, opponents };
+      }
+      if (state.opponents.length >= 7) return state;
       return {
         ...state,
-        opponents: [
-          ...state.opponents,
-          {
-            entityId: event.entityId,
-            playerId: event.playerId,
-            hero: { entityId: event.entityId, cardId: '', hp: 40, armor: 0 },
-            board: { minions: [] },
-            tier: 1,
-            eliminated: false,
-            turnsPlayed: 0,
-            revives: 0,
-            turnsInGame: 0,
-            totalCardsPlayed: 0,
-            totalCardsDrawn: 0,
-            minionsOnBoard: 0,
-            minionsKilledThisTurn: 0,
-            cardsDrawnThisTurn: 0,
-            cardsGivenThisTurn: 0,
-            cardsPlayedThisTurn: 0,
-            deckSize: 30,
-            combo: 0,
-            bountyCards: 0,
-            victories: 0,
-            gameType: null,
-            turnTimer: 15,
-            numGameTurns: 0,
-            numChoices: 0,
-            deathrattlesTriggeredThisTurn: 0,
-            minionsDiedThisTurn: 0,
-            minionsTradedThisTurn: 0,
-          },
-        ],
+        opponents: [...state.opponents, opponentFromPlayerInfo(event.entityId, event.playerId)],
       };
     }
 
     case 'BLOCK_START': {
+      if (event.blockType === 'ATTACK' || event.blockType === 'DEATHS') {
+        return { ...state, phase: 'combat' };
+      }
       if (event.blockType === 'TRIGGER' && event.effectCardId === 'TB_BaconShop_StartGame') {
         // New BG match — reset board/shop/hand/opponents/registry. Keep the
         // resolved player identity so we don't have to rediscover it.
@@ -187,7 +191,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
           ...state,
           turn: 1,
           phase: 'shopping',
-          opponents: [],
+          opponents: state.player.playerId === 0 ? state.opponents : createLobbyOpponentStubs(),
           player: {
             ...state.player,
             board: { minions: [] },
@@ -236,10 +240,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       // Keep the player's entity registry up to date for every TAG_CHANGE so
       // ATK/HEALTH/CARDID/CONTROLLER/ZONE info is available to subsequent
       // dispatches (e.g. minion-placement consults registry attack/health).
-      const updatedRegistry = applyEntityEvent(
-        new Map(state.player.entityRegistry),
-        event,
-      );
+      const updatedRegistry = applyEntityEvent(new Map(state.player.entityRegistry), event);
       if (updatedRegistry !== state.player.entityRegistry) {
         state = { ...state, player: { ...state.player, entityRegistry: updatedRegistry } };
       }
@@ -328,7 +329,7 @@ export function reducer(state: GameState, event: HsEvent): GameState {
       // fires multiple times per real BG turn).
       if (event.tag === 'NUM_TURNS_IN_PLAY' && event.entity === 'GameEntity') {
         const n = Number.parseInt(event.value, 10);
-        if (!Number.isNaN(n) && n > 0 && n !== state.turn) {
+        if (!Number.isNaN(n) && n > state.turn) {
           return { ...state, turn: n };
         }
         return state;

@@ -44,6 +44,43 @@ describe('reducer BLOCK_START TB_BaconShop_StartGame', () => {
   });
 });
 
+describe('reducer PLAYER_INFO lobby slots', () => {
+  it('pre-registers seven opponent stubs when local player identity is resolved', () => {
+    const next = reducer(initialState(), {
+      kind: 'PLAYER_INFO',
+      entityId: 17,
+      playerId: 6,
+      isLocal: true,
+    });
+
+    expect(next.player.entityId).toBe(17);
+    expect(next.player.playerId).toBe(6);
+    expect(next.opponents).toHaveLength(7);
+    expect(next.opponents.every((o) => o.entityId === 0 && o.playerId === 0)).toBe(true);
+  });
+
+  it('claims the first unresolved opponent stub for remote player info', () => {
+    const withLocal = reducer(initialState(), {
+      kind: 'PLAYER_INFO',
+      entityId: 17,
+      playerId: 6,
+      isLocal: true,
+    });
+
+    const next = reducer(withLocal, {
+      kind: 'PLAYER_INFO',
+      entityId: 18,
+      playerId: 14,
+      isLocal: false,
+    });
+
+    expect(next.opponents).toHaveLength(7);
+    expect(next.opponents[0]?.entityId).toBe(18);
+    expect(next.opponents[0]?.playerId).toBe(14);
+    expect(next.opponents.slice(1).every((o) => o.entityId === 0 && o.playerId === 0)).toBe(true);
+  });
+});
+
 describe('reducer TAG_CHANGE ZONE=PLAY regression', () => {
   it('calls applyShopBuy on ZONE=PLAY', () => {
     const event: TagChange = {
@@ -73,6 +110,21 @@ describe('reducer TAG_CHANGE ZONE=GRAVEYARD regression', () => {
     // Should not throw and should return a GameState (same structure)
     expect(next).toBeDefined();
     expect(next.turn).toBe(state.turn);
+  });
+});
+
+describe('reducer GameEntity NUM_TURNS_IN_PLAY', () => {
+  it('does not rewind turn when delayed duplicate log lines arrive', () => {
+    const state = { ...initialState(), turn: 8 };
+    const next = reducer(state, {
+      kind: 'TAG_CHANGE',
+      entity: 'GameEntity',
+      entityRaw: 'GameEntity',
+      tag: 'NUM_TURNS_IN_PLAY',
+      value: '7',
+    });
+
+    expect(next.turn).toBe(8);
   });
 });
 

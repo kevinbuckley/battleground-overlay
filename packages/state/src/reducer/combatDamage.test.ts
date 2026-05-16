@@ -130,6 +130,22 @@ describe('applyCombatDamage', () => {
     expect(result.player.board.minions).toHaveLength(0);
   });
 
+  it('preserves persistent board minions during BG combat damage', () => {
+    const minion = makeMinion(10, 3);
+    const state = makeState({
+      phase: 'combat',
+      player: {
+        ...initialState().player,
+        hero: { ...initialState().player.hero, entityId: 1 },
+        board: { minions: [minion] },
+      },
+    });
+    const event = makeTagChange('10', 'DAMAGE', '3');
+    const result = applyCombatDamage(state, event);
+    expect(result.player.board.minions).toHaveLength(1);
+    expect(result.player.board.minions[0].health).toBe(3);
+  });
+
   it('handles 3 damage to 2-health minion removes it', () => {
     const minion = makeMinion(10, 2);
     const state = makeState({
