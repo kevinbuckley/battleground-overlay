@@ -128,6 +128,33 @@ describe('reducer GameEntity NUM_TURNS_IN_PLAY', () => {
   });
 });
 
+describe('reducer opponent NUM_MINIONS_ON_BOARD', () => {
+  it('tracks opponent board count without corrupting opponent hp', () => {
+    const withLocal = reducer(initialState(), {
+      kind: 'PLAYER_INFO',
+      entityId: 17,
+      playerId: 6,
+      isLocal: true,
+    });
+    const withOpponent = reducer(withLocal, {
+      kind: 'PLAYER_INFO',
+      entityId: 18,
+      playerId: 14,
+      isLocal: false,
+    });
+
+    const next = reducer(withOpponent, {
+      kind: 'TAG_CHANGE',
+      entity: '18',
+      tag: 'NUM_MINIONS_ON_BOARD',
+      value: '5',
+    });
+
+    expect(next.opponents[0]?.minionsOnBoard).toBe(5);
+    expect(next.opponents[0]?.hero.hp).toBe(40);
+  });
+});
+
 describe('reducer FULL_ENTITY', () => {
   it('registers entity in registry on FULL_ENTITY event', () => {
     const event: FullEntity = {

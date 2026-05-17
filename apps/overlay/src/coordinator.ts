@@ -7,7 +7,7 @@ import { type Pipeline, createPipeline } from '@overlay/state';
 import type { BrowserWindow } from 'electron';
 import { setAdvice } from './advicePanel';
 import { setExplanation } from './explanationPanel';
-import { startBridge, stopBridge } from './ipcBridge';
+import { pushBridgeUpdate, startBridge, stopBridge } from './ipcBridge';
 
 export interface Coordinator {
   onEvent: (event: HsEvent) => void;
@@ -91,6 +91,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       // If recommend throws, clear advice rather than crashing
       setAdvice(null);
     }
+    pushBridgeUpdate();
   };
 
   const coordinator: Coordinator = {
@@ -98,6 +99,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
     getState: pipeline.getState,
     setHsStatus(s: 'waiting' | 'anchored' | 'failed'): void {
       hsStatus = s;
+      pushBridgeUpdate();
     },
     getHsStatus(): 'waiting' | 'anchored' | 'failed' {
       return hsStatus;

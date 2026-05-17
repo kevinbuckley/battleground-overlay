@@ -2,7 +2,7 @@ import { describe, expect, it } from 'bun:test';
 import type { OpponentState } from '@overlay/shared';
 import { predictOpponentBoard } from './opponentPredictor';
 
-function makeOpponent(minionIds: string[]): OpponentState {
+function makeOpponent(minionIds: string[], overrides: Partial<OpponentState> = {}): OpponentState {
   return {
     entityId: 1,
     playerId: 2,
@@ -26,14 +26,31 @@ function makeOpponent(minionIds: string[]): OpponentState {
     },
     tier: 3,
     eliminated: false,
+    minionsOnBoard: minionIds.length,
+    ...overrides,
   };
 }
 
 describe('predictOpponentBoard', () => {
   it('returns empty board for opponent with no minions', () => {
-    const opp = makeOpponent([]);
+    const opp = makeOpponent([], { minionsOnBoard: 0 });
     const result = predictOpponentBoard(opp, 1);
     expect(result.minions).toEqual([]);
+  });
+
+  it('creates a generic projected board when only minion count is known', () => {
+    const opp = makeOpponent([], { minionsOnBoard: 4, tier: 3 });
+    const result = predictOpponentBoard(opp, 8);
+
+    expect(result.minions).toHaveLength(4);
+    expect(result.minions.every((m) => m.cardId === 'BG_GVG_085')).toBe(true);
+    expect(result.minions.every((m) => m.attack > 0 && m.health > 0)).toBe(true);
+  });
+
+  it('caps generic projected boards at seven minions', () => {
+    const opp = makeOpponent([], { minionsOnBoard: 10, tier: 6 });
+    const result = predictOpponentBoard(opp, 12);
+    expect(result.minions).toHaveLength(7);
   });
 
   it('returns a copy of opponent minions', () => {
@@ -77,9 +94,12 @@ describe('predictOpponentBoard', () => {
 
   it('caps scaled stats at 1.5× original at turn 20', () => {
     const opp = makeOpponent(['Squire']);
-    const original = opp.board.minions[0]!;
+    const original = opp.board.minions[0];
     const result = predictOpponentBoard(opp, 20);
-    const scaled = result.minions[0]!;
+    const scaled = result.minions[0];
+    expect(original).toBeDefined();
+    expect(scaled).toBeDefined();
+    if (!original || !scaled) return;
     expect(scaled.attack).toBeLessThanOrEqual(Math.ceil(original.attack * 1.5));
     expect(scaled.health).toBeLessThanOrEqual(Math.ceil(original.health * 1.5));
   });

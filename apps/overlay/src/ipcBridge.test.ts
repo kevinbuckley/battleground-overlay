@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it } from 'bun:test';
 import type { GameState, Recommendation } from '@overlay/shared';
 import {
   enrichRecommendationCardName,
+  pushBridgeUpdate,
   startBridge,
   stopBridge,
   toBoardUpdateMinion,
@@ -50,7 +51,7 @@ describe('ipcBridge', () => {
     stopBridge();
   });
 
-  it('startBridge pushes overlay:state-update on the 500ms interval', async () => {
+  it('startBridge immediately pushes overlay:state-update', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     startBridge(
@@ -60,7 +61,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -69,7 +69,7 @@ describe('ipcBridge', () => {
     expect(stateChannels[0].args[0]).toEqual(state);
   });
 
-  it('startBridge pushes overlay:recs-update when getRecs returns recs', async () => {
+  it('startBridge pushes overlay:recs-update when getRecs returns recs', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     const recs: Recommendation[] = [
@@ -87,7 +87,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -101,7 +100,7 @@ describe('ipcBridge', () => {
     ]);
   });
 
-  it('startBridge does not push overlay:recs-update when getRecs returns null', async () => {
+  it('startBridge sends an empty overlay:recs-update when getRecs returns null', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     startBridge(
@@ -111,15 +110,15 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
     const recsChannels = sends.filter((s) => s.channel === 'overlay:recs-update');
-    expect(recsChannels.length).toBe(0);
+    expect(recsChannels).toHaveLength(1);
+    expect(recsChannels[0].args[0]).toEqual([]);
   });
 
-  it('startBridge pushes overlay:board-update with board minion shape', async () => {
+  it('startBridge pushes overlay:board-update with board minion shape', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     state.player.board.minions = [
@@ -161,7 +160,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -270,12 +268,12 @@ describe('ipcBridge', () => {
       },
     ];
 
-    expect(toBoardUpdateMinion(state.player.board.minions[0], () => ({ name: 'Alleycat' })).name).toBe(
-      'Alleycat',
-    );
+    expect(
+      toBoardUpdateMinion(state.player.board.minions[0], () => ({ name: 'Alleycat' })).name,
+    ).toBe('Alleycat');
   });
 
-  it('startBridge pushes overlay:shop-update with current shop minions', async () => {
+  it('startBridge pushes overlay:shop-update with current shop minions', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     state.player.shop.minions = [
@@ -357,7 +355,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -366,7 +363,7 @@ describe('ipcBridge', () => {
     expect(shopChannels[0].args[0]).toHaveLength(3);
   });
 
-  it('startBridge pushes overlay:shop-update with [] for an empty shop', async () => {
+  it('startBridge pushes overlay:shop-update with [] for an empty shop', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
 
@@ -377,7 +374,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -386,7 +382,7 @@ describe('ipcBridge', () => {
     expect(shopChannels[0].args[0]).toEqual([]);
   });
 
-  it('startBridge pushes overlay:opponents-update with opponent shape', async () => {
+  it('startBridge pushes overlay:opponents-update with opponent shape', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     state.opponents = [
@@ -414,7 +410,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -458,7 +453,7 @@ describe('ipcBridge', () => {
     expect(sendsAfter).toBe(sendsBefore);
   });
 
-  it('startBridge pushes overlay:damage-update with damage forecast', async () => {
+  it('startBridge pushes overlay:damage-update with damage forecast', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     const scoreResult = { winPct: 0.75, avgHpDelta: 3 };
@@ -469,7 +464,6 @@ describe('ipcBridge', () => {
       () => scoreResult,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -485,7 +479,7 @@ describe('ipcBridge', () => {
     expect(forecast.maxDmg).toBe(2);
   });
 
-  it('startBridge sends overlay:hs-status when getHsStatus is provided', async () => {
+  it('startBridge sends overlay:hs-status when getHsStatus is provided', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     startBridge(
@@ -496,7 +490,6 @@ describe('ipcBridge', () => {
       () => 'anchored',
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -505,7 +498,7 @@ describe('ipcBridge', () => {
     expect(hsChannels[0].args[0]).toBe('anchored');
   });
 
-  it('startBridge does not send overlay:hs-status when getHsStatus is omitted', async () => {
+  it('startBridge does not send overlay:hs-status when getHsStatus is omitted', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     startBridge(
@@ -515,7 +508,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -523,7 +515,7 @@ describe('ipcBridge', () => {
     expect(hsChannels.length).toBe(0);
   });
 
-  it('startBridge sends only top-3 recs when more than 3 are returned', async () => {
+  it('startBridge sends only top-3 recs when more than 3 are returned', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     const recs: Recommendation[] = [
@@ -565,7 +557,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -575,7 +566,7 @@ describe('ipcBridge', () => {
     expect(sentRecs).toHaveLength(3);
   });
 
-  it('startBridge sends 1 rec when only 1 is returned', async () => {
+  it('startBridge sends 1 rec when only 1 is returned', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
     const recs: Recommendation[] = [
@@ -593,7 +584,6 @@ describe('ipcBridge', () => {
       () => null,
     );
 
-    await new Promise<void>((resolve) => setTimeout(resolve, 600));
     const sends = (
       mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
     )._getSends();
@@ -601,5 +591,33 @@ describe('ipcBridge', () => {
     expect(recsChannels.length).toBeGreaterThanOrEqual(1);
     const sentRecs = recsChannels[0].args[0] as Recommendation[];
     expect(sentRecs).toHaveLength(1);
+  });
+
+  it('pushBridgeUpdate only sends changed payloads', () => {
+    const mockWin = makeMockWin();
+    const state = makeMockState();
+    startBridge(
+      mockWin as unknown as import('electron').BrowserWindow,
+      () => state,
+      () => null,
+      () => null,
+    );
+    const sendsAfterStart = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends().length;
+
+    pushBridgeUpdate();
+    const sendsAfterUnchangedPush = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends().length;
+    expect(sendsAfterUnchangedPush).toBe(sendsAfterStart);
+
+    state.player.gold = 4;
+    pushBridgeUpdate();
+    const sends = (
+      mockWin as { _getSends: () => { channel: string; args: unknown[] }[] }
+    )._getSends();
+    expect(sends.length).toBeGreaterThan(sendsAfterUnchangedPush);
+    expect(sends.some((s) => s.channel === 'overlay:state-update')).toBe(true);
   });
 });

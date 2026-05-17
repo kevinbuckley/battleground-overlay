@@ -53,6 +53,7 @@ import { applyNumGameTurns } from './reducer/numGameTurns';
 import { applyNumMinionsTraded } from './reducer/numMinionsTraded';
 import { applyOpponentEliminated } from './reducer/opponentEliminated';
 import { applyOpponentHealth } from './reducer/opponentHealth';
+import { applyOpponentMinionsOnBoard } from './reducer/opponentMinionsOnBoard';
 import { applyOpponentRevives } from './reducer/opponentRevives';
 import { applyOpponentTier } from './reducer/opponentTier';
 import { applyOpponentTurnsInGame } from './reducer/opponentTurnsInGame';
@@ -278,13 +279,18 @@ export function reducer(inputState: GameState, event: HsEvent): GameState {
           if (event.tag === 'HEALTH' && event.value === '0') {
             return applyOpponentEliminated(state, event);
           }
+          if (event.tag === 'HEALTH') {
+            return applyOpponentHealth(state, event);
+          }
           if (event.tag === 'PLAYER_TECH_LEVEL') {
             return applyOpponentTier(state, event);
           }
           if (event.tag === 'NUM_TURNS_PLAYED') {
             return applyOpponentTurnsPlayed(state, event);
           }
-          return applyOpponentHealth(state, event);
+          if (event.tag === 'NUM_MINIONS_ON_BOARD') {
+            return applyOpponentMinionsOnBoard(state, event);
+          }
         }
       }
       // HEALTH on a minion entity (not a hero)
@@ -456,7 +462,9 @@ export function reducer(inputState: GameState, event: HsEvent): GameState {
         return applyOpponentTurnsInGame(state, event);
       }
       if (event.tag === 'NUM_MINIONS_ON_BOARD') {
-        return applyMinionsOnBoard(state, event);
+        const playerResult = applyMinionsOnBoard(state, event);
+        if (playerResult !== state) return playerResult;
+        return applyOpponentMinionsOnBoard(state, event);
       }
       if (event.tag === 'NUM_MINIONS_KILLED_THIS_TURN') {
         return applyMinionsKilled(state, event);

@@ -4,9 +4,19 @@ import type { GameState, Minion, Recommendation } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 import { computeDamageForecast } from './damageWidget';
 
-let pollInterval: ReturnType<typeof setInterval> | null = null;
-
 type CardLookup = (cardId: string) => { name?: string } | null | undefined;
+type HsStatus = 'waiting' | 'anchored' | 'failed';
+
+interface BridgeState {
+  win: BrowserWindow;
+  getState: () => GameState;
+  getRecs: () => Recommendation[] | null;
+  getScoreResult: () => ScoreResult | null;
+  getHsStatus?: () => HsStatus;
+  lastPayloads: Map<string, string>;
+}
+
+let activeBridge: BridgeState | null = null;
 
 export function enrichRecommendationCardName(
   rec: Recommendation,
@@ -50,81 +60,98 @@ export function startBridge(
   getState: () => GameState,
   getRecs: () => Recommendation[] | null,
   getScoreResult: () => ScoreResult | null,
-  getHsStatus?: () => string,
+  getHsStatus?: () => HsStatus,
 ): void {
-  pollInterval = setInterval(() => {
-    try {
-      const state = getState();
-      win.webContents.send('overlay:state-update', state);
-      try {
-        win.webContents.send('overlay:board-update', {
-          minions: state.player.board.minions.map((m) => toBoardUpdateMinion(m)),
-        });
-      } catch {
-        // swallow
-      }
-      try {
-        win.webContents.send(
-          'overlay:shop-update',
-          state.player.shop.minions.map((m) => ({
-            cardId: m.cardId,
-            attack: m.attack,
-            health: m.health,
-          })),
-        );
-      } catch {
-        // swallow
-      }
-      try {
-        win.webContents.send(
-          'overlay:opponents-update',
-          state.opponents.map((o) => ({
-            entityId: o.entityId,
-            hp: o.hero.hp,
-            tier: o.tier,
-            eliminated: o.eliminated,
-          })),
-        );
-      } catch {
-        // swallow
-      }
-    } catch {
-      // swallow — renderer may not be ready yet
+  activeBridge = {
+    win,
+    getState,
+    getRecs,
+    getScoreResult,
+    getHsStatus,
+    lastPayloads: new Map(),
+  };
+  pushBridgeUpdate();
+}
+
+function sendIfChanged(bridge: BridgeState, channel: string, payload: unknown): void {
+  const serialized = JSON.stringify(payload);
+  if (bridge.lastPayloads.get(channel) === serialized) return;
+  try {
+    bridge.win.webContents.send(channel, payload);
+    bridge.lastPayloads.set(channel, serialized);
+  } catch {
+    // Renderer may not be ready yet.
+  }
+}
+
+export function pushBridgeUpdate(): void {
+  const bridge = activeBridge;
+  if (!bridge) return;
+
+  let state: GameState | null = null;
+  try {
+    state = bridge.getState();
+    sendIfChanged(bridge, 'overlay:state-update', state);
+    sendIfChanged(bridge, 'overlay:board-update', {
+      minions: state.player.board.minions.map((m) => toBoardUpdateMinion(m)),
+    });
+    sendIfChanged(
+      bridge,
+      'overlay:shop-update',
+      state.player.shop.minions.map((m) => ({
+        cardId: m.cardId,
+        attack: m.attack,
+        health: m.health,
+      })),
+    );
+    sendIfChanged(
+      bridge,
+      'overlay:opponents-update',
+      state.opponents.map((o) => ({
+        entityId: o.entityId,
+        hp: o.hero.hp,
+        tier: o.tier,
+        eliminated: o.eliminated,
+      })),
+    );
+  } catch {
+    // Renderer or state provider may not be ready yet.
+  }
+
+  try {
+    const recs = bridge.getRecs();
+    sendIfChanged(
+      bridge,
+      'overlay:recs-update',
+      (recs ?? []).slice(0, 3).map((rec) => enrichRecommendationCardName(rec)),
+    );
+  } catch {
+    // Renderer may not be ready yet.
+  }
+
+  try {
+    const scoreResult = bridge.getScoreResult();
+    if (scoreResult) {
+      state ??= bridge.getState();
+      sendIfChanged(
+        bridge,
+        'overlay:damage-update',
+        computeDamageForecast(scoreResult, state.player.tier),
+      );
     }
-    try {
-      const recs = getRecs?.();
-      if (recs) {
-        win.webContents.send(
-          'overlay:recs-update',
-          recs.slice(0, 3).map((rec) => enrichRecommendationCardName(rec)),
-        );
-      }
-    } catch {
-      // swallow — renderer may not be ready yet
+  } catch {
+    // Renderer may not be ready yet.
+  }
+
+  try {
+    if (bridge.getHsStatus) {
+      sendIfChanged(bridge, 'overlay:hs-status', bridge.getHsStatus());
     }
-    try {
-      const scoreResult = getScoreResult?.();
-      if (scoreResult) {
-        const state = getState();
-        const forecast = computeDamageForecast(scoreResult, state.player.tier);
-        win.webContents.send('overlay:damage-update', forecast);
-      }
-    } catch {
-      // swallow — renderer may not be ready yet
-    }
-    try {
-      if (getHsStatus) {
-        win.webContents.send('overlay:hs-status', getHsStatus());
-      }
-    } catch {
-      // swallow — renderer may not be ready yet
-    }
-  }, 500);
+  } catch {
+    // Renderer may not be ready yet.
+  }
 }
 
 export function stopBridge(): void {
-  if (pollInterval) {
-    clearInterval(pollInterval);
-    pollInterval = null;
-  }
+  activeBridge = null;
 }
