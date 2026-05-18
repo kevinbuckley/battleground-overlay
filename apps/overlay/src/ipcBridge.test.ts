@@ -6,6 +6,7 @@ import {
   startBridge,
   stopBridge,
   toBoardUpdateMinion,
+  toShopUpdateMinion,
 } from './ipcBridge';
 
 function makeMockWin() {
@@ -273,6 +274,42 @@ describe('ipcBridge', () => {
     ).toBe('Alleycat');
   });
 
+  it('toShopUpdateMinion adds a looked-up card name', () => {
+    const state = makeMockState();
+    state.player.shop.minions = [
+      {
+        entityId: 21,
+        cardId: 'TB_001',
+        attack: 2,
+        health: 3,
+        taunt: false,
+        divineShield: false,
+        poisonous: false,
+        reborn: false,
+        frozen: false,
+        golden: false,
+        windfury: false,
+        cleave: false,
+        elite: false,
+        lifesteal: false,
+        cost: 3,
+        tribes: [],
+        spellPower: 0,
+        exhausted: false,
+        magnetic: false,
+        immune: false,
+        charge: false,
+      },
+    ];
+
+    expect(toShopUpdateMinion(state.player.shop.minions[0], () => ({ name: 'Alleycat' }))).toEqual({
+      cardId: 'TB_001',
+      name: 'Alleycat',
+      attack: 2,
+      health: 3,
+    });
+  });
+
   it('startBridge pushes overlay:shop-update with current shop minions', () => {
     const mockWin = makeMockWin();
     const state = makeMockState();
@@ -360,7 +397,9 @@ describe('ipcBridge', () => {
     )._getSends();
     const shopChannels = sends.filter((s) => s.channel === 'overlay:shop-update');
     expect(shopChannels.length).toBeGreaterThanOrEqual(1);
-    expect(shopChannels[0].args[0]).toHaveLength(3);
+    const shopPayload = shopChannels[0].args[0] as { name: string }[];
+    expect(shopPayload).toHaveLength(3);
+    expect(shopPayload[0]?.name).toBe('SHOP_1');
   });
 
   it('startBridge pushes overlay:shop-update with [] for an empty shop', () => {

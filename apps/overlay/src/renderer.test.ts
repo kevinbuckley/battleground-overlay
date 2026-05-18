@@ -11,6 +11,13 @@ function makeBuyRec(cardId: string): Recommendation {
   };
 }
 
+function requireCallback<T>(callback: T | null): NonNullable<T> {
+  if (!callback) {
+    throw new Error('Expected renderer callback to be registered');
+  }
+  return callback as NonNullable<T>;
+}
+
 describe('getActionText', () => {
   it('returns "Buy <cardId>" for BuyAction', () => {
     const rec = makeBuyRec('TB_GolgBos_04');
@@ -115,7 +122,7 @@ describe('initRenderer', () => {
     initRenderer(bridge);
 
     const recs = [makeBuyRec('TB_GolgBos_04')];
-    recsCallback!(recs);
+    requireCallback(recsCallback)(recs);
 
     expect((mockElements.get('advice-action') as { textContent: string }).textContent).toBe(
       'Buy TB_GolgBos_04',
@@ -153,7 +160,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    recsCallback!([]);
+    requireCallback(recsCallback)([]);
 
     expect((mockElements.get('advice-action') as { textContent: string }).textContent).toBe('—');
     expect((mockElements.get('advice-reason') as { textContent: string }).textContent).toBe('');
@@ -187,7 +194,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    explanationCallback!('This is why I recommend buying.');
+    requireCallback(explanationCallback)('This is why I recommend buying.');
 
     const expEl = mockElements.get('explanation') as {
       textContent: string;
@@ -234,7 +241,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    explanationCallback!('');
+    requireCallback(explanationCallback)('');
 
     expect(expEl.textContent).toBe('');
     expect(expClassList.has('visible')).toBe(false);
@@ -266,7 +273,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    damageCallback!({ winPct: 0.75 });
+    requireCallback(damageCallback)({ winPct: 0.75 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
       'Win: 75% (0-0 dmg)',
@@ -298,7 +305,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    damageCallback!({ winPct: 0.5 });
+    requireCallback(damageCallback)({ winPct: 0.5 });
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
@@ -327,7 +334,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    damageCallback!({ winPct: 0 });
+    requireCallback(damageCallback)({ winPct: 0 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
       'Win: 0% (0-0 dmg)',
@@ -360,7 +367,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    damageCallback!({ winPct: 0.7, minDmg: 2, maxDmg: 5 });
+    requireCallback(damageCallback)({ winPct: 0.7, minDmg: 2, maxDmg: 5 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
       'Win: 70% (2-5 dmg)',
@@ -393,7 +400,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    damageCallback!({ winPct: 0.5 });
+    requireCallback(damageCallback)({ winPct: 0.5 });
 
     expect((mockElements.get('damage-forecast') as { textContent: string }).textContent).toBe(
       'Win: 50% (0-0 dmg)',
@@ -426,7 +433,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({ minions: ['a', 'b', 'c'] });
+    requireCallback(boardCallback)({ minions: ['a', 'b', 'c'] });
 
     expect((mockElements.get('board-count') as { textContent: string }).textContent).toBe(
       'Minions: 3',
@@ -458,7 +465,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({ minions: ['a', 'b'] });
+    requireCallback(boardCallback)({ minions: ['a', 'b'] });
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
@@ -488,7 +495,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({ minions: [] });
+    requireCallback(boardCallback)({ minions: [] });
 
     expect((mockElements.get('board-count') as { textContent: string }).textContent).toBe(
       'Minions: 0',
@@ -523,7 +530,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({
+    requireCallback(boardCallback)({
       minions: [
         { attack: 3, health: 4, cardId: 'TB_GolgBos_04' },
         { attack: 5, health: 2, cardId: 'TB_GolgBos_05' },
@@ -562,16 +569,16 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({
+    requireCallback(boardCallback)({
       minions: [
-        { attack: 3, health: 4, cardId: 'TB_GolgBos_04' },
-        { attack: 5, health: 2, cardId: 'TB_GolgBos_05' },
+        { attack: 3, health: 4, cardId: 'TB_GolgBos_04', name: 'Low-Flier' },
+        { attack: 5, health: 2, cardId: 'TB_GolgBos_05', name: 'Big Brother' },
       ],
     });
 
     const minionsEl = mockElements.get('board-minions') as { innerHTML: string };
-    expect(minionsEl.innerHTML).toContain('`3/4 TB_GolgBos_04`');
-    expect(minionsEl.innerHTML).toContain('`5/2 TB_GolgBos_05`');
+    expect(minionsEl.innerHTML).toContain('`3/4 Low-Flier`');
+    expect(minionsEl.innerHTML).toContain('`5/2 Big Brother`');
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
@@ -601,7 +608,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    boardCallback!({ minions: [] });
+    requireCallback(boardCallback)({ minions: [] });
 
     const minionsEl = mockElements.get('board-minions') as { innerHTML: string };
     expect(minionsEl.innerHTML).toBe('');
@@ -634,14 +641,14 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    shopCallback!([
-      { attack: 3, health: 4, cardId: 'TB_GolgBos_04' },
-      { attack: 5, health: 2, cardId: 'TB_GolgBos_05' },
+    requireCallback(shopCallback)([
+      { attack: 3, health: 4, cardId: 'TB_GolgBos_04', name: 'Low-Flier' },
+      { attack: 5, health: 2, cardId: 'TB_GolgBos_05', name: 'Big Brother' },
     ]);
 
     const minionsEl = mockElements.get('shop-minions') as { innerHTML: string };
-    expect(minionsEl.innerHTML).toContain('3/4 TB_GolgBos_04');
-    expect(minionsEl.innerHTML).toContain('5/2 TB_GolgBos_05');
+    expect(minionsEl.innerHTML).toContain('3/4 Low-Flier');
+    expect(minionsEl.innerHTML).toContain('5/2 Big Brother');
 
     (globalThis as unknown as Record<string, unknown>).document = undefined;
   });
@@ -671,7 +678,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    shopCallback!([]);
+    requireCallback(shopCallback)([]);
 
     const minionsEl = mockElements.get('shop-minions') as { innerHTML: string };
     expect(minionsEl.innerHTML).toBe('');
@@ -703,7 +710,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    opponentsCallback!([
+    requireCallback(opponentsCallback)([
       { entityId: 1, hp: 30, tier: 3, eliminated: false },
       { entityId: 2, hp: 15, tier: 5, eliminated: false },
     ]);
@@ -763,7 +770,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    opponentsCallback!([]);
+    requireCallback(opponentsCallback)([]);
 
     expect((mockElements.get('opponent-count') as { textContent: string }).textContent).toBe(
       'Opponents: 0',
@@ -797,7 +804,7 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    opponentsCallback!([
+    requireCallback(opponentsCallback)([
       { eliminated: false },
       { eliminated: false },
       { eliminated: false },
@@ -837,7 +844,11 @@ describe('initRenderer', () => {
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    opponentsCallback!([{ eliminated: true }, { eliminated: true }, { eliminated: true }]);
+    requireCallback(opponentsCallback)([
+      { eliminated: true },
+      { eliminated: true },
+      { eliminated: true },
+    ]);
 
     expect((mockElements.get('opponent-alive') as { textContent: string }).textContent).toBe(
       'Alive: 0/3',
@@ -881,7 +892,7 @@ describe('initRenderer', () => {
       makeBuyRec('TB_GolgBos_05'),
       makeBuyRec('TB_GolgBos_06'),
     ];
-    recsCallback!(recs);
+    requireCallback(recsCallback)(recs);
 
     const listEl = mockElements.get('advice-list') as { innerHTML: string };
     expect(listEl.innerHTML).toContain('Buy TB_GolgBos_04');
@@ -928,7 +939,7 @@ describe('initRenderer', () => {
       makeBuyRec('D'),
       makeBuyRec('E'),
     ];
-    recsCallback!(recs);
+    requireCallback(recsCallback)(recs);
 
     const listEl = mockElements.get('advice-list') as { innerHTML: string };
     expect(listEl.innerHTML).toContain('Buy A');
@@ -970,7 +981,7 @@ describe('initRenderer', () => {
 
     initRenderer(bridge);
 
-    recsCallback!([makeBuyRec('TB_GolgBos_04')]);
+    requireCallback(recsCallback)([makeBuyRec('TB_GolgBos_04')]);
 
     const listEl = mockElements.get('advice-list') as { innerHTML: string };
     expect(listEl.innerHTML).toContain('Buy TB_GolgBos_04');
@@ -1008,7 +1019,7 @@ describe('initRenderer', () => {
 
     const rec = makeBuyRec('TB_GolgBos_04');
     (rec as { confidence: number }).confidence = 0.84;
-    recsCallback!([rec]);
+    requireCallback(recsCallback)([rec]);
 
     expect((mockElements.get('advice-confidence') as { textContent: string }).textContent).toBe(
       '84%',
@@ -1046,7 +1057,7 @@ describe('initRenderer', () => {
 
     const rec = makeBuyRec('TB_GolgBos_04');
     (rec as { confidence: number }).confidence = 0;
-    recsCallback!([rec]);
+    requireCallback(recsCallback)([rec]);
 
     expect((mockElements.get('advice-confidence') as { textContent: string }).textContent).toBe(
       '0%',
@@ -1074,7 +1085,13 @@ describe('getConfidenceLabel', () => {
 });
 
 describe('formatMinionLine', () => {
-  it('returns "attack/health cardId" format', () => {
+  it('returns "attack/health name" format when name is available', () => {
+    expect(formatMinionLine({ attack: 3, health: 4, cardId: 'X', name: 'Alleycat' })).toBe(
+      '`3/4 Alleycat`',
+    );
+  });
+
+  it('falls back to cardId when name is unavailable', () => {
     expect(formatMinionLine({ attack: 3, health: 4, cardId: 'X' })).toBe('`3/4 X`');
   });
 
@@ -1106,27 +1123,27 @@ describe('initRenderer onStartupBanner', () => {
 
     (globalThis as unknown as Record<string, unknown>).document = {
       getElementById(id: string) {
-        return mockElements.get(id)
-          ? {
-              ...mockElements.get(id),
-              set textContent(v: string) {
-                mockElements.get(id)!.textContent = v;
-              },
-              get textContent() {
-                return mockElements.get(id)!.textContent;
-              },
-              classList: {
-                add(c: string) {
-                  mockElements.get(id)!.classList.add(c);
-                },
-              },
-            }
-          : null;
+        const element = mockElements.get(id);
+        if (!element) return null;
+        return {
+          ...element,
+          set textContent(v: string) {
+            element.textContent = v;
+          },
+          get textContent() {
+            return element.textContent;
+          },
+          classList: {
+            add(c: string) {
+              element.classList.add(c);
+            },
+          },
+        };
       },
     } as unknown as typeof globalThis.document;
 
     initRenderer(bridge);
-    bannerCallback!('HS:✓ Config:✗ MLX:✓');
+    requireCallback(bannerCallback)('HS:✓ Config:✗ MLX:✓');
 
     expect(banner.textContent).toBe('HS:✓ Config:✗ MLX:✓');
     expect(banner.classList.has('visible')).toBe(true);

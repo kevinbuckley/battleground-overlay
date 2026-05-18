@@ -12,8 +12,13 @@ export interface OverlayBridge {
   onStartupBanner?(cb: (s: string) => void): void;
 }
 
-export function formatMinionLine(m: { attack: number; health: number; cardId: string }): string {
-  return `\`${m.attack}/${m.health} ${m.cardId}\``;
+export function formatMinionLine(m: {
+  attack: number;
+  health: number;
+  cardId: string;
+  name?: string;
+}): string {
+  return `\`${m.attack}/${m.health} ${m.name || m.cardId}\``;
 }
 
 export function getConfidenceLabel(c: number): 'high' | 'medium' | 'low' {
@@ -96,14 +101,18 @@ export function initRenderer(bridge: OverlayBridge): void {
     const bestEl = document.getElementById('board-best-attack');
     const minionsEl = document.getElementById('board-minions');
     if (!countEl && !bestEl && !minionsEl) return;
-    const b = boardData as { minions: { attack: number; health: number; cardId: string }[] };
+    const b = boardData as {
+      minions: { attack: number; health: number; cardId: string; name?: string }[];
+    };
     if (countEl) {
       countEl.textContent = `Minions: ${b.minions.length}`;
     }
     if (bestEl && b.minions.length > 0) {
-      let best = b.minions[0]!;
+      let best = b.minions[0];
+      if (!best) return;
       for (let i = 1; i < b.minions.length; i++) {
-        if (b.minions[i].attack > best.attack) best = b.minions[i];
+        const candidate = b.minions[i];
+        if (candidate && candidate.attack > best.attack) best = candidate;
       }
       bestEl.textContent = `Best: ${best.attack}/${best.health}`;
     } else if (bestEl) {
@@ -118,8 +127,10 @@ export function initRenderer(bridge: OverlayBridge): void {
   bridge.onShop?.((shop: unknown[]) => {
     const el = document.getElementById('shop-minions');
     if (!el) return;
-    const minions = shop as { cardId: string; attack: number; health: number }[];
-    el.innerHTML = minions.map((m) => `<li>${m.attack}/${m.health} ${m.cardId}</li>`).join('');
+    const minions = shop as { cardId: string; name?: string; attack: number; health: number }[];
+    el.innerHTML = minions
+      .map((m) => `<li>${m.attack}/${m.health} ${m.name || m.cardId}</li>`)
+      .join('');
   });
 
   bridge.onOpponents((opponentsData: unknown) => {

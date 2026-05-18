@@ -55,6 +55,23 @@ export function toBoardUpdateMinion(
   };
 }
 
+export function toShopUpdateMinion(
+  minion: Minion,
+  lookup: CardLookup = getCardById,
+): {
+  cardId: string;
+  name: string;
+  attack: number;
+  health: number;
+} {
+  return {
+    cardId: minion.cardId,
+    name: lookup(minion.cardId)?.name ?? minion.cardId,
+    attack: minion.attack,
+    health: minion.health,
+  };
+}
+
 export function startBridge(
   win: BrowserWindow,
   getState: () => GameState,
@@ -98,11 +115,7 @@ export function pushBridgeUpdate(): void {
     sendIfChanged(
       bridge,
       'overlay:shop-update',
-      state.player.shop.minions.map((m) => ({
-        cardId: m.cardId,
-        attack: m.attack,
-        health: m.health,
-      })),
+      state.player.shop.minions.map((m) => toShopUpdateMinion(m)),
     );
     sendIfChanged(
       bridge,
