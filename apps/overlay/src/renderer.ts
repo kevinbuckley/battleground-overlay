@@ -10,6 +10,7 @@ export interface OverlayBridge {
   onHsStatus(cb: (s: string) => void): void;
   onState(cb: (s: unknown) => void): void;
   onStartupBanner?(cb: (s: string) => void): void;
+  onComputing?(cb: (c: boolean) => void): void;
 }
 
 export function formatMinionLine(m: {
@@ -88,35 +89,43 @@ export function initRenderer(bridge: OverlayBridge): void {
 
   bridge.onDamage((forecast: unknown) => {
     const el = document.getElementById('damage-forecast');
+    const section = document.getElementById('damage-section');
     if (!el) return;
     const f = forecast as { winPct: number; minDmg?: number; maxDmg?: number };
     const pct = Math.round(f.winPct * 100);
     const minDmg = f.minDmg ?? 0;
     const maxDmg = f.maxDmg ?? 0;
     el.textContent = `Win: ${pct}% (${minDmg}-${maxDmg} dmg)`;
+    if (section) section.style.display = f.winPct > 0 ? '' : 'none';
   });
 
   bridge.onBoard((boardData: unknown) => {
+    const summaryEl = document.getElementById('board-summary');
     const countEl = document.getElementById('board-count');
     const bestEl = document.getElementById('board-best-attack');
     const minionsEl = document.getElementById('board-minions');
-    if (!countEl && !bestEl && !minionsEl) return;
+    if (!summaryEl && !countEl && !bestEl && !minionsEl) return;
     const b = boardData as {
       minions: { attack: number; health: number; cardId: string; name?: string }[];
     };
-    if (countEl) {
-      countEl.textContent = `Minions: ${b.minions.length}`;
-    }
-    if (bestEl && b.minions.length > 0) {
-      let best = b.minions[0];
-      if (!best) return;
+    let best: { attack: number; health: number; cardId: string; name?: string } | undefined;
+    if (b.minions.length > 0) {
+      best = b.minions[0];
       for (let i = 1; i < b.minions.length; i++) {
         const candidate = b.minions[i];
-        if (candidate && candidate.attack > best.attack) best = candidate;
+        if (candidate && candidate.attack > (best?.attack ?? 0)) best = candidate;
       }
-      bestEl.textContent = `Best: ${best.attack}/${best.health}`;
-    } else if (bestEl) {
-      bestEl.textContent = '';
+    }
+    if (summaryEl) {
+      summaryEl.textContent =
+        b.minions.length > 0
+          ? `${b.minions.length} minions · best ${best?.attack ?? 0}/${best?.health ?? 0}`
+          : 'empty';
+    }
+    if (countEl) countEl.textContent = `Minions: ${b.minions.length}`;
+    if (bestEl) {
+      bestEl.textContent =
+        best !== undefined ? `Best: ${best.attack}/${best.health}` : '';
     }
     if (minionsEl) {
       const items = b.minions.map((m) => `<li>${formatMinionLine(m)}</li>`).join('');
@@ -134,17 +143,15 @@ export function initRenderer(bridge: OverlayBridge): void {
   });
 
   bridge.onOpponents((opponentsData: unknown) => {
+    const summaryEl = document.getElementById('opponent-summary');
     const countEl = document.getElementById('opponent-count');
     const aliveEl = document.getElementById('opponent-alive');
-    if (!countEl && !aliveEl) return;
-    const o = opponentsData as { eliminated: boolean }[];
-    if (countEl) {
-      countEl.textContent = `Opponents: ${o.length}`;
-    }
-    if (aliveEl) {
-      const alive = o.filter((opp) => !opp.eliminated).length;
-      aliveEl.textContent = `Alive: ${alive}/${o.length}`;
-    }
+    if (!summaryEl && !countEl && !aliveEl) return;
+    const o = opponentsData as { eliminated: boolean; hp?: number; tier?: number }[];
+    const alive = o.filter((opp) => !opp.eliminated).length;
+    if (summaryEl) summaryEl.textContent = `${alive}/${o.length} alive`;
+    if (countEl) countEl.textContent = `Opponents: ${o.length}`;
+    if (aliveEl) aliveEl.textContent = `Alive: ${alive}/${o.length}`;
   });
 
   bridge.onHsStatus((status: string) => {
@@ -167,6 +174,16 @@ export function initRenderer(bridge: OverlayBridge): void {
     if (!el) return;
     el.textContent = banner;
     el.classList.add('visible');
+  });
+
+  bridge.onComputing?.((computing: boolean) => {
+    const el = document.getElementById('computing-indicator');
+    if (!el) return;
+    if (computing) {
+      el.classList.add('visible');
+    } else {
+      el.classList.remove('visible');
+    }
   });
 }
 

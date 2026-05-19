@@ -5,78 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Battlegrounds Overlay</title>
   <style>
+    * { box-sizing: border-box; }
     body {
       margin: 0;
-      padding: 12px 16px;
+      padding: 10px 14px;
       font-family: 'Segoe UI', system-ui, sans-serif;
       color: #ffffff;
-      background: rgba(0, 0, 0, 0.78);
-      border: 1px solid rgba(255, 215, 0, 0.4);
+      background: rgba(0, 0, 0, 0.82);
+      border: 1px solid rgba(255, 215, 0, 0.35);
       user-select: none;
-      max-width: 360px;
+      width: 300px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      font-size: 12px;
+      line-height: 1.4;
     }
-    #advice-action {
-      font-size: 18px;
-      font-weight: 700;
-      color: #ffd700;
-      margin-bottom: 4px;
-    }
-    #advice-reason {
-      font-size: 13px;
-      color: #b0b0b0;
+
+    /* Status bar */
+    #top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 6px;
-    }
-    #explanation {
-      font-size: 11px;
-      color: #888;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-      display: none;
-    }
-    #explanation.visible {
-      display: block;
-    }
-    #damage-forecast {
-      font-size: 12px;
-      color: #a0d0a0;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-    }
-    #board-count {
-      font-size: 12px;
-      color: #a0c0d0;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-    }
-    #board-best-attack {
-      font-size: 12px;
-      color: #d0d0a0;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-    }
-    #opponent-count {
-      font-size: 12px;
-      color: #d0a0a0;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-    }
-    #opponent-alive {
-      font-size: 12px;
-      color: #a0d0a0;
-      border-top: 1px solid #333;
-      padding-top: 4px;
-    }
-    #hs-status {
-      font-size: 11px;
-      color: #888;
-      margin-bottom: 4px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
     }
     #game-info {
       font-size: 11px;
-      color: #a0d0ff;
-      margin-bottom: 4px;
+      color: #7ec8e3;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+    #hs-status {
+      font-size: 10px;
+      color: #ffa050;
+    }
+    #overlay-debug {
+      font-size: 9px;
+      color: #555;
     }
     #startup-banner {
       font-size: 11px;
@@ -84,28 +50,160 @@
       margin-bottom: 4px;
       display: none;
     }
-    #startup-banner.visible {
-      display: block;
+    #startup-banner.visible { display: block; }
+
+    /* Primary advice */
+    #advice-block {
+      margin-bottom: 6px;
+    }
+    #advice-header {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    #advice-action {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffd700;
+      flex: 1;
+    }
+    #advice-confidence {
+      font-size: 10px;
+      color: #a0a0a0;
+      white-space: nowrap;
+    }
+    #advice-reason {
+      font-size: 11px;
+      color: #b8b8b8;
+      margin-top: 2px;
+    }
+    #computing-indicator {
+      font-size: 10px;
+      color: #555;
+      font-style: italic;
+      margin-top: 2px;
+      display: none;
+    }
+    #computing-indicator.visible { display: block; }
+
+    /* Alt recs list */
+    #advice-list {
+      margin: 4px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    #advice-list li {
+      font-size: 10px;
+      color: #909090;
+      padding: 1px 0;
+    }
+    #advice-list li:before {
+      content: '· ';
+      color: #555;
+    }
+
+    /* Explanation */
+    #explanation {
+      font-size: 10px;
+      color: #888;
+      border-top: 1px solid #2a2a2a;
+      padding-top: 4px;
+      margin-top: 4px;
+      display: none;
+      font-style: italic;
+    }
+    #explanation.visible { display: block; }
+
+    /* Board / shop section */
+    .section {
+      border-top: 1px solid #2a2a2a;
+      padding-top: 5px;
+      margin-top: 5px;
+    }
+    .section-title {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #505050;
+      margin-bottom: 3px;
+    }
+    #board-minions, #shop-minions {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    #board-minions li, #shop-minions li {
+      font-size: 10px;
+      color: #c0c0c0;
+      font-family: 'Courier New', monospace;
+      padding: 1px 0;
+    }
+    #board-summary {
+      font-size: 10px;
+      color: #a0b8c0;
+      margin-bottom: 2px;
+    }
+
+    /* Opponents */
+    #opponent-summary {
+      font-size: 10px;
+      color: #c0a0a0;
+      margin-bottom: 2px;
+    }
+
+    /* Damage forecast */
+    #damage-forecast {
+      font-size: 11px;
+      color: #80c080;
+      font-weight: 600;
     }
   </style>
 </head>
 <body>
-  <div id="overlay-debug" style="font-size:10px;color:#888;"></div>
+  <div id="top-bar">
+    <span id="game-info">Waiting…</span>
+    <span id="hs-status"></span>
+  </div>
   <div id="startup-banner"></div>
-  <div id="hs-status"></div>
-  <div id="game-info"></div>
-  <div id="advice-action"></div>
-  <div id="advice-reason"></div>
-  <ul id="advice-list"></ul>
-  <div id="explanation"></div>
-  <div id="damage-forecast"></div>
-  <div id="board-count"></div>
-  <div id="board-best-attack"></div>
-  <ul id="board-minions"></ul>
-  <ul id="shop-minions"></ul>
-  <div id="opponent-count"></div>
-  <div id="opponent-alive"></div>
-  <span id="advice-confidence"></span>
+  <div id="overlay-debug"></div>
+
+  <!-- Primary advice -->
+  <div id="advice-block">
+    <div id="advice-header">
+      <div id="advice-action">—</div>
+      <span id="advice-confidence"></span>
+    </div>
+    <div id="advice-reason"></div>
+    <div id="computing-indicator">computing…</div>
+    <ul id="advice-list"></ul>
+    <div id="explanation"></div>
+  </div>
+
+  <!-- Damage forecast (shown when sim has results) -->
+  <div id="damage-section" class="section" style="display:none">
+    <div class="section-title">Combat forecast</div>
+    <div id="damage-forecast"></div>
+  </div>
+
+  <!-- Board -->
+  <div id="board-section" class="section">
+    <div class="section-title">Board</div>
+    <div id="board-summary"></div>
+    <ul id="board-minions"></ul>
+  </div>
+
+  <!-- Shop -->
+  <div id="shop-section" class="section">
+    <div class="section-title">Shop</div>
+    <ul id="shop-minions"></ul>
+  </div>
+
+  <!-- Opponents -->
+  <div id="opponents-section" class="section">
+    <div class="section-title">Opponents</div>
+    <div id="opponent-summary"></div>
+  </div>
+
   <script src="./renderer-bundle.js"></script>
 </body>
 </html>

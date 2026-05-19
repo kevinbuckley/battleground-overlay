@@ -63,6 +63,11 @@ export function setupPreload(cb: typeof contextBridge, ipc: IpcRenderer): void {
         cb(banner);
       });
     },
+    onComputing(cb: (c: boolean) => void): void {
+      ipc.on('overlay:computing', (_event, computing) => {
+        cb(computing);
+      });
+    },
   });
 }
 

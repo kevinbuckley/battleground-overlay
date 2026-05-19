@@ -45,7 +45,7 @@ export function recommend(state: GameState): Recommendation[] {
   const boardMinions = player.board.minions;
 
   // Simulation-based buy scores (primary source)
-  const simRecs = scoreBuysWithSim(state, 50, 2000);
+  const simRecs = scoreBuysWithSim(state, 20, 2000);
 
   // Heuristic-based buy scores (fallback when sim returns nothing)
   const heuristicBuyRecs: Recommendation[] = shopMinions.map((shopCard, i) => {
@@ -77,7 +77,7 @@ export function recommend(state: GameState): Recommendation[] {
   const buyRecs: Recommendation[] = simRecs.some((r) => r.score > 0) ? simRecs : heuristicBuyRecs;
 
   // Simulation-based tier-up scoring
-  const simTierRecs = scoreTierUpWithSim(state, 50, 2000);
+  const simTierRecs = scoreTierUpWithSim(state, 20, 2000);
   const tierScore = tierCurveScore(
     state.turn,
     player.hero.hp,
@@ -98,7 +98,7 @@ export function recommend(state: GameState): Recommendation[] {
     ? (simTierRecs[0] ?? null)
     : heuristicTierRec;
   // Simulation-based sell scores (primary source)
-  const simSellRecs = scoreSellsWithSim(state, 50, 2000);
+  const simSellRecs = scoreSellsWithSim(state, 20, 2000);
 
   // Heuristic-based sell scores (fallback when sim returns nothing)
   const heuristicSellRecs: Recommendation[] = boardMinions
@@ -124,7 +124,7 @@ export function recommend(state: GameState): Recommendation[] {
     : heuristicSellRecs;
 
   // Simulation-based freeze scoring
-  const simFreezeRecs = scoreFreezeWithSim(state, 50, 2000);
+  const simFreezeRecs = scoreFreezeWithSim(state, 20, 2000);
   const heuristicFreezeRec: Recommendation | null = (() => {
     const freezeAction = freezeMinion(state);
     if (!freezeAction) return null;
@@ -141,7 +141,7 @@ export function recommend(state: GameState): Recommendation[] {
     : heuristicFreezeRec;
 
   // Simulation-based reroll scoring
-  const simRerollRecs = scoreRerollWithSim(state, 50, 2000);
+  const simRerollRecs = scoreRerollWithSim(state, 20, 2000);
   const heuristicRerollRec: Recommendation | null = (() => {
     const score = rerollScore(state);
     if (score < 0.5) return null;
@@ -157,7 +157,7 @@ export function recommend(state: GameState): Recommendation[] {
     : heuristicRerollRec;
 
   // Position hill-climb: check if repositioning improves win rate
-  const positionResult = hillClimbPosition(state.player.board, state.player, state.opponents, 50);
+  const positionResult = hillClimbPosition(state.player.board, state.player, state.opponents, 20);
   const repositionRec: Recommendation | null =
     positionResult.scoreDelta > 0.05 &&
     positionResult.fromIndex !== null &&

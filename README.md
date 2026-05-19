@@ -40,6 +40,18 @@ ln -s /Users/kbux/code/battleground-overlay/.claude/skills/overlay-loop \
       ~/.claude/skills/overlay-loop
 ```
 
+## Running the overlay
+
+**Start:**
+```bash
+bun run dev:overlay
+```
+
+**Stop:**
+```bash
+pkill -f "bun.*overlay"
+```
+
 ## Scripts
 
 ```bash

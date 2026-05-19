@@ -1,10 +1,12 @@
-import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
+import { appendFile, existsSync, mkdirSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 
 const LOGS_DIR = join(import.meta.dirname, '..', '..', '..', 'logs');
 
 let sessionFile: string | null = null;
 let sessionCounter = 0;
+let writeQueue: string[] = [];
+let flushScheduled = false;
 
 export interface SessionEntry {
   ts: number;
@@ -21,9 +23,21 @@ function getSessionFile(): string {
   return sessionFile;
 }
 
+function flushQueue(): void {
+  flushScheduled = false;
+  if (writeQueue.length === 0) return;
+  const batch = writeQueue.join('');
+  writeQueue = [];
+  const file = getSessionFile();
+  appendFile(file, batch, 'utf8', () => {});
+}
+
 export function appendSessionEvent(kind: string, payload: unknown): void {
-  const line = `${JSON.stringify({ ts: Date.now(), kind, payload })}\n`;
-  appendFileSync(getSessionFile(), line, 'utf8');
+  writeQueue.push(`${JSON.stringify({ ts: Date.now(), kind, payload })}\n`);
+  if (!flushScheduled) {
+    flushScheduled = true;
+    setImmediate(flushQueue);
+  }
 }
 
 export function resetSession(): void {

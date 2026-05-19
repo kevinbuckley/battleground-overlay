@@ -97,17 +97,60 @@ export function shouldRefreshAdvice(state: GameState): boolean {
   return state.phase === 'shopping';
 }
 
+const ADVISOR_DEBOUNCE_MS = 150;
+
 export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Coordinator {
   const pipeline: Pipeline = createPipeline();
   let previousTurn: number | null = null;
   let hsStatus: 'waiting' | 'anchored' | 'failed' = 'waiting';
   let latestRecs: Recommendation[] = [];
   let lastAdvisorSignature: string | null = null;
+  let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+
+  function runAdvisor(state: GameState): void {
+    const currentTurn = state.turn;
+    try {
+      const recs = recommend(state);
+      latestRecs = recs;
+      const top = recs[0];
+      if (top) {
+        setAdvice(top);
+        if (top.action.type === 'Reposition') {
+          setBoardPanel({ recommendation: top });
+        } else {
+          clearBoardPanel();
+        }
+        if (top.needsExplanation === true) {
+          const logFn = opts?.logFn;
+          explain(top, state)
+            .then((text) => {
+              setExplanation(text);
+              pushBridgeUpdate();
+              logFn?.('llm', { rec: top.action.type, text });
+            })
+            .catch(() => {
+              logFn?.('llm-error', { rec: top.action.type });
+            });
+        }
+      } else {
+        setAdvice(null);
+        clearBoardPanel();
+      }
+      (opts?.logFn ?? appendSessionEvent)('recommendation', {
+        turn: currentTurn,
+        action: recs[0]?.action ?? null,
+      });
+    } catch {
+      latestRecs = [];
+      setAdvice(null);
+      clearBoardPanel();
+    }
+    pushBridgeUpdate();
+  }
 
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
   pipeline.onEvent = (event: HsEvent) => {
-    (opts?.logFn ?? appendSessionEvent)('event', { kind: event.kind });
     originalOnEvent(event);
     const state = pipeline.getState();
     const currentTurn = state.turn;
@@ -124,6 +167,10 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
     previousTurn = currentTurn;
 
     if (!shouldRefreshAdvice(state)) {
+      if (debounceTimer !== null) {
+        clearTimeout(debounceTimer);
+        debounceTimer = null;
+      }
       if (lastAdvisorSignature !== null || latestRecs.length > 0) {
         lastAdvisorSignature = null;
         latestRecs = [];
@@ -138,47 +185,19 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       return;
     }
 
+    // Always push a state/board/shop update immediately for liveness
+    pushBridgeUpdate();
+
     const advisorSignature = getAdvisorSignature(state);
     if (advisorSignature !== lastAdvisorSignature) {
       lastAdvisorSignature = advisorSignature;
-      try {
-        const recs = recommend(state);
-        latestRecs = recs;
-        const top = recs[0];
-        if (top) {
-          setAdvice(top);
-          if (top.action.type === 'Reposition') {
-            setBoardPanel({ recommendation: top });
-          } else {
-            clearBoardPanel();
-          }
-          if (top.needsExplanation === true) {
-            const logFn = opts?.logFn;
-            explain(top, state)
-              .then((text) => {
-                setExplanation(text);
-                logFn?.('llm', { rec: top.action.type, text });
-              })
-              .catch(() => {
-                logFn?.('llm-error', { rec: top.action.type });
-              });
-          }
-        } else {
-          setAdvice(null);
-          clearBoardPanel();
-        }
-        (opts?.logFn ?? appendSessionEvent)('recommendation', {
-          turn: currentTurn,
-          action: recs[0]?.action ?? null,
-        });
-      } catch {
-        // If recommend throws, clear advice rather than crashing
-        latestRecs = [];
-        setAdvice(null);
-        clearBoardPanel();
-      }
+      // Debounce advisor to batch rapid event bursts (e.g. shop populate at turn start)
+      if (debounceTimer !== null) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        debounceTimer = null;
+        runAdvisor(pipeline.getState());
+      }, ADVISOR_DEBOUNCE_MS);
     }
-    pushBridgeUpdate();
   };
 
   const coordinator: Coordinator = {
@@ -192,6 +211,10 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       return hsStatus;
     },
     stop(): void {
+      if (debounceTimer !== null) {
+        clearTimeout(debounceTimer);
+        debounceTimer = null;
+      }
       stopBridge();
     },
   };
@@ -203,6 +226,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
     () => (latestRecs.length > 0 ? latestRecs : null),
     () => null,
     coordinator.getHsStatus,
+    () => debounceTimer !== null,
   );
 
   return coordinator;

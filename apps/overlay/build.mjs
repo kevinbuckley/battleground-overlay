@@ -1,4 +1,4 @@
-import { copyFileSync, mkdirSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import * as esbuild from 'esbuild';
 
@@ -48,6 +48,14 @@ async function build() {
 
   // Copy renderer.html → dist/
   copyFileSync(join(SRC, 'renderer.html'), join(DIST, 'renderer.html'));
+
+  // Copy cards.json → apps/overlay/ so the bundled loadCards() path resolution
+  // (join(__dirname, '..', 'cards.json') from dist/) finds the file at runtime.
+  const CARDS_SRC = resolve(ROOT, '../../packages/card-data/cards.json');
+  const CARDS_DEST = join(ROOT, 'cards.json');
+  if (existsSync(CARDS_SRC)) {
+    copyFileSync(CARDS_SRC, CARDS_DEST);
+  }
 
   console.log(
     'Build complete: dist/main.cjs, dist/preload.js, dist/renderer-bundle.js, dist/renderer.html',

@@ -3,6 +3,7 @@ import { getCardById } from '@overlay/card-data';
 import type { GameState, Minion, Recommendation } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
 import { computeDamageForecast } from './damageWidget';
+import { getExplanation } from './explanationPanel';
 
 type CardLookup = (cardId: string) => { name?: string } | null | undefined;
 type HsStatus = 'waiting' | 'anchored' | 'failed';
@@ -13,6 +14,7 @@ interface BridgeState {
   getRecs: () => Recommendation[] | null;
   getScoreResult: () => ScoreResult | null;
   getHsStatus?: () => HsStatus;
+  isComputing?: () => boolean;
   lastPayloads: Map<string, string>;
 }
 
@@ -78,6 +80,7 @@ export function startBridge(
   getRecs: () => Recommendation[] | null,
   getScoreResult: () => ScoreResult | null,
   getHsStatus?: () => HsStatus,
+  isComputing?: () => boolean,
 ): void {
   activeBridge = {
     win,
@@ -85,6 +88,7 @@ export function startBridge(
     getRecs,
     getScoreResult,
     getHsStatus,
+    isComputing,
     lastPayloads: new Map(),
   };
   pushBridgeUpdate();
@@ -159,6 +163,21 @@ export function pushBridgeUpdate(): void {
   try {
     if (bridge.getHsStatus) {
       sendIfChanged(bridge, 'overlay:hs-status', bridge.getHsStatus());
+    }
+  } catch {
+    // Renderer may not be ready yet.
+  }
+
+  try {
+    const explanation = getExplanation();
+    sendIfChanged(bridge, 'overlay:explanation-update', explanation ?? '');
+  } catch {
+    // Renderer may not be ready yet.
+  }
+
+  try {
+    if (bridge.isComputing) {
+      sendIfChanged(bridge, 'overlay:computing', bridge.isComputing());
     }
   } catch {
     // Renderer may not be ready yet.
