@@ -46,6 +46,14 @@ function first<T>(arr: T[]): T {
   return val;
 }
 
+function fillBoard(seed: Minion[]): Minion[] {
+  const board = [...seed];
+  for (let i = board.length; i < 7; i++) {
+    board.push(makeMinion(100 + i, `FILLER_${i}`, 4 + i, 4 + i, ['Filler']));
+  }
+  return board;
+}
+
 describe('sellScore', () => {
   it('returns 0 for empty board', () => {
     const minion = makeMinion(1, 'CS2_168', 3, 3);
@@ -54,7 +62,7 @@ describe('sellScore', () => {
 
   it('returns high score for weakest minion with no synergy', () => {
     const state = makeState();
-    const board = [makeMinion(1, 'WEAK', 1, 1), makeMinion(2, 'STRONG', 5, 5)];
+    const board = fillBoard([makeMinion(1, 'WEAK', 1, 1), makeMinion(2, 'STRONG', 5, 5)]);
     const score = sellScore(first(board), board, state);
     // weakest (0.4) + no synergy (0.4) + not triple (0.2) = 1.0
     expect(score).toBe(1.0);
@@ -62,18 +70,20 @@ describe('sellScore', () => {
 
   it('returns lower score for strongest minion', () => {
     const state = makeState();
-    const board = [makeMinion(1, 'WEAK', 1, 1), makeMinion(2, 'STRONG', 5, 5)];
-    const score = sellScore(board.at(1)!, board, state);
+    const board = fillBoard([makeMinion(1, 'WEAK', 1, 1), makeMinion(2, 'STRONG', 20, 20)]);
+    const strong = board.at(1);
+    if (!strong) throw new Error('missing strong minion');
+    const score = sellScore(strong, board, state);
     // not weakest (0) + no synergy (0.4) + not triple (0.2) = 0.6
     expect(score).toBeCloseTo(0.6);
   });
 
   it('returns lower score when minion has tribe synergy', () => {
     const state = makeState();
-    const board = [
+    const board = fillBoard([
       makeMinion(1, 'WEAK', 1, 1, ['Dragon']),
       makeMinion(2, 'STRONG', 5, 5, ['Dragon']),
-    ];
+    ]);
     const score = sellScore(first(board), board, state);
     // weakest (0.4) + has synergy (0) + not triple (0.2) = 0.6
     expect(score).toBeCloseTo(0.6);
@@ -81,22 +91,21 @@ describe('sellScore', () => {
 
   it('returns lower score when minion is triple-in-progress', () => {
     const state = makeState();
-    const board = [
+    const board = fillBoard([
       makeMinion(1, 'TRIPLE', 1, 1),
       makeMinion(2, 'TRIPLE', 1, 1),
       makeMinion(3, 'TRIPLE', 1, 1),
-    ];
+    ]);
     const score = sellScore(first(board), board, state);
     // weakest (0.4) + no synergy (0.4) + triple-in-progress (0) = 0.8
     expect(score).toBe(0.8);
   });
 
-  it('returns 1.0 when weakest + no synergy + not triple (single minion)', () => {
+  it('returns 0 when board is not full', () => {
     const state = makeState();
     const board = [makeMinion(1, 'SINGLE', 3, 3)];
     const score = sellScore(first(board), board, state);
-    // weakest (0.4) + no synergy (0.4) + not triple (0.2) = 1.0
-    expect(score).toBe(1.0);
+    expect(score).toBe(0);
   });
 
   it('returns a finite number for empty board', () => {
@@ -112,9 +121,9 @@ describe('sellScore', () => {
     expect(score).toBe(0);
   });
 
-  it('returns > 0 for non-golden minion with same bad stats', () => {
+  it('returns > 0 for non-golden minion with same bad stats on a full board', () => {
     const state = makeState();
-    const board = [makeMinion(1, 'NON_GOLDEN', 1, 1, [], false)];
+    const board = fillBoard([makeMinion(1, 'NON_GOLDEN', 1, 1, [], false)]);
     const score = sellScore(first(board), board, state);
     expect(score).toBeGreaterThan(0);
   });

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'bun:test';
-import type { GameState, OpponentState, PlayerState } from '@overlay/shared';
+import type { GameState, Minion, OpponentState, PlayerState } from '@overlay/shared';
 import { initialState } from '@overlay/state';
 import {
   scoreBuysWithSim,
@@ -11,6 +11,7 @@ import {
 function makePlayer(overrides: Partial<PlayerState> = {}): PlayerState {
   return {
     ...initialState().player,
+    gold: 3,
     ...overrides,
   };
 }
@@ -51,6 +52,33 @@ function makeOpponentStub(overrides: Partial<OpponentState> = {}): OpponentState
     deathrattlesTriggeredThisTurn: 0,
     minionsDiedThisTurn: 0,
     minionsTradedThisTurn: 0,
+    ...overrides,
+  };
+}
+
+function makeMinion(overrides: Partial<Minion> = {}): Minion {
+  return {
+    entityId: 1,
+    cardId: 'CS3_001',
+    attack: 3,
+    health: 2,
+    taunt: false,
+    divineShield: false,
+    poisonous: false,
+    reborn: false,
+    frozen: false,
+    golden: false,
+    windfury: false,
+    cleave: false,
+    elite: false,
+    lifesteal: false,
+    cost: 3,
+    tribes: ['Beast'],
+    spellPower: 0,
+    exhausted: false,
+    magnetic: false,
+    immune: false,
+    charge: false,
     ...overrides,
   };
 }
@@ -422,7 +450,7 @@ describe('scoreFreezeWithSim', () => {
       turn: 4,
       player: makePlayer({
         shop: {
-          minions: [],
+          minions: [makeMinion()],
           frozen: false,
           rollCost: 2,
         },
@@ -441,7 +469,7 @@ describe('scoreFreezeWithSim', () => {
       turn: 4,
       player: makePlayer({
         shop: {
-          minions: [],
+          minions: [makeMinion()],
           frozen: true,
           rollCost: 2,
         },
@@ -458,7 +486,7 @@ describe('scoreFreezeWithSim', () => {
       turn: 4,
       player: makePlayer({
         shop: {
-          minions: [],
+          minions: [makeMinion()],
           frozen: false,
           rollCost: 2,
         },

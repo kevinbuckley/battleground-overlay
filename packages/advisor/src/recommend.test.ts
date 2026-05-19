@@ -77,7 +77,7 @@ describe('recommend', () => {
           rollCost: 1,
         },
         hero: { ...base.player.hero, hp: 20 },
-        gold: 3,
+        gold: 4,
       },
     };
     const recs = recommend(state);
@@ -99,7 +99,7 @@ describe('recommend', () => {
           rollCost: 1,
         },
         hero: { ...base.player.hero, hp: 30 },
-        gold: 3,
+        gold: 4,
       },
     };
     const recs = recommend(state);
@@ -159,6 +159,7 @@ describe('recommend', () => {
           ...base.player.shop,
           minions: [minion('SHOP_A'), minion('SHOP_B')],
         },
+        gold: 3,
       },
     };
     // scoreBuysWithSim with n=0 returns recs with score 0
@@ -481,7 +482,7 @@ describe('recommend', () => {
       phase: 'shopping' as const,
       player: {
         ...base.player,
-        gold: 3,
+        gold: 4,
         shop: {
           ...base.player.shop,
           minions: [minion('SHOP_A'), minion('SHOP_B')],
@@ -545,7 +546,7 @@ describe('recommend', () => {
       ...base,
       player: {
         ...base.player,
-        gold: 3,
+        gold: 4,
         shop: {
           ...base.player.shop,
           minions: [minion('SHOP_A')],

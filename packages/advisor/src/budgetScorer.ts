@@ -110,6 +110,10 @@ export function scoreBuysWithSim(state: GameState, n: number, budgetMs: number):
  * so the heuristic path can still produce output.
  */
 export function scoreSellsWithSim(state: GameState, n: number, budgetMs: number): Recommendation[] {
+  if (state.player.board.minions.length < 7) {
+    return [];
+  }
+
   const candidates = enumerateSellCandidates(state);
   const { player, opponents, turn } = state;
   const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);
@@ -209,6 +213,10 @@ export function scoreFreezeWithSim(
   n: number,
   budgetMs: number,
 ): Recommendation[] {
+  if (state.player.shop.minions.length === 0) {
+    return [];
+  }
+
   const candidates = enumerateFreezeCandidates(state);
   const { player, opponents, turn } = state;
   const shouldSimulate = n > 0 && hasOpponentBoardSignal(opponents);

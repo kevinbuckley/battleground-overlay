@@ -14,6 +14,7 @@ export function rerollScore(state: GameState): number {
   const { shop, gold, hero } = state.player;
   if (state.player.board.minions.length >= 7) return 0;
   if (shop.minions.length === 0) return 0;
+  if (gold < shop.rollCost + 3) return 0;
 
   // 1. Check triple potential across all shop minions
   let maxTriple = 0;
@@ -39,6 +40,6 @@ export function rerollScore(state: GameState): number {
   // 4. Can afford a reroll
   if (gold < shop.rollCost) return 0;
 
-  // All conditions met: good time to reroll
-  return 1.0;
+  // Reroll is useful, but it should not drown out concrete buy/tier advice.
+  return 0.55;
 }

@@ -12,7 +12,7 @@ export function sellScore(minion: Minion, board: Minion[], _state: GameState): n
   if (minion.golden) return 0;
 
   const allMinions = board;
-  if (allMinions.length === 0) return 0;
+  if (allMinions.length < 7) return 0;
 
   // 1. Weakest by combined stats
   let weakestIdx = 0;

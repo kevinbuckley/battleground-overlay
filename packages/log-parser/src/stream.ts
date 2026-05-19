@@ -43,6 +43,8 @@ export async function streamEvents(
   onEvent: (event: HsEvent) => void,
 ): Promise<StreamHandle> {
   let fileOffset = 0;
+  let reading = false;
+  let readAgain = false;
 
   async function readNewContent(): Promise<void> {
     return new Promise((resolve) => {
@@ -63,10 +65,24 @@ export async function streamEvents(
     });
   }
 
-  await readNewContent();
+  async function drainNewContent(): Promise<void> {
+    if (reading) {
+      readAgain = true;
+      return;
+    }
+
+    reading = true;
+    do {
+      readAgain = false;
+      await readNewContent();
+    } while (readAgain);
+    reading = false;
+  }
+
+  await drainNewContent();
 
   const watcher = watch(filePath, { persistent: true, ignoreInitial: true });
-  watcher.on('change', () => void readNewContent());
+  watcher.on('change', () => void drainNewContent());
 
   await new Promise<void>((resolve) => {
     watcher.on('ready', resolve);

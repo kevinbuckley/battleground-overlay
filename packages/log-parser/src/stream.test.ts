@@ -43,6 +43,34 @@ describe('streamEvents', () => {
     rmSync(dir, { recursive: true });
   });
 
+  it('serializes rapid file changes without duplicate events', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
+    const file = join(dir, 'Power.log');
+    writeFileSync(file, '');
+
+    const events: HsEvent[] = [];
+    const handle = await streamEvents(file, (e) => events.push(e));
+
+    for (let i = 0; i < 20; i++) {
+      appendFileSync(file, `TAG_CHANGE Entity=${i} tag=HEALTH value=${i}\n`);
+    }
+
+    const deadline = Date.now() + 2000;
+    while (Date.now() < deadline && events.length < 20) {
+      await new Promise((r) => setTimeout(r, 50));
+    }
+
+    handle.close();
+
+    const values = events
+      .filter((e): e is Extract<HsEvent, { kind: 'TAG_CHANGE' }> => e.kind === 'TAG_CHANGE')
+      .map((e) => e.value);
+    expect(values).toHaveLength(20);
+    expect(new Set(values).size).toBe(20);
+
+    rmSync(dir, { recursive: true });
+  });
+
   it('picks up ZONE_CHANGE_LIST lines', async () => {
     const dir = mkdtempSync(join(tmpdir(), 'overlay-test-'));
     const file = join(dir, 'Power.log');

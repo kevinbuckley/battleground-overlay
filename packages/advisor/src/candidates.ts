@@ -40,6 +40,10 @@ export interface TierUpCandidate {
  * minion appended (as if bought).
  */
 export function enumerateBuyCandidates(state: GameState): BuyCandidate[] {
+  if (state.player.gold < 3 || state.player.board.minions.length >= 7) {
+    return [];
+  }
+
   const shopMinions = state.player.shop.minions;
   const currentBoard = state.player.board;
 

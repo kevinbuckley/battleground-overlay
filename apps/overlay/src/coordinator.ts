@@ -2,7 +2,7 @@ import { recommend } from '@overlay/advisor';
 import { explain } from '@overlay/llm';
 import type { HsEvent } from '@overlay/log-parser';
 import type { GameState, Recommendation } from '@overlay/shared';
-import { appendSessionEvent, setBoardPanel } from '@overlay/shared';
+import { appendSessionEvent, clearBoardPanel, setBoardPanel } from '@overlay/shared';
 import { type Pipeline, createPipeline } from '@overlay/state';
 import type { BrowserWindow } from 'electron';
 import { setAdvice } from './advicePanel';
@@ -43,6 +43,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
   const pipeline: Pipeline = createPipeline();
   let previousTurn: number | null = null;
   let hsStatus: 'waiting' | 'anchored' | 'failed' = 'waiting';
+  let latestRecs: Recommendation[] = [];
 
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
@@ -65,11 +66,14 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
 
     try {
       const recs = recommend(state);
+      latestRecs = recs;
       const top = recs[0];
       if (top) {
         setAdvice(top);
         if (top.action.type === 'Reposition') {
           setBoardPanel({ recommendation: top });
+        } else {
+          clearBoardPanel();
         }
         if (top.needsExplanation === true) {
           const logFn = opts?.logFn;
@@ -82,6 +86,9 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
               logFn?.('llm-error', { rec: top.action.type });
             });
         }
+      } else {
+        setAdvice(null);
+        clearBoardPanel();
       }
       (opts?.logFn ?? appendSessionEvent)('recommendation', {
         turn: currentTurn,
@@ -89,7 +96,9 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
       });
     } catch {
       // If recommend throws, clear advice rather than crashing
+      latestRecs = [];
       setAdvice(null);
+      clearBoardPanel();
     }
     pushBridgeUpdate();
   };
@@ -113,14 +122,7 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
   startBridge(
     win,
     pipeline.getState,
-    () => {
-      try {
-        const recs = recommend(pipeline.getState());
-        return recs.length > 0 ? recs : null;
-      } catch {
-        return null;
-      }
-    },
+    () => (latestRecs.length > 0 ? latestRecs : null),
     () => null,
     coordinator.getHsStatus,
   );

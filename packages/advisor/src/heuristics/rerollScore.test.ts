@@ -61,16 +61,17 @@ describe('rerollScore', () => {
     expect(rerollScore(state)).toBe(0);
   });
 
-  it('returns 0 when shop has tribe synergy', () => {
+  it('returns reroll score when weak synergy is below threshold and enough gold remains to buy', () => {
     const state = makeStateWithShop(
       [makeMinion(1, 'MECH', 3, 3, ['Mech'])],
       [makeMinion(2, 'MECH2', 2, 2, ['Mech'])],
+      30,
+      4,
     );
     // Mech shop card has synergy with Mech on board (0.15), but threshold is 0.5
     // Actually 0.15 < 0.5, so synergy check passes. But triple check passes too.
-    // HP is 30 >= 15, gold 3 >= rollCost 1.
-    // All conditions met → should return 1.0
-    expect(rerollScore(state)).toBe(1.0);
+    // HP is 30 >= 15 and gold 4 leaves enough to buy after a 1-gold roll.
+    expect(rerollScore(state)).toBe(0.55);
   });
 
   it('returns 0 when HP is unsafe (< 15)', () => {
@@ -93,17 +94,17 @@ describe('rerollScore', () => {
     expect(rerollScore(state)).toBe(0);
   });
 
-  it('returns 1.0 when all conditions are met', () => {
+  it('returns reroll score when all conditions are met', () => {
     const state = makeStateWithShop(
       [makeMinion(1, 'NOVEL', 2, 2)],
       [makeMinion(2, 'OTHER', 3, 3)],
       20,
-      3,
+      4,
       1,
     );
     // No triple (0 copies on board), no synergy (different tribes),
-    // hp 20 >= 15, gold 3 >= rollCost 1
-    expect(rerollScore(state)).toBe(1.0);
+    // hp 20 >= 15, and gold 4 leaves enough to buy after rolling.
+    expect(rerollScore(state)).toBe(0.55);
   });
 
   it('returns 0 when gold=0 (cannot afford reroll)', () => {
@@ -146,7 +147,7 @@ describe('rerollScore', () => {
       makeMinion(5, 'E', 2, 3),
       makeMinion(6, 'F', 3, 1),
     ];
-    const state = makeStateWithShop([makeMinion(7, 'SHOP1', 2, 2)], board, 30, 3, 1);
+    const state = makeStateWithShop([makeMinion(7, 'SHOP1', 2, 2)], board, 30, 4, 1);
     const score = rerollScore(state);
     expect(score).toBeGreaterThan(0);
   });

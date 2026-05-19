@@ -21,6 +21,10 @@ function pct(score: number): number {
   return Math.round(score * 100);
 }
 
+function buyBodyScore(cardAttack: number, cardHealth: number): number {
+  return Math.min(0.2, Math.max(0, (cardAttack + cardHealth) / 50));
+}
+
 export function recommend(state: GameState): Recommendation[] {
   const { player } = state;
 
@@ -47,7 +51,11 @@ export function recommend(state: GameState): Recommendation[] {
   const heuristicBuyRecs: Recommendation[] = shopMinions.map((shopCard, i) => {
     const triple = tripleScore(shopCard, boardMinions);
     const tribe = tribeSynergyScore(boardMinions, shopCard);
-    const score = triple * 0.6 + tribe * 0.4;
+    const genericBuy = player.gold >= 3 && boardMinions.length < 7 ? 0.45 : 0;
+    const score = Math.max(
+      triple * 0.6 + tribe * 0.4,
+      genericBuy + buyBodyScore(shopCard.attack, shopCard.health),
+    );
 
     return {
       action: { type: 'Buy', cardId: shopCard.cardId, shopIndex: i },
@@ -58,7 +66,9 @@ export function recommend(state: GameState): Recommendation[] {
           ? `Buy ${getCardName(shopCard.cardId)} — completes or advances a triple`
           : tribe > 0
             ? `Buy ${getCardName(shopCard.cardId)} — ${pct(tribe)}% tribe synergy score`
-            : `Buy ${getCardName(shopCard.cardId)} — no strong synergy yet`,
+            : player.gold >= 3 && boardMinions.length < 7
+              ? `Buy ${getCardName(shopCard.cardId)} — best available board upgrade`
+              : `Buy ${getCardName(shopCard.cardId)} — no strong synergy yet`,
     };
   });
 
