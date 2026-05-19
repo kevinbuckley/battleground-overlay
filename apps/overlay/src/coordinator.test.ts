@@ -2,8 +2,14 @@ import { afterEach, describe, expect, it } from 'bun:test';
 import { clearBoardPanel, getBoardPanel } from '@overlay/shared';
 import type { Recommendation } from '@overlay/shared';
 import type { BrowserWindow } from 'electron';
-import { clearAdvice, getAdvice } from './advicePanel';
-import { getRecsForBridge, logTurnSnapshot, startCoordinator } from './coordinator';
+import { clearAdvice, getAdvice, setAdvice } from './advicePanel';
+import {
+  getAdvisorSignature,
+  getRecsForBridge,
+  logTurnSnapshot,
+  shouldRefreshAdvice,
+  startCoordinator,
+} from './coordinator';
 import { stopBridge } from './ipcBridge';
 
 function makeMockWin() {
@@ -151,12 +157,15 @@ describe('coordinator', () => {
     };
     const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
 
-    // Feed a TAG_CHANGE event through the coordinator's onEvent
     coordinator.onEvent({
-      kind: 'TAG_CHANGE',
-      entity: '2',
-      tag: 'HEALTH',
-      value: '30',
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
     });
 
     const recEntries = calls.filter((c) => c.kind === 'recommendation');
@@ -222,6 +231,100 @@ describe('coordinator', () => {
     expect((eventEntries[0]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'TAG_CHANGE' });
     expect((eventEntries[1]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'TAG_CHANGE' });
     expect((eventEntries[2]?.payload ?? {}) as { kind: string }).toEqual({ kind: 'BLOCK_START' });
+  });
+
+  it('does not recompute recommendations when advisor-relevant state is unchanged', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: 'untracked-entity',
+      tag: 'NOT_A_RELEVANT_TAG',
+      value: '1',
+    });
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: 'another-untracked-entity',
+      tag: 'NOT_A_RELEVANT_TAG',
+      value: '2',
+    });
+
+    const recEntries = calls.filter((c) => c.kind === 'recommendation');
+    expect(recEntries).toHaveLength(1);
+  });
+
+  it('does not refresh recommendations outside shopping phase', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: 'GameEntity',
+      entityRaw: 'GameEntity',
+      tag: 'STEP',
+      value: 'MAIN_COMBAT',
+    });
+
+    const recEntries = calls.filter((c) => c.kind === 'recommendation');
+    expect(recEntries).toHaveLength(0);
+  });
+
+  it('clears cached recommendations when leaving shopping phase', () => {
+    const mockWin = makeMockWin();
+    const calls: { kind: string; payload: unknown }[] = [];
+    const logSpy = (kind: string, payload: unknown) => {
+      calls.push({ kind, payload });
+    };
+    const coordinator = startCoordinator(mockWin as unknown as BrowserWindow, { logFn: logSpy });
+
+    coordinator.onEvent({
+      kind: 'BLOCK_START',
+      blockType: 'TRIGGER',
+      effectCardId: 'TB_BaconShop_StartGame',
+      entity: '1',
+      effectIndex: 0,
+      target: '',
+      subOption: '',
+      triggerKeyword: '',
+    });
+    setAdvice({
+      action: { type: 'Buy', cardId: 'BG_TEST_MINION', shopIndex: 0 },
+      score: 0.8,
+      confidence: 0.8,
+      reason: 'test cached advice',
+    });
+    expect(getAdvice()).not.toBeNull();
+
+    coordinator.onEvent({
+      kind: 'TAG_CHANGE',
+      entity: 'GameEntity',
+      entityRaw: 'GameEntity',
+      tag: 'STEP',
+      value: 'MAIN_COMBAT',
+    });
+
+    expect(getAdvice()).toBeNull();
+    const recEntries = calls.filter((c) => c.kind === 'recommendation');
+    expect(recEntries.at(-1)?.payload).toEqual({ turn: 1, action: null });
   });
 
   it('logFn receives a state-snapshot entry when turn increments', () => {
@@ -566,6 +669,66 @@ describe('coordinator', () => {
     it('empty array → length 0', () => {
       const result = getRecsForBridge([], 3);
       expect(result.length).toBe(0);
+    });
+  });
+
+  describe('getAdvisorSignature', () => {
+    it('changes for shop minion updates but not unrelated object identity', () => {
+      const initialState = require('@overlay/state').initialState();
+      const same = {
+        ...initialState,
+        player: {
+          ...initialState.player,
+          board: { minions: [...initialState.player.board.minions] },
+        },
+      };
+      const withShop = {
+        ...initialState,
+        player: {
+          ...initialState.player,
+          shop: {
+            ...initialState.player.shop,
+            minions: [
+              {
+                entityId: 1,
+                cardId: 'SHOP_A',
+                attack: 2,
+                health: 3,
+                taunt: false,
+                divineShield: false,
+                poisonous: false,
+                reborn: false,
+                frozen: false,
+                golden: false,
+                windfury: false,
+                cleave: false,
+                elite: false,
+                lifesteal: false,
+                cost: 3,
+                tribes: [],
+                spellPower: 0,
+                exhausted: false,
+                magnetic: false,
+                immune: false,
+                charge: false,
+              },
+            ],
+          },
+        },
+      };
+
+      expect(getAdvisorSignature(same)).toBe(getAdvisorSignature(initialState));
+      expect(getAdvisorSignature(withShop)).not.toBe(getAdvisorSignature(initialState));
+    });
+  });
+
+  describe('shouldRefreshAdvice', () => {
+    it('returns true only while shopping', () => {
+      const initialState = require('@overlay/state').initialState();
+      expect(shouldRefreshAdvice({ ...initialState, phase: 'shopping' })).toBe(true);
+      expect(shouldRefreshAdvice({ ...initialState, phase: 'combat' })).toBe(false);
+      expect(shouldRefreshAdvice({ ...initialState, phase: 'end' })).toBe(false);
+      expect(shouldRefreshAdvice({ ...initialState, phase: 'lobby' })).toBe(false);
     });
   });
 });

@@ -39,11 +39,59 @@ export interface CoordinatorOpts {
   logFn?: (kind: string, payload: unknown) => void;
 }
 
+function minionSignature(minion: GameState['player']['board']['minions'][number]): string {
+  return [
+    minion.entityId,
+    minion.cardId,
+    minion.attack,
+    minion.health,
+    minion.taunt ? 1 : 0,
+    minion.divineShield ? 1 : 0,
+    minion.poisonous ? 1 : 0,
+    minion.reborn ? 1 : 0,
+    minion.golden ? 1 : 0,
+    minion.tribes.join(','),
+  ].join(':');
+}
+
+export function getAdvisorSignature(state: GameState): string {
+  const player = state.player;
+  return JSON.stringify({
+    turn: state.turn,
+    phase: state.phase,
+    hp: player.hero.hp,
+    gold: player.gold,
+    tier: player.tier,
+    tierUpCost: player.tierUpCost,
+    pendingTriple: player.pendingTriple,
+    board: player.board.minions.map(minionSignature),
+    shop: {
+      frozen: player.shop.frozen,
+      rollCost: player.shop.rollCost,
+      minions: player.shop.minions.map(minionSignature),
+    },
+    opponents: state.opponents.map((opp) => ({
+      entityId: opp.entityId,
+      playerId: opp.playerId,
+      hp: opp.hero.hp,
+      tier: opp.tier,
+      eliminated: opp.eliminated,
+      minionsOnBoard: opp.minionsOnBoard,
+      board: opp.board.minions.map(minionSignature),
+    })),
+  });
+}
+
+export function shouldRefreshAdvice(state: GameState): boolean {
+  return state.phase === 'shopping';
+}
+
 export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Coordinator {
   const pipeline: Pipeline = createPipeline();
   let previousTurn: number | null = null;
   let hsStatus: 'waiting' | 'anchored' | 'failed' = 'waiting';
   let latestRecs: Recommendation[] = [];
+  let lastAdvisorSignature: string | null = null;
 
   // Wire onEvent to call recommend + setAdvice on each event
   const originalOnEvent = pipeline.onEvent;
@@ -64,41 +112,60 @@ export function startCoordinator(win: BrowserWindow, opts?: CoordinatorOpts): Co
     }
     previousTurn = currentTurn;
 
-    try {
-      const recs = recommend(state);
-      latestRecs = recs;
-      const top = recs[0];
-      if (top) {
-        setAdvice(top);
-        if (top.action.type === 'Reposition') {
-          setBoardPanel({ recommendation: top });
+    if (!shouldRefreshAdvice(state)) {
+      if (lastAdvisorSignature !== null || latestRecs.length > 0) {
+        lastAdvisorSignature = null;
+        latestRecs = [];
+        setAdvice(null);
+        clearBoardPanel();
+        (opts?.logFn ?? appendSessionEvent)('recommendation', {
+          turn: currentTurn,
+          action: null,
+        });
+      }
+      pushBridgeUpdate();
+      return;
+    }
+
+    const advisorSignature = getAdvisorSignature(state);
+    if (advisorSignature !== lastAdvisorSignature) {
+      lastAdvisorSignature = advisorSignature;
+      try {
+        const recs = recommend(state);
+        latestRecs = recs;
+        const top = recs[0];
+        if (top) {
+          setAdvice(top);
+          if (top.action.type === 'Reposition') {
+            setBoardPanel({ recommendation: top });
+          } else {
+            clearBoardPanel();
+          }
+          if (top.needsExplanation === true) {
+            const logFn = opts?.logFn;
+            explain(top, state)
+              .then((text) => {
+                setExplanation(text);
+                logFn?.('llm', { rec: top.action.type, text });
+              })
+              .catch(() => {
+                logFn?.('llm-error', { rec: top.action.type });
+              });
+          }
         } else {
+          setAdvice(null);
           clearBoardPanel();
         }
-        if (top.needsExplanation === true) {
-          const logFn = opts?.logFn;
-          explain(top, state)
-            .then((text) => {
-              setExplanation(text);
-              logFn?.('llm', { rec: top.action.type, text });
-            })
-            .catch(() => {
-              logFn?.('llm-error', { rec: top.action.type });
-            });
-        }
-      } else {
+        (opts?.logFn ?? appendSessionEvent)('recommendation', {
+          turn: currentTurn,
+          action: recs[0]?.action ?? null,
+        });
+      } catch {
+        // If recommend throws, clear advice rather than crashing
+        latestRecs = [];
         setAdvice(null);
         clearBoardPanel();
       }
-      (opts?.logFn ?? appendSessionEvent)('recommendation', {
-        turn: currentTurn,
-        action: recs[0]?.action ?? null,
-      });
-    } catch {
-      // If recommend throws, clear advice rather than crashing
-      latestRecs = [];
-      setAdvice(null);
-      clearBoardPanel();
     }
     pushBridgeUpdate();
   };
