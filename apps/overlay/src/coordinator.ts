@@ -49,7 +49,18 @@ function minionSignature(minion: GameState['player']['board']['minions'][number]
     minion.divineShield ? 1 : 0,
     minion.poisonous ? 1 : 0,
     minion.reborn ? 1 : 0,
+    minion.frozen ? 1 : 0,
     minion.golden ? 1 : 0,
+    minion.windfury ? 1 : 0,
+    minion.cleave ? 1 : 0,
+    minion.elite ? 1 : 0,
+    minion.lifesteal ? 1 : 0,
+    minion.exhausted ? 1 : 0,
+    minion.magnetic ? 1 : 0,
+    minion.immune ? 1 : 0,
+    minion.charge ? 1 : 0,
+    minion.cost,
+    minion.spellPower,
     minion.tribes.join(','),
   ].join(':');
 }

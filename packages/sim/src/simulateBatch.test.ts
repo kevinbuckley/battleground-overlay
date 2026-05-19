@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'bun:test';
-import { simulateBatch } from './simulateBatch';
 import type { BgsBoardInfo } from '@firestone-hs/simulate-bgs-battle/dist/bgs-board-info';
+import { simulateBatch } from './simulateBatch';
 
 const board: BgsBoardInfo = {
   player: {
@@ -30,5 +30,17 @@ describe('simulateBatch', () => {
     expect(r1.wins).toBe(r2.wins);
     expect(r1.losses).toBe(r2.losses);
     expect(r1.ties).toBe(r2.ties);
+  });
+
+  it('is deterministic even when no explicit seed is provided', () => {
+    const r1 = simulateBatch(board, board, 20);
+    const r2 = simulateBatch(board, board, 20);
+    expect(r1).toEqual(r2);
+  });
+
+  it('restores Math.random after seeded simulation', () => {
+    const originalRandom = Math.random;
+    simulateBatch(board, board, 1, 7);
+    expect(Math.random).toBe(originalRandom);
   });
 });

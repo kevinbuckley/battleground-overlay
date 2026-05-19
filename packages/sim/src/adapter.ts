@@ -12,6 +12,8 @@ function toFirestoneEntity(minion: Minion, index: number): BoardEntity {
     divineShield: minion.divineShield,
     poisonous: minion.poisonous,
     reborn: minion.reborn,
+    cleave: minion.cleave,
+    windfury: minion.windfury,
   };
 }
 

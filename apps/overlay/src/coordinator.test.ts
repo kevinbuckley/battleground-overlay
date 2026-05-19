@@ -675,6 +675,39 @@ describe('coordinator', () => {
   describe('getAdvisorSignature', () => {
     it('changes for shop minion updates but not unrelated object identity', () => {
       const initialState = require('@overlay/state').initialState();
+      const combatKeywordState = {
+        ...initialState,
+        player: {
+          ...initialState.player,
+          board: {
+            minions: [
+              {
+                entityId: 10,
+                cardId: 'BG_TEST_MINION',
+                attack: 2,
+                health: 3,
+                taunt: false,
+                divineShield: false,
+                poisonous: false,
+                reborn: false,
+                frozen: false,
+                golden: false,
+                windfury: true,
+                cleave: false,
+                elite: false,
+                lifesteal: false,
+                cost: 3,
+                tribes: [],
+                spellPower: 0,
+                exhausted: false,
+                magnetic: false,
+                immune: false,
+                charge: false,
+              },
+            ],
+          },
+        },
+      };
       const same = {
         ...initialState,
         player: {
@@ -718,6 +751,7 @@ describe('coordinator', () => {
       };
 
       expect(getAdvisorSignature(same)).toBe(getAdvisorSignature(initialState));
+      expect(getAdvisorSignature(combatKeywordState)).not.toBe(getAdvisorSignature(initialState));
       expect(getAdvisorSignature(withShop)).not.toBe(getAdvisorSignature(initialState));
     });
   });

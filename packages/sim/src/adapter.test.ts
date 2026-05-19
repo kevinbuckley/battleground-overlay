@@ -62,6 +62,16 @@ describe('toFirestoneBoard', () => {
     });
   });
 
+  it('passes combat mechanics that affect attack order to Firestone', () => {
+    const board: Board = { minions: [{ ...minion, windfury: true, cleave: true }] };
+    const result = toFirestoneBoard(board, playerState);
+
+    expect(result.board[0]).toMatchObject({
+      windfury: true,
+      cleave: true,
+    });
+  });
+
   it('sets player tavernTier from player.tier', () => {
     const result = toFirestoneBoard({ minions: [] }, playerState);
     expect(result.player.tavernTier).toBe(3);
